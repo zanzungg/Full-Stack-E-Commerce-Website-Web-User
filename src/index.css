@@ -159,3 +159,53 @@ footer form input::placeholder{
 .MuiFormControlLabel-label{
   font-size: 13px !important; color: rgba(0, 0, 0, 0.8);
 }
+
+.homeSliderV2 .swiper-pagination {
+  @apply bottom-4;
+}
+
+.homeSliderV2 .swiper-pagination-bullet {
+  @apply w-3 h-3 bg-[rgba(0,0,0,0.3)] rounded-full opacity-70 transition-all;
+}
+
+.homeSliderV2 .swiper-pagination-bullet-active {
+  @apply bg-red-500 w-8 opacity-100;
+}
+
+@media (max-width: 768px) {
+  .info h2 {
+    font-size: 1.5rem !important;
+  }
+  .info h3 span {
+    font-size: 1.8rem !important;
+  }
+}
+
+.homeSliderV2 .item .info {
+  @apply transform translate-x-full opacity-0 transition-all duration-700 ease-in-out;
+}
+
+.homeSliderV2 .swiper-slide-active .item .info {
+  @apply transform translate-x-0 opacity-100;
+}
+
+.homeSliderV2 .item .info > * {
+  @apply transform translate-x-12 opacity-0 transition-all duration-700 ease-out;
+}
+
+.homeSliderV2 .swiper-slide-active .item .info > * {
+  @apply transform translate-x-0 opacity-100;
+}
+
+.homeSliderV2 .swiper-slide-active .item .info > *:nth-child(1) {
+  transition-delay: 0.2s;
+}
+.homeSliderV2 .swiper-slide-active .item .info > *:nth-child(2) {
+  transition-delay: 0.5s;
+}
+.homeSliderV2 .swiper-slide-active .item .info > *:nth-child(3) {
+  transition-delay: 0.9s;
+}
+.homeSliderV2 .swiper-slide-active .item .info > *:nth-child(4) {
+  transition-delay: 1.2s;
+}

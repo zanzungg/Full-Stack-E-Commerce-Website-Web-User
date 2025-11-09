@@ -12,6 +12,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import BlogItem from "../../components/BlogItem";
 import Footer from "../../components/Footer";
+import HomeBannerV2 from "../../components/HomeSliderV2";
+import BannerBoxV2 from "../../components/BannerBoxV2";
 
 const Home = () => {
     const [value, setValue] = React.useState(0);
@@ -21,7 +23,7 @@ const Home = () => {
     };
 
     return (
-        <div>
+        <>
             <HomeSlider/>
             <HomeCategorySlider/>
 
@@ -53,12 +55,23 @@ const Home = () => {
                         </div>
                     </div>
 
-
                     <ProductsSlider items={6}/>
                 </div>
             </section>
 
-            <section className="py-4 pt-2 bg-white">
+            <section className="py-6 bg-white">
+                <div className="container flex gap-5">
+                    <div className="part1 w-[70%]">
+                        <HomeBannerV2 />
+                    </div>
+                    <div className="part2 w-[30%] flex items-center gap-5 justify-between flex-col">
+                        <BannerBoxV2 info="right" image={"https://serviceapi.spicezgold.com/download/1760160666204_1737020916820_New_Project_52.jpg"}/>
+                        <BannerBoxV2 info="right"image={"https://serviceapi.spicezgold.com/download/1741664665391_1741497254110_New_Project_50.jpg"}/>
+                    </div>
+                </div>
+            </section>
+
+            <section className="py-4 pt-6 bg-white">
                 <div className="container">
                     <div className="freeShipping w-[80%] mx-auto py-4 p-4 border-2 border-primary flex items-center 
                     justify-between rounded-md mb-7">
@@ -109,7 +122,6 @@ const Home = () => {
                         slidesPerView={4}
                         className="relative"
                     >
-
                         <SwiperSlide>
                             <BlogItem />
                         </SwiperSlide>
@@ -135,9 +147,8 @@ const Home = () => {
                 </div>
             </section>
 
-
             <Footer />
-        </div>
+        </>
     );
 }
 
