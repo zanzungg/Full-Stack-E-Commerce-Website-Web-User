@@ -265,3 +265,7 @@ footer form input::placeholder{
 .productDetailsModal .MuiDialogContent-root{
   padding: 0px !important;
 }
+
+.cartPanel .MuiPaper-root{
+  width: 400px; overflow: hidden;
+}

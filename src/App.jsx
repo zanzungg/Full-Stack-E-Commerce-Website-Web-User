@@ -21,15 +21,24 @@ const MyContext = createContext();
 
 function App() {
   const [openProductDetailsModal, setOpenProductDetailsModal] = useState(false);
-  const [fullWidth, setFullWidth] = React.useState(true);
-  const [maxWidth, setMaxWidth] = React.useState('lg');
+  const [fullWidth, setFullWidth] = useState(true);
+  const [maxWidth, setMaxWidth] = useState('lg');
+
+  const [openCartPanel, setOpenCartPanel] = useState(false);
 
   const handleCloseProductDetailsModal = () => {
     setOpenProductDetailsModal(false);
   };
 
+  const toggleCartPanel = (newOpen) => () => {
+    setOpenCartPanel(newOpen);
+  };
+
   const values = {
-    setOpenProductDetailsModal
+    setOpenProductDetailsModal,
+    setOpenCartPanel,
+    openCartPanel,
+    toggleCartPanel
   }
 
   return (
@@ -72,6 +81,7 @@ function App() {
           </div>
         </DialogContent>
       </Dialog>
+
     </>
   )
 }
