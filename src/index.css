@@ -257,3 +257,7 @@ footer form input::placeholder{
 .reviewScroll::-webkit-scrollbar-thumb{
   background: #ccc !important;
 }
+
+.productDetailsModal .MuiDialogContent-root{
+  padding: 0px !important;
+}
