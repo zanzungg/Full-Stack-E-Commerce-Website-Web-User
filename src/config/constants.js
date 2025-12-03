@@ -11,10 +11,11 @@ export const API_ENDPOINTS = {
     VERIFY_RESET_CODE: '/users/verify-reset-code',
     RESET_PASSWORD: '/users/reset-password',
     
-    // User
+    // User Profile
     USER_PROFILE: '/users/profile',
     UPDATE_PROFILE: '/users/profile',
     UPDATE_AVATAR: '/users/avatar',
+    CHANGE_PASSWORD: '/users/change-password',
     
     // Products
     PRODUCTS: '/products',
@@ -42,7 +43,7 @@ export const API_ENDPOINTS = {
 export const STORAGE_KEYS = {
     ACCESS_TOKEN: 'accessToken',
     REFRESH_TOKEN: 'refreshToken',
-    RESET_TOKEN: 'resetToken',
     USER_INFO: 'userInfo',
     CART_ITEMS: 'cartItems',
+    RESET_TOKEN: 'resetToken',
 };

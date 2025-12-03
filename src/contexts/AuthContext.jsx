@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { authService } from '../api/services/authService';
+import { userService } from '../api/services/userService';
 import { STORAGE_KEYS } from '../config/constants';
 
 const AuthContext = createContext(null);
@@ -15,14 +16,24 @@ export const AuthProvider = ({ children }) => {
         checkAuth();
     }, []);
 
-    const checkAuth = () => {
+    const checkAuth = async () => {
         try {
             const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
-            const userInfo = localStorage.getItem(STORAGE_KEYS.USER_INFO);
             
-            if (token && userInfo) {
-                setUser(JSON.parse(userInfo));
-                setIsAuthenticated(true);
+            if (token) {
+                // Fetch user profile từ API
+                try {
+                    const response = await userService.getProfile();
+                    const userData = response.data;
+                    
+                    setUser(userData);
+                    setIsAuthenticated(true);
+                    localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(userData));
+                } catch (error) {
+                    console.error('Failed to fetch user profile:', error);
+                    // Nếu token hết hạn hoặc invalid, logout
+                    logout();
+                }
             }
         } catch (error) {
             console.error('Check auth error:', error);
@@ -51,21 +62,13 @@ export const AuthProvider = ({ children }) => {
                 localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
             }
             
-            // Decode JWT để lấy thông tin user
-            try {
-                const tokenPayload = JSON.parse(atob(accessToken.split('.')[1]));
-                const userInfo = {
-                    id: tokenPayload.id,
-                    name: tokenPayload.name,
-                    email: tokenPayload.email,
-                    role: tokenPayload.role
-                };
-                localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(userInfo));
-                setUser(userInfo);
-                setIsAuthenticated(true);
-            } catch (decodeError) {
-                console.error('Error decoding token:', decodeError);
-            }
+            // Fetch user profile
+            const profileResponse = await userService.getProfile();
+            const userData = profileResponse.data;
+            
+            localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(userData));
+            setUser(userData);
+            setIsAuthenticated(true);
             
             return response;
         } catch (error) {
@@ -146,6 +149,11 @@ export const AuthProvider = ({ children }) => {
             setAuthLoading(true);
             const response = await authService.verifyResetCode({ email, otp });
             
+            // Lưu resetToken vào localStorage
+            if (response.resetToken) {
+                localStorage.setItem(STORAGE_KEYS.RESET_TOKEN, response.resetToken);
+            }
+            
             return response;
         } catch (error) {
             console.error('Verify reset code error:', error);
@@ -180,6 +188,18 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(updatedUserInfo));
     };
 
+    const refreshUserProfile = async () => {
+        try {
+            const response = await userService.getProfile();
+            const userData = response.data;
+            updateUser(userData);
+            return userData;
+        } catch (error) {
+            console.error('Refresh profile error:', error);
+            throw error;
+        }
+    };
+
     const value = {
         user,
         isAuthenticated,
@@ -193,7 +213,8 @@ export const AuthProvider = ({ children }) => {
         verifyResetCode,
         resetPassword,
         checkAuth,
-        updateUser
+        updateUser,
+        refreshUserProfile
     };
 
     return (

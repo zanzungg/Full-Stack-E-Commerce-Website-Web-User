@@ -5,33 +5,83 @@ import { FaRegUser } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
 import { IoBagCheckOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
+import { RiLockPasswordLine } from "react-icons/ri";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MyContext } from '../../App';
 import { useAuth } from '../../hooks/useAuth';
 import { useAuthContext } from '../../contexts/AuthContext';
+import { userService } from '../../api/services/userService';
 
-const AccountSidebar = ({ onAvatarChange }) => {
+const AccountSidebar = ({ onAvatarUpdate }) => {
     const context = useContext(MyContext);
     const navigate = useNavigate();
     const location = useLocation();
     
-    // Sử dụng AuthContext và useAuth
-    const { user } = useAuthContext();
+    const { user, updateUser, refreshUserProfile } = useAuthContext();
     const { logout, loading } = useAuth();
     
-    // State cho dialog xác nhận logout
     const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
+    const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
-    // Determine active tab based on current route
     const getActiveTab = () => {
         const path = location.pathname;
         if (path.includes('/my-account')) return 'profile';
         if (path.includes('/my-wishlist')) return 'wishlist';
         if (path.includes('/my-orders')) return 'orders';
+        if (path.includes('/change-password')) return 'password';
         return 'profile';
     };
 
     const activeTab = getActiveTab();
+
+    const handleAvatarChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            context.openAlertBox("error", "Please select an image file");
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            context.openAlertBox("error", "Image size must be less than 5MB");
+            return;
+        }
+
+        try {
+            setUploadingAvatar(true);
+            
+            const response = await userService.updateAvatar(file);
+            
+            const updatedUser = {
+                ...user,
+                avatar: response.data.avatar
+            };
+            updateUser(updatedUser);
+            
+            if (onAvatarUpdate) {
+                onAvatarUpdate(response.data.avatar);
+            }
+            
+            context.openAlertBox("success", response.message || "Avatar updated successfully!");
+            
+        } catch (error) {
+            console.error('Upload avatar error:', error);
+            
+            let errorMessage = 'Failed to upload avatar';
+            
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.request) {
+                errorMessage = 'Cannot connect to server. Please check your internet connection.';
+            }
+            
+            context.openAlertBox("error", errorMessage);
+        } finally {
+            setUploadingAvatar(false);
+            e.target.value = '';
+        }
+    };
 
     const handleOpenLogoutDialog = () => {
         setOpenLogoutDialog(true);
@@ -60,18 +110,28 @@ const AccountSidebar = ({ onAvatarChange }) => {
                         <div className='overlay w-full h-full absolute top-0 left-0
                         z-50 bg-[rgba(0,0,0,0.7)] flex items-center justify-center cursor-pointer opacity-0 
                         transition-all group-hover:opacity-100'>
-                            <MdOutlineCloudUpload className='text-white text-[25px]'/>
-                            <input 
-                                type='file' 
-                                accept="image/*"
-                                onChange={onAvatarChange}
-                                className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'
-                            />
+                            {uploadingAvatar ? (
+                                <CircularProgress size={25} className='text-white'/>
+                            ) : (
+                                <>
+                                    <MdOutlineCloudUpload className='text-white text-[25px]'/>
+                                    <input 
+                                        type='file' 
+                                        accept="image/*"
+                                        onChange={handleAvatarChange}
+                                        disabled={uploadingAvatar}
+                                        className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'
+                                    />
+                                </>
+                            )}
                         </div>
                     </div>
 
                     <h3 className='font-bold'>{user?.name || 'User Name'}</h3>
-                    <h6 className='text-[13px] font-medium'>{user?.email || 'user@example.com'}</h6>
+                    <h6 className='text-[13px] font-medium text-gray-600'>{user?.email || 'user@example.com'}</h6>
+                    {user?.mobile && (
+                        <p className='text-[12px] text-gray-500 mt-1'>{user.mobile}</p>
+                    )}
                 </div>
 
                 <ul className='list-none pb-5 bg-[#f1f1f1]'>
@@ -119,6 +179,20 @@ const AccountSidebar = ({ onAvatarChange }) => {
 
                     <li className='w-full'>
                         <Button 
+                            className={`w-full text-left! justify-start! py-2! px-5! capitalize! rounded-none! flex items-center gap-2 ${
+                                activeTab === 'password' 
+                                ? 'bg-primary! text-white!' 
+                                : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]!'
+                            }`}
+                            onClick={() => navigate('/change-password')}
+                        >
+                            <RiLockPasswordLine className='text-[20px]'/>
+                            <span className='font-semibold'>Change Password</span>
+                        </Button>
+                    </li>
+
+                    <li className='w-full'>
+                        <Button 
                             className="w-full text-left! justify-start! py-2! px-5! capitalize! text-[rgba(0,0,0,0.7)]! rounded-none! flex items-center gap-2 hover:bg-[rgba(0,0,0,0.05)]!"
                             onClick={handleOpenLogoutDialog}
                             disabled={loading}
@@ -144,7 +218,6 @@ const AccountSidebar = ({ onAvatarChange }) => {
                 open={openLogoutDialog}
                 onClose={handleCloseLogoutDialog}
                 aria-labelledby="logout-dialog-title"
-                aria-describedby="logout-dialog-description"
                 PaperProps={{
                     sx: {
                         borderRadius: '8px',

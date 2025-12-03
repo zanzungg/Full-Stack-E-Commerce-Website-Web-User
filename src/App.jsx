@@ -30,6 +30,7 @@ import MyOrders from './pages/MyOrders';
 // Import AuthProvider
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import ChangePassword from './pages/ChangePassword';
 
 const MyContext = createContext();
 
@@ -95,6 +96,11 @@ function App() {
               <Route path={"/verify"} exact={true} element={<Verify/>} />
               <Route path="/forgot-password" exact={true} element={<ForgotPassword />} />
               <Route path="/reset-password" exact={true} element={<ResetPassword />} />
+              <Route path="/change-password" exact={true} element={
+                <ProtectedRoute>
+                  <ChangePassword />
+                </ProtectedRoute>
+              } />
               
               {/* Protected Routes */}
               <Route path={"/cart"} exact={true} element={
