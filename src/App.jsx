@@ -24,6 +24,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from "./pages/ResetPassword";
 import Checkout from './pages/Checkout';
 import MyAccount from './pages/MyAccount';
+import MyAddress from './pages/MyAddress';
 import MyWishList from './pages/MyWishList';
 import MyOrders from './pages/MyOrders';
 
@@ -116,6 +117,11 @@ function App() {
               <Route path="/my-account" exact={true} element={
                 <ProtectedRoute>
                   <MyAccount />
+                </ProtectedRoute>
+              } />
+              <Route path="/my-address" exact={true} element={
+                <ProtectedRoute>
+                  <MyAddress />
                 </ProtectedRoute>
               } />
               <Route path="/my-wishlist" exact={true} element={

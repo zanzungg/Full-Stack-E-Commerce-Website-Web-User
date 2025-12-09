@@ -10,6 +10,13 @@ export const API_ENDPOINTS = {
     FORGOT_PASSWORD: '/users/forgot-password',
     VERIFY_RESET_CODE: '/users/verify-reset-code',
     RESET_PASSWORD: '/users/reset-password',
+
+    // Address Management
+    CREATE_ADDRESS: '/addresses/create',
+    SELECT_ADDRESS: (addressId) => `/addresses/select/${addressId}`,
+    UPDATE_ADDRESS: (addressId) => `/addresses/update/${addressId}`,
+    DEACTIVATE_ADDRESS: (addressId) => `/addresses/deactivate/${addressId}`,
+    RESTORE_ADDRESS: (addressId) => `/addresses/restore/${addressId}`,
     
     // User Profile
     USER_PROFILE: '/users/profile',

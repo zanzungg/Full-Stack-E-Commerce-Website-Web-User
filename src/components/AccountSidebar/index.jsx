@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from '@mui/material';
 import { MdOutlineCloudUpload } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
+import { LuMapPin } from "react-icons/lu";
 import { FaRegHeart } from "react-icons/fa6";
 import { IoBagCheckOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
@@ -26,6 +27,7 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
     const getActiveTab = () => {
         const path = location.pathname;
         if (path.includes('/my-account')) return 'profile';
+        if (path.includes('/my-address')) return 'address';
         if (path.includes('/my-wishlist')) return 'wishlist';
         if (path.includes('/my-orders')) return 'orders';
         if (path.includes('/change-password')) return 'password';
@@ -102,7 +104,7 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
                 <div className='w-full p-5 flex items-center justify-center flex-col'>
                     <div className='w-[110px] h-[110px] rounded-full overflow-hidden mb-4 relative group'>
                         <img 
-                            src={user?.avatar || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV1Mly7C6D_WWpPXTAO4dF52D9Wd9FKuC9zw&s'}
+                            src={user?.avatar || '/avatar_default.png'}
                             alt="User Avatar"
                             className='w-full h-full object-cover' 
                         />
@@ -128,7 +130,7 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
                     </div>
 
                     <h3 className='font-bold'>{user?.name || 'User Name'}</h3>
-                    <h6 className='text-[13px] font-medium text-gray-600'>{user?.email || 'user@example.com'}</h6>
+                    <h6 className='text-[13px] font-medium text-gray-600'>{user?.email || 'User Email'}</h6>
                     {user?.mobile && (
                         <p className='text-[12px] text-gray-500 mt-1'>{user.mobile}</p>
                     )}
@@ -152,13 +154,27 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
                     <li className='w-full'>
                         <Button 
                             className={`w-full text-left! justify-start! py-2! px-5! capitalize! rounded-none! flex items-center gap-2 ${
+                                activeTab === 'address' 
+                                ? 'bg-primary! text-white!' 
+                                : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]!'
+                            }`}
+                            onClick={() => navigate('/my-address')}
+                        >
+                            <LuMapPin className='text-[20px]'/>
+                            <span className='font-semibold'>My Address</span>
+                        </Button>
+                    </li>
+
+                    <li className='w-full'>
+                        <Button 
+                            className={`w-full text-left! justify-start! py-2! px-5! capitalize! rounded-none! flex items-center gap-2 ${
                                 activeTab === 'wishlist' 
                                 ? 'bg-primary! text-white!' 
                                 : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]!'
                             }`}
                             onClick={() => navigate('/my-wishlist')}
                         >
-                            <FaRegHeart className='text-[17px]'/>
+                            <FaRegHeart className='text-[19px]'/>
                             <span className='font-semibold'>My Wishlist</span>
                         </Button>
                     </li>
