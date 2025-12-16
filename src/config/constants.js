@@ -25,6 +25,9 @@ export const API_ENDPOINTS = {
   UPDATE_AVATAR: '/users/avatar',
   CHANGE_PASSWORD: '/users/change-password',
 
+  // Home Slider Banner
+  GET_BANNERS: '/home-slider-banner',
+
   // Categories
   GET_CATEGORIES: '/categories/',
   GET_CATEGORY_TREE: '/categories/tree',
