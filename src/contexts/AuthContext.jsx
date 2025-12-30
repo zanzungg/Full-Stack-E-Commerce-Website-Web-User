@@ -180,7 +180,6 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.USER_INFO);
-      localStorage.removeItem(STORAGE_KEYS.CART_ITEMS);
       localStorage.removeItem(STORAGE_KEYS.RESET_TOKEN);
 
       // Reset state

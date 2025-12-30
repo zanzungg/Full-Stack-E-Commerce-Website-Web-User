@@ -27,6 +27,7 @@ import MyAccount from './pages/MyAccount';
 import MyAddress from './pages/MyAddress';
 import MyWishList from './pages/MyWishList';
 import MyOrders from './pages/MyOrders';
+import BlogDetail from './pages/BlogDetail';
 
 // Import AuthProvider
 import { AuthProvider } from './contexts/AuthContext';
@@ -99,6 +100,11 @@ function App() {
                   path={'/product/:id'}
                   exact={true}
                   element={<ProductDetails />}
+                />
+                <Route
+                  path={'/blog/:id'}
+                  exact={true}
+                  element={<BlogDetail />}
                 />
 
                 {/* Public Routes */}

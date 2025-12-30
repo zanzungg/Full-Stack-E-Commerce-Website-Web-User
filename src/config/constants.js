@@ -35,32 +35,27 @@ export const API_ENDPOINTS = {
   GET_CATEGORY_BY_SLUG: (slug) => `/categories/slug/${slug}`,
 
   // Products
-  PRODUCTS: '/products',
-  PRODUCT_DETAIL: (id) => `/products/${id}`,
-  PRODUCT_CATEGORIES: '/products/categories',
+  GET_PRODUCTS: '/products/',
+  GET_PRODUCT_BY_CAT_ID: (catId) => `/products/catId/${catId}`,
+  GET_PRODUCT_BY_SUBCAT_ID: (subCatId) => `/products/subCatId/${subCatId}`,
+  GET_PRODUCT_BY_THIRDSUBCAT_ID: (thirdSubCatId) =>
+    `/products/thirdSubCatId/${thirdSubCatId}`,
+  GET_LASTEST_PRODUCTS: '/products/latest',
+  GET_FEATURED_PRODUCTS: '/products/featured',
+  GET_PRODUCT_DETAILS: (productId) => `/products/${productId}`,
+  GET_ACTIVE_BANNERS: '/products/banners/active',
 
-  // Cart
-  CART: '/cart',
-  ADD_TO_CART: '/cart/add',
-  UPDATE_CART_ITEM: (id) => `/cart/item/${id}`,
-  REMOVE_CART_ITEM: (id) => `/cart/item/${id}`,
+  // Home Banner V1
+  GET_HOME_BANNERS_V1: '/home-banner-v1/',
 
-  // Wishlist
-  WISHLIST: '/wishlist',
-  ADD_TO_WISHLIST: '/wishlist/add',
-  REMOVE_FROM_WISHLIST: (id) => `/wishlist/${id}`,
-
-  // Orders
-  ORDERS: '/orders',
-  ORDER_DETAIL: (id) => `/orders/${id}`,
-  CREATE_ORDER: '/orders/create',
-  CANCEL_ORDER: (id) => `/orders/${id}/cancel`,
+  // Blogs
+  GET_BLOGS: '/blogs/',
+  GET_BLOG_BY_ID: (blogId) => `/blogs/${blogId}`,
 };
 
 export const STORAGE_KEYS = {
-    ACCESS_TOKEN: 'accessToken',
-    REFRESH_TOKEN: 'refreshToken',
-    USER_INFO: 'userInfo',
-    CART_ITEMS: 'cartItems',
-    RESET_TOKEN: 'resetToken',
+  ACCESS_TOKEN: 'accessToken',
+  REFRESH_TOKEN: 'refreshToken',
+  USER_INFO: 'userInfo',
+  RESET_TOKEN: 'resetToken',
 };

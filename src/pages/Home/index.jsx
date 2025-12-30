@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import HomeSlider from '../../components/HomeSlider';
 import HomeCategorySlider from '../../components/HomeCategorySlider';
 import { LiaShippingFastSolid } from 'react-icons/lia';
@@ -14,13 +14,142 @@ import BlogItem from '../../components/BlogItem';
 import HomeBannerV2 from '../../components/HomeSliderV2';
 import BannerBoxV2 from '../../components/BannerBoxV2';
 import AdsBannerSliderV2 from '../../components/AdsBannerSliderV2';
+import { useCategories } from '../../contexts/CategoryContext';
+import { productService } from '../../api/services/productService';
+import { homeBannerV1Service } from '../../api/services/homeBannerV1Service';
+import { blogService } from '../../api/services/blogService';
 
 const Home = () => {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
+  const { categories, loading } = useCategories();
+  const [products, setProducts] = useState([]);
+  const [productsLoading, setProductsLoading] = useState(false);
+  const [homeBannersV1, setHomeBannersV1] = useState([]);
+  const [bannersLoading, setBannersLoading] = useState(true);
+  const [latestProducts, setLatestProducts] = useState([]);
+  const [latestProductsLoading, setLatestProductsLoading] = useState(true);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [featuredProductsLoading, setFeaturedProductsLoading] = useState(true);
+  const [blogs, setBlogs] = useState([]);
+  const [blogsLoading, setBlogsLoading] = useState(true);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  // Fetch home banners V1
+  useEffect(() => {
+    const fetchHomeBannersV1 = async () => {
+      try {
+        setBannersLoading(true);
+        const response = await homeBannerV1Service.getHomeBannersV1();
+        if (response.success && response.data?.banners) {
+          setHomeBannersV1(response.data.banners);
+        }
+      } catch (error) {
+        console.error('Error fetching home banners V1:', error);
+        setHomeBannersV1([]);
+      } finally {
+        setBannersLoading(false);
+      }
+    };
+
+    fetchHomeBannersV1();
+  }, []);
+
+  // Fetch latest products
+  useEffect(() => {
+    const fetchLatestProducts = async () => {
+      try {
+        setLatestProductsLoading(true);
+        const response = await productService.getLatestProducts({
+          page: 1,
+          limit: 6,
+        });
+        if (response.success && response.data) {
+          setLatestProducts(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching latest products:', error);
+        setLatestProducts([]);
+      } finally {
+        setLatestProductsLoading(false);
+      }
+    };
+
+    fetchLatestProducts();
+  }, []);
+
+  // Fetch featured products
+  useEffect(() => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        setFeaturedProductsLoading(true);
+        const response = await productService.getFeaturedProducts({
+          limit: 6,
+        });
+        if (response.success && response.data) {
+          setFeaturedProducts(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching featured products:', error);
+        setFeaturedProducts([]);
+      } finally {
+        setFeaturedProductsLoading(false);
+      }
+    };
+
+    fetchFeaturedProducts();
+  }, []);
+
+  // Fetch blogs
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        setBlogsLoading(true);
+        const response = await blogService.getBlogs({
+          page: 1,
+          limit: 8,
+        });
+        if (response.success && response.data) {
+          setBlogs(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+        setBlogs([]);
+      } finally {
+        setBlogsLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  // Fetch products when category changes
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (categories.length === 0 || loading) return;
+
+      const selectedCategory = categories[value];
+      if (!selectedCategory) return;
+
+      try {
+        setProductsLoading(true);
+        const response = await productService.getProductsByCategoryId(
+          selectedCategory._id,
+          { page: 1, limit: 12 }
+        );
+        setProducts(response.data || []);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setProducts([]);
+      } finally {
+        setProductsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [value, categories, loading]);
 
   return (
     <>
@@ -33,31 +162,35 @@ const Home = () => {
             <div className="leftSec w-[40%] pl-5">
               <h2 className="font-semibold text-[20px]">Popular Products</h2>
               <p className="font-normal text-[14px]">
-                Do not miss the current offers until the end of March.
+                Do not miss the current offers until the end of{' '}
+                {new Date().getFullYear()}.
               </p>
             </div>
 
             <div className="rightSec w-[60%]">
               <Tabs
-                value={value}
+                value={loading ? 0 : value}
                 onChange={handleChange}
                 variant="scrollable"
                 scrollButtons="auto"
-                aria-label="scrollable auto tabs example"
+                aria-label="category tabs"
               >
-                <Tab label="Fashion" />
-                <Tab label="Electronics" />
-                <Tab label="Bags" />
-                <Tab label="Footwear" />
-                <Tab label="Groceries" />
-                <Tab label="Beauty" />
-                <Tab label="Wellness" />
-                <Tab label="Jewellery" />
+                {loading ? (
+                  <Tab label="Loading categories..." disabled />
+                ) : (
+                  categories.map((category) => (
+                    <Tab key={category._id} label={category.name} />
+                  ))
+                )}
               </Tabs>
             </div>
           </div>
 
-          <ProductsSlider items={6} />
+          <ProductsSlider
+            items={6}
+            products={products}
+            loading={productsLoading}
+          />
         </div>
       </section>
 
@@ -67,18 +200,32 @@ const Home = () => {
             <HomeBannerV2 />
           </div>
           <div className="part2 w-[30%] flex items-center gap-5 justify-between flex-col">
-            <BannerBoxV2
-              info="right"
-              image={
-                'https://serviceapi.spicezgold.com/download/1760160666204_1737020916820_New_Project_52.jpg'
-              }
-            />
-            <BannerBoxV2
-              info="right"
-              image={
-                'https://serviceapi.spicezgold.com/download/1741664665391_1741497254110_New_Project_50.jpg'
-              }
-            />
+            {bannersLoading ? (
+              // Loading skeleton
+              <>
+                <div className="w-full h-48 bg-gray-200 animate-pulse rounded-md"></div>
+                <div className="w-full h-48 bg-gray-200 animate-pulse rounded-md"></div>
+              </>
+            ) : homeBannersV1.length > 0 ? (
+              // Render dynamic banners from API (limit to 2)
+              homeBannersV1
+                .slice(0, 2)
+                .map((banner) => (
+                  <BannerBoxV2
+                    key={banner._id}
+                    info="right"
+                    image={banner.image?.url}
+                    title={banner.title}
+                    price={banner.price}
+                    catSlug={banner.catId?.slug}
+                    subCatSlug={banner.subCatId?.slug}
+                    thirdSubCatSlug={banner.thirdSubCatId?.slug}
+                  />
+                ))
+            ) : (
+              // Fallback to static banners if no data
+              <></>
+            )}
           </div>
         </div>
       </section>
@@ -112,53 +259,61 @@ const Home = () => {
       <section className="py-5 pt-0 bg-white">
         <div className="container">
           <h2 className="font-semibold text-[20px]">Latest Products</h2>
-          <ProductsSlider items={6} />
+          <ProductsSlider
+            items={6}
+            products={latestProducts}
+            loading={latestProductsLoading}
+          />
 
-          <AdsBannerSlider items={2} />
+          <AdsBannerSlider items={4} />
         </div>
       </section>
 
       <section className="py-5 pt-0 bg-white">
         <div className="container">
           <h2 className="font-semibold text-[20px]">Featured Products</h2>
-          <ProductsSlider items={6} />
-
-          <AdsBannerSlider items={3} />
+          <ProductsSlider
+            items={6}
+            products={featuredProducts}
+            loading={featuredProductsLoading}
+          />
         </div>
       </section>
 
       <section className="py-5 pt-0 bg-white blogSection">
         <div className="container">
           <h2 className="font-semibold text-[20px] mb-4">From The Blog</h2>
-          <Swiper
-            modules={[Navigation]}
-            navigation={{ prevEl: '.blog-prev', nextEl: '.blog-next' }}
-            spaceBetween={30}
-            slidesPerView={4}
-            className="relative"
-          >
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-            <SwiperSlide>
-              <BlogItem />
-            </SwiperSlide>
-            {/* Navigation */}
-            <NavButton direction="prev" className="blog-prev" small />
-            <NavButton direction="next" className="blog-next" small />
-          </Swiper>
+          {blogsLoading ? (
+            <div className="grid grid-cols-4 gap-6">
+              {[...Array(4)].map((_, index) => (
+                <div key={index} className="animate-pulse">
+                  <div className="w-full h-48 bg-gray-200 rounded-md mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                </div>
+              ))}
+            </div>
+          ) : blogs.length > 0 ? (
+            <Swiper
+              modules={[Navigation]}
+              navigation={{ prevEl: '.blog-prev', nextEl: '.blog-next' }}
+              spaceBetween={30}
+              slidesPerView={4}
+              className="relative"
+            >
+              {blogs.map((blog) => (
+                <SwiperSlide key={blog._id}>
+                  <BlogItem blog={blog} />
+                </SwiperSlide>
+              ))}
+              {/* Navigation */}
+              <NavButton direction="prev" className="blog-prev" small />
+              <NavButton direction="next" className="blog-next" small />
+            </Swiper>
+          ) : (
+            <p className="text-center text-gray-500 py-8">No blogs available</p>
+          )}
         </div>
       </section>
     </>
