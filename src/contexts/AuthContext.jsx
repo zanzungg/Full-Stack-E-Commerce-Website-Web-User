@@ -1,4 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
+import { signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '../firebase';
 import { authService } from '../api/services/authService';
 import { userService } from '../api/services/userService';
 import { STORAGE_KEYS } from '../config/constants';
@@ -314,12 +316,67 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithGoogle = async () => {
+    try {
+      setAuthLoading(true);
+
+      // Đăng nhập với Google qua Firebase
+      const result = await signInWithPopup(auth, googleProvider);
+      const firebaseUser = result.user;
+
+      // Chuẩn bị dữ liệu user để gửi lên backend
+      const userData = {
+        name: firebaseUser.displayName || '',
+        email: firebaseUser.email,
+        avatar: firebaseUser.photoURL || '',
+        mobile: firebaseUser.phoneNumber || '',
+      };
+
+      // Gửi thông tin user lên backend
+      const response = await authService.loginWithGoogle(userData);
+
+      // Backend trả về: { data: { user, accessToken, refreshToken } }
+      const responseData = response.data || response;
+      const accessToken = responseData.accessToken;
+      const refreshToken = responseData.refreshToken;
+      const userInfo = responseData.user;
+
+      if (!accessToken) {
+        throw new Error('No access token received from server');
+      }
+
+      // Save tokens
+      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
+      if (refreshToken) {
+        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+      }
+
+      // Save user info
+      if (userInfo) {
+        localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(userInfo));
+        setUser(userInfo);
+        setIsAuthenticated(true);
+      }
+
+      return response;
+    } catch (error) {
+      // Nếu user đóng popup, không hiển thị lỗi
+      if (error.code === 'auth/popup-closed-by-user') {
+        throw new Error('Login cancelled');
+      }
+      throw error;
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
   const value = {
     user,
     isAuthenticated,
     loading,
     authLoading,
     login,
+    loginWithGoogle,
     register,
     verifyEmail,
     logout,

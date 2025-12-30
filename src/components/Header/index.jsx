@@ -115,12 +115,12 @@ const Header = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="w-[50%]">
+          <div className="w-[45%]">
             <Search />
           </div>
 
           {/* User Actions */}
-          <div className="w-[25%] flex items-center">
+          <div className="w-[30%] flex items-center">
             <ul className="flex items-center justify-end w-full gap-2 pl-8">
               {!isAuthenticated ? (
                 <li className="list-none flex items-center gap-2 text-[14px] font-medium">

@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
   FORGOT_PASSWORD: '/users/forgot-password',
   VERIFY_RESET_CODE: '/users/verify-reset-code',
   RESET_PASSWORD: '/users/reset-password',
+  GOOGLE_LOGIN: '/users/auth/google-login',
 
   // Address Management
   CREATE_ADDRESS: '/addresses/create',

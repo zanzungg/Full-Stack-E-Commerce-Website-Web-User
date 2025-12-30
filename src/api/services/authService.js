@@ -71,4 +71,14 @@ export const authService = {
     });
     return response;
   },
+
+  // Google Authentication
+  loginWithGoogle: async (userData) => {
+    // userData = { name, email, avatar, mobile }
+    const response = await axiosInstance.post(
+      API_ENDPOINTS.GOOGLE_LOGIN,
+      userData
+    );
+    return response;
+  },
 };
