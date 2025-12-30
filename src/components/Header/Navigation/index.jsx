@@ -30,7 +30,7 @@ const Navigation = () => {
     _id: cat._id,
     name: cat.name,
     slug: cat.slug,
-    path: `/category/${cat.slug}`,
+    path: `/product-listing?catId=${cat._id}`,
     sub: cat.subcategories || [],
   }));
 
@@ -221,7 +221,7 @@ const Navigation = () => {
                               }}
                             >
                               <Link
-                                to={`/category/${subItem.slug}`}
+                                to={`/product-listing?subCatId=${subItem._id}`}
                                 className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50 hover:text-primary hover:pl-6 transition-all duration-200 relative group"
                                 onClick={() => {
                                   setHoveredItem(null);

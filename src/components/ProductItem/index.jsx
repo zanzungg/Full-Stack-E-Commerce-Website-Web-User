@@ -30,8 +30,8 @@ const ProductItem = ({ product }) => {
   const hoverImage = images[1]?.url || mainImage;
 
   return (
-    <div className="productItem shadow-lg rounded-md overflow-hidden border border-[rgba(0,0,0,0.1)]">
-      <div className="group imgWrapper w-full overflow-hidden rounded-md relative">
+    <div className="productItem group shadow-lg rounded-md border border-[rgba(0,0,0,0.1)]">
+      <div className="imgWrapper w-full rounded-md relative">
         <Link to={`/product/${_id}`}>
           <div className="img h-[220px] overflow-hidden">
             <img
@@ -58,8 +58,8 @@ const ProductItem = ({ product }) => {
         )}
 
         <div
-          className="actions absolute top-[-200px] right-[5px] z-50 flex items-center gap-2
-                 flex-col w-[50px] transition-all duration-300 group-hover:top-[15px] opacity-0 group-hover:opacity-100"
+          className="actions absolute top-0 -translate-y-full right-[5px] z-50 flex items-center gap-2
+                 flex-col w-[50px] transition-all duration-300 group-hover:top-[15px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0"
         >
           <Button
             className="w-[35px]! h-[35px]! min-[35px]! rounded-full! bg-white!
@@ -97,13 +97,17 @@ const ProductItem = ({ product }) => {
           </Link>
         </h3>
 
-        <Rating
-          name="product-rating"
-          value={rating}
-          size="small"
-          readOnly
-          precision={0.5}
-        />
+        {rating > 0 ? (
+          <Rating
+            name="product-rating"
+            value={rating}
+            size="small"
+            readOnly
+            precision={0.5}
+          />
+        ) : (
+          <span className="text-xs text-gray-400">No reviews</span>
+        )}
 
         <div className="flex items-center gap-4">
           {oldPrice > 0 && (

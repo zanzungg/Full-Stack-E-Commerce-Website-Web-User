@@ -19,7 +19,11 @@ const CategoryCollapse = ({
   toggleSubmenu,
 }) => {
   // Recursive component để render nested subcategories
-  const renderSubcategories = (subcategories, level = 1) => {
+  const renderSubcategories = (
+    subcategories,
+    level = 1,
+    parentLevel = 'cat'
+  ) => {
     if (!subcategories || subcategories.length === 0) return null;
 
     return (
@@ -28,6 +32,14 @@ const CategoryCollapse = ({
           const hasChildren =
             subItem.subcategories && subItem.subcategories.length > 0;
           const isOpen = openSubmenu[subItem._id];
+
+          // Determine URL param based on level
+          let productUrl = '';
+          if (parentLevel === 'cat') {
+            productUrl = `/product-listing?subCatId=${subItem._id}`;
+          } else if (parentLevel === 'subCat') {
+            productUrl = `/product-listing?thirdSubCatId=${subItem._id}`;
+          }
 
           return (
             <React.Fragment key={subItem._id}>
@@ -42,7 +54,7 @@ const CategoryCollapse = ({
                     }
                   }}
                   component={hasChildren ? 'div' : Link}
-                  to={hasChildren ? undefined : `/category/${subItem.slug}`}
+                  to={hasChildren ? undefined : productUrl}
                   sx={{
                     py: 1.2,
                     borderRadius: '6px',
@@ -76,7 +88,11 @@ const CategoryCollapse = ({
               {/* Nested subcategories */}
               {hasChildren && (
                 <Collapse in={isOpen} timeout="auto" unmountOnExit>
-                  {renderSubcategories(subItem.subcategories, level + 1)}
+                  {renderSubcategories(
+                    subItem.subcategories,
+                    level + 1,
+                    parentLevel === 'cat' ? 'subCat' : 'thirdSubCat'
+                  )}
                 </Collapse>
               )}
             </React.Fragment>
@@ -97,7 +113,11 @@ const CategoryCollapse = ({
                 <ListItemButton
                   onClick={(e) => handleMainItemClick(e, name)}
                   component={sub.length === 0 ? Link : 'div'}
-                  to={sub.length === 0 ? `/category/${slug}` : undefined}
+                  to={
+                    sub.length === 0
+                      ? `/product-listing?catId=${_id}`
+                      : undefined
+                  }
                   sx={{
                     py: 1.8,
                     borderRadius: '8px',
@@ -132,7 +152,7 @@ const CategoryCollapse = ({
               {/* Submenu với nested categories */}
               {sub.length > 0 && (
                 <Collapse in={isOpen} timeout="auto" unmountOnExit>
-                  {renderSubcategories(sub)}
+                  {renderSubcategories(sub, 1, 'cat')}
                 </Collapse>
               )}
             </React.Fragment>

@@ -57,7 +57,7 @@ const CategoryPanel = ({ isOpen, onClose }) => {
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-5 border-b border-gray-200 bg-gradient-to-r from-primary/5 to-white">
+      <div className="flex items-center justify-between p-5 border-b border-gray-200 bg-linear-to-r from-primary/5 to-white">
         <h3 className="text-[17px] font-bold text-gray-900">
           Shop By Categories
         </h3>

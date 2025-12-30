@@ -23,9 +23,6 @@ const HomeBannerV2 = () => {
         setLoading(true);
         const response = await productService.getActiveBanners();
 
-        console.log('API Response:', response);
-        console.log('Banners Data:', response.data);
-
         // Axios interceptor already returns response.data
         // So response here is actually { message, error, success, data, count }
         if (
@@ -48,13 +45,11 @@ const HomeBannerV2 = () => {
             productId: product._id,
           }));
 
-          console.log('Formatted Slides:', formattedSlides);
           setSlides(formattedSlides);
         } else {
           console.warn('No banner data found in response');
         }
       } catch (err) {
-        console.error('Error fetching active banners:', err);
         setError(err.message || 'Failed to load banners');
       } finally {
         setLoading(false);
