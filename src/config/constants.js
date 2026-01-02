@@ -52,6 +52,16 @@ export const API_ENDPOINTS = {
   // Blogs
   GET_BLOGS: '/blogs/',
   GET_BLOG_BY_ID: (blogId) => `/blogs/${blogId}`,
+
+  // Cart
+  GET_CART: '/cart/',
+  ADD_TO_CART: '/cart/create',
+  UPDATE_CART_ITEM: (itemId) => `/cart/update-quantity/${itemId}`,
+  REMOVE_CART_ITEM: (itemId) => `/cart/${itemId}`,
+  INCREMENT_CART_ITEM: (itemId) => `/cart/${itemId}/increment`,
+  DECREMENT_CART_ITEM: (itemId) => `/cart/${itemId}/decrement`,
+  CLEAR_CART: '/cart/clear',
+  DELETE_CART_BATCH: '/cart/batch',
 };
 
 export const STORAGE_KEYS = {

@@ -4,10 +4,18 @@ import { MdOutlineShoppingCart } from 'react-icons/md';
 import { FaRegHeart } from 'react-icons/fa';
 import { IoGitCompareOutline } from 'react-icons/io5';
 import Rating from '@mui/material/Rating';
-import { Button } from '@mui/material';
+import { Button, CircularProgress, Tooltip } from '@mui/material';
+import { useCart } from '../../hooks/useCart.jsx';
+import { toast } from 'react-hot-toast';
 
 const ProductDetailsComponent = ({ product }) => {
   const [productActionIndex, setProductActionIndex] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedVariant, setSelectedVariant] = useState({
+    type: null,
+    value: null,
+  });
+  const { addToCart, isAdding } = useCart();
 
   if (!product) {
     return (
@@ -18,6 +26,7 @@ const ProductDetailsComponent = ({ product }) => {
   }
 
   const {
+    _id,
     name,
     brand,
     rating = 0,
@@ -30,6 +39,34 @@ const ProductDetailsComponent = ({ product }) => {
     productWeight = [],
     reviews = [],
   } = product;
+
+  const handleAddToCart = () => {
+    if (countInStock === 0) return;
+
+    // Check if product has variants and user hasn't selected one
+    const hasVariants =
+      (productSize && productSize.length > 0) ||
+      (productRam && productRam.length > 0) ||
+      (productWeight && productWeight.length > 0);
+
+    if (hasVariants && !selectedVariant.value) {
+      toast.error('Please select a variant (Size/RAM/Weight)', {
+        duration: 3000,
+        position: 'top-right',
+        icon: '⚠️',
+      });
+      return;
+    }
+
+    addToCart({
+      productId: _id,
+      quantity: quantity,
+      selectedVariant: selectedVariant.value ? selectedVariant : undefined,
+    });
+  };
+
+  const isOutOfStock = countInStock === 0;
+  const maxQuantity = Math.min(countInStock, 100);
 
   return (
     <>
@@ -86,11 +123,15 @@ const ProductDetailsComponent = ({ product }) => {
               <Button
                 key={index}
                 className={`${
-                  productActionIndex === `ram-${index}`
+                  selectedVariant.type === 'ram' &&
+                  selectedVariant.value === ram
                     ? 'bg-primary! text-white!'
                     : ''
                 }`}
-                onClick={() => setProductActionIndex(`ram-${index}`)}
+                onClick={() => {
+                  setSelectedVariant({ type: 'ram', value: ram });
+                  setProductActionIndex(`ram-${index}`);
+                }}
               >
                 {ram}
               </Button>
@@ -107,11 +148,14 @@ const ProductDetailsComponent = ({ product }) => {
               <Button
                 key={index}
                 className={`${
-                  productActionIndex === `size-${index}`
+                  selectedVariant.type === 'size' && selectedVariant.value === s
                     ? 'bg-primary! text-white!'
                     : ''
                 }`}
-                onClick={() => setProductActionIndex(`size-${index}`)}
+                onClick={() => {
+                  setSelectedVariant({ type: 'size', value: s });
+                  setProductActionIndex(`size-${index}`);
+                }}
               >
                 {s}
               </Button>
@@ -128,11 +172,15 @@ const ProductDetailsComponent = ({ product }) => {
               <Button
                 key={index}
                 className={`${
-                  productActionIndex === `weight-${index}`
+                  selectedVariant.type === 'weight' &&
+                  selectedVariant.value === weight
                     ? 'bg-primary! text-white!'
                     : ''
                 }`}
-                onClick={() => setProductActionIndex(`weight-${index}`)}
+                onClick={() => {
+                  setSelectedVariant({ type: 'weight', value: weight });
+                  setProductActionIndex(`weight-${index}`);
+                }}
               >
                 {weight}
               </Button>
@@ -147,13 +195,38 @@ const ProductDetailsComponent = ({ product }) => {
 
       <div className="flex items-center gap-4 py-4">
         <div className="qtyBoxWrapper w-[70px]">
-          <QtyBox />
+          <QtyBox
+            quantity={quantity}
+            onChange={setQuantity}
+            max={maxQuantity}
+          />
         </div>
 
-        <Button className="btn-org flex gap-2">
-          <MdOutlineShoppingCart className="text-[22px]" />
-          Add To Cart
-        </Button>
+        <Tooltip
+          title={isOutOfStock ? 'Out of stock' : ''}
+          arrow
+          placement="top"
+        >
+          <span>
+            <Button
+              className="btn-org flex gap-2"
+              onClick={handleAddToCart}
+              disabled={isOutOfStock || isAdding}
+            >
+              {isAdding ? (
+                <>
+                  <CircularProgress size={20} color="inherit" />
+                  Adding...
+                </>
+              ) : (
+                <>
+                  <MdOutlineShoppingCart className="text-[22px]" />
+                  Add To Cart
+                </>
+              )}
+            </Button>
+          </span>
+        </Tooltip>
       </div>
 
       <div className="flex items-center gap-4 mt-4">

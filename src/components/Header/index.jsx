@@ -24,6 +24,7 @@ import { MdOutlineSettings } from 'react-icons/md';
 // Import useAuth và useAuthContext
 import { useAuth } from '../../hooks/useAuth';
 import { useAuthContext } from '../../contexts/AuthContext';
+import { useCart } from '../../hooks/useCart.jsx';
 
 // Custom Styled Badge
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -44,6 +45,9 @@ const Header = () => {
   // Sử dụng AuthContext và useAuth
   const { user, isAuthenticated } = useAuthContext();
   const { logout, loading } = useAuth();
+
+  // Sử dụng useCart để lấy cart count
+  const { cartSummary } = useCart();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -316,7 +320,12 @@ const Header = () => {
                       transition: 'all 0.2s ease-in-out',
                     }}
                   >
-                    <StyledBadge badgeContent={0} color="secondary">
+                    <StyledBadge
+                      badgeContent={
+                        isAuthenticated ? cartSummary?.totalItems || 0 : 0
+                      }
+                      color="secondary"
+                    >
                       <MdOutlineShoppingCart
                         size={23}
                         className="text-gray-700"

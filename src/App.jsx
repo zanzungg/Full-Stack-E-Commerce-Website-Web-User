@@ -10,6 +10,7 @@ import { createContext } from 'react';
 
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
+import Drawer from '@mui/material/Drawer';
 import ProductZoom from './components/ProductZoom';
 import { IoCloseSharp } from 'react-icons/io5';
 import { Button } from '@mui/material';
@@ -17,6 +18,7 @@ import ProductDetailsComponent from './components/ProductDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import CartPage from './pages/Cart';
+import CartPanel from './components/CartPanel';
 import Verify from './pages/Verify';
 
 import toast, { Toaster } from 'react-hot-toast';
@@ -35,7 +37,21 @@ import { CategoryProvider } from './contexts/CategoryContext';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import ChangePassword from './pages/ChangePassword';
 
+// Import React Query
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 const MyContext = createContext();
+
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+});
 
 function App() {
   const [openProductDetailsModal, setOpenProductDetailsModal] = useState(false);
@@ -92,143 +108,177 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <AuthProvider>
-          <CategoryProvider>
-            <MyContext.Provider value={values}>
-              <Header />
-              <Routes>
-                <Route path={'/'} exact={true} element={<Home />} />
-                <Route
-                  path={'/product-listing'}
-                  exact={true}
-                  element={<ProductListing />}
-                />
-                <Route
-                  path={'/product/:id'}
-                  exact={true}
-                  element={<ProductDetails />}
-                />
-                <Route
-                  path={'/blog/:id'}
-                  exact={true}
-                  element={<BlogDetail />}
-                />
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <CategoryProvider>
+              <MyContext.Provider value={values}>
+                <Header />
+                <Routes>
+                  <Route path={'/'} exact={true} element={<Home />} />
+                  <Route
+                    path={'/product-listing'}
+                    exact={true}
+                    element={<ProductListing />}
+                  />
+                  <Route
+                    path={'/product/:id'}
+                    exact={true}
+                    element={<ProductDetails />}
+                  />
+                  <Route
+                    path={'/blog/:id'}
+                    exact={true}
+                    element={<BlogDetail />}
+                  />
 
-                {/* Public Routes */}
-                <Route path={'/login'} exact={true} element={<Login />} />
-                <Route path={'/register'} exact={true} element={<Register />} />
-                <Route path={'/verify'} exact={true} element={<Verify />} />
-                <Route
-                  path="/forgot-password"
-                  exact={true}
-                  element={<ForgotPassword />}
-                />
-                <Route
-                  path="/reset-password"
-                  exact={true}
-                  element={<ResetPassword />}
-                />
-                <Route
-                  path="/change-password"
-                  exact={true}
-                  element={
-                    <ProtectedRoute>
-                      <ChangePassword />
-                    </ProtectedRoute>
-                  }
-                />
+                  {/* Public Routes */}
+                  <Route path={'/login'} exact={true} element={<Login />} />
+                  <Route
+                    path={'/register'}
+                    exact={true}
+                    element={<Register />}
+                  />
+                  <Route path={'/verify'} exact={true} element={<Verify />} />
+                  <Route
+                    path="/forgot-password"
+                    exact={true}
+                    element={<ForgotPassword />}
+                  />
+                  <Route
+                    path="/reset-password"
+                    exact={true}
+                    element={<ResetPassword />}
+                  />
+                  <Route
+                    path="/change-password"
+                    exact={true}
+                    element={
+                      <ProtectedRoute>
+                        <ChangePassword />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                {/* Protected Routes */}
-                <Route
-                  path={'/cart'}
-                  exact={true}
-                  element={
-                    <ProtectedRoute>
-                      <CartPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/checkout"
-                  exact={true}
-                  element={
-                    <ProtectedRoute>
-                      <Checkout />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/my-account"
-                  exact={true}
-                  element={
-                    <ProtectedRoute>
-                      <MyAccount />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/my-address"
-                  exact={true}
-                  element={
-                    <ProtectedRoute>
-                      <MyAddress />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/my-wishlist"
-                  exact={true}
-                  element={
-                    <ProtectedRoute>
-                      <MyWishList />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/my-orders"
-                  exact={true}
-                  element={
-                    <ProtectedRoute>
-                      <MyOrders />
-                    </ProtectedRoute>
-                  }
-                />
-              </Routes>
-              <Footer />
-            </MyContext.Provider>
-          </CategoryProvider>
-        </AuthProvider>
+                  {/* Protected Routes */}
+                  <Route
+                    path={'/cart'}
+                    exact={true}
+                    element={
+                      <ProtectedRoute>
+                        <CartPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/checkout"
+                    exact={true}
+                    element={
+                      <ProtectedRoute>
+                        <Checkout />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/my-account"
+                    exact={true}
+                    element={
+                      <ProtectedRoute>
+                        <MyAccount />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/my-address"
+                    exact={true}
+                    element={
+                      <ProtectedRoute>
+                        <MyAddress />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/my-wishlist"
+                    exact={true}
+                    element={
+                      <ProtectedRoute>
+                        <MyWishList />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/my-orders"
+                    exact={true}
+                    element={
+                      <ProtectedRoute>
+                        <MyOrders />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Routes>
+                <Footer />
+
+                {/* Product Details Dialog */}
+                <Dialog
+                  fullWidth={fullWidth}
+                  maxWidth={maxWidth}
+                  open={openProductDetailsModal}
+                  onClose={handleCloseProductDetailsModal}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                  className="productDetailsModal"
+                >
+                  <DialogContent>
+                    <div className="flex items-start mt-2 w-full productDetailsModalContainer relative">
+                      <Button
+                        className="w-10! h-10! min-w-10! rounded-full! text-black!
+          absolute! top-[15px] right-[15px] bg-[#f1f1f1]!"
+                        onClick={handleCloseProductDetailsModal}
+                      >
+                        <IoCloseSharp className="text-[20px]" />
+                      </Button>
+                      <div className="col1 w-[40%] px-3">
+                        <ProductZoom images={selectedProduct?.images || []} />
+                      </div>
+                      <div className="col2 w-[60%] py-8 px-8 pr-16 productContent">
+                        <ProductDetailsComponent product={selectedProduct} />
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                {/* Cart Drawer Panel */}
+                <Drawer
+                  anchor="right"
+                  open={openCartPanel}
+                  onClose={toggleCartPanel(false)}
+                  className="cartDrawer"
+                  PaperProps={{
+                    sx: {
+                      width: '400px',
+                      padding: 0,
+                    },
+                  }}
+                >
+                  <div className="relative h-full">
+                    <div className="flex items-center justify-between p-4 border-b border-[rgba(0,0,0,0.1)]">
+                      <h3 className="text-[18px] font-bold">Shopping Cart</h3>
+                      <Button
+                        className="w-8! h-8! min-w-8! rounded-full! bg-[#f1f1f1]!"
+                        onClick={toggleCartPanel(false)}
+                      >
+                        <IoCloseSharp className="text-[18px]" />
+                      </Button>
+                    </div>
+                    <CartPanel />
+                  </div>
+                </Drawer>
+              </MyContext.Provider>
+            </CategoryProvider>
+          </AuthProvider>
+        </QueryClientProvider>
       </BrowserRouter>
 
       <Toaster />
-
-      <Dialog
-        fullWidth={fullWidth}
-        maxWidth={maxWidth}
-        open={openProductDetailsModal}
-        onClose={handleCloseProductDetailsModal}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        className="productDetailsModal"
-      >
-        <DialogContent>
-          <div className="flex items-start mt-2 w-full productDetailsModalContainer relative">
-            <Button
-              className="w-10! h-10! min-w-10! rounded-full! text-black!
-          absolute! top-[15px] right-[15px] bg-[#f1f1f1]!"
-              onClick={handleCloseProductDetailsModal}
-            >
-              <IoCloseSharp className="text-[20px]" />
-            </Button>
-            <div className="col1 w-[40%] px-3">
-              <ProductZoom images={selectedProduct?.images || []} />
-            </div>
-            <div className="col2 w-[60%] py-8 px-8 pr-16 productContent">
-              <ProductDetailsComponent product={selectedProduct} />
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
