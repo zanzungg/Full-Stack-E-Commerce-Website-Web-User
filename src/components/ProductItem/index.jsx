@@ -64,7 +64,7 @@ const ProductItem = ({ product }) => {
           <Button
             className="w-[35px]! h-[35px]! min-[35px]! rounded-full! bg-white!
                    text-black hover:bg-primary! hover:text-white group"
-            onClick={() => context.setOpenProductDetailsModal(true)}
+            onClick={() => context.setOpenProductDetailsModal(product)}
           >
             <MdZoomOutMap className="text-[18px] text-black! group-hover:text-white hover:text-white!" />
           </Button>

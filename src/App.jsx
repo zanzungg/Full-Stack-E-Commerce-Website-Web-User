@@ -39,6 +39,7 @@ const MyContext = createContext();
 
 function App() {
   const [openProductDetailsModal, setOpenProductDetailsModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [fullWidth, setFullWidth] = useState(true);
   const [maxWidth, setMaxWidth] = useState('lg');
 
@@ -46,6 +47,12 @@ function App() {
 
   const handleCloseProductDetailsModal = () => {
     setOpenProductDetailsModal(false);
+    setSelectedProduct(null);
+  };
+
+  const handleOpenProductDetailsModal = (product) => {
+    setSelectedProduct(product);
+    setOpenProductDetailsModal(true);
   };
 
   const toggleCartPanel = (newOpen) => () => {
@@ -75,7 +82,7 @@ function App() {
   };
 
   const values = {
-    setOpenProductDetailsModal,
+    setOpenProductDetailsModal: handleOpenProductDetailsModal,
     setOpenCartPanel,
     openCartPanel,
     toggleCartPanel,
@@ -205,7 +212,7 @@ function App() {
         className="productDetailsModal"
       >
         <DialogContent>
-          <div className="flex items-center w-full productDetailsModalContainer relative">
+          <div className="flex items-start mt-2 w-full productDetailsModalContainer relative">
             <Button
               className="w-10! h-10! min-w-10! rounded-full! text-black!
           absolute! top-[15px] right-[15px] bg-[#f1f1f1]!"
@@ -214,10 +221,10 @@ function App() {
               <IoCloseSharp className="text-[20px]" />
             </Button>
             <div className="col1 w-[40%] px-3">
-              <ProductZoom />
+              <ProductZoom images={selectedProduct?.images || []} />
             </div>
             <div className="col2 w-[60%] py-8 px-8 pr-16 productContent">
-              <ProductDetailsComponent />
+              <ProductDetailsComponent product={selectedProduct} />
             </div>
           </div>
         </DialogContent>
