@@ -5,26 +5,22 @@ import { Link } from 'react-router-dom';
 const BannerBoxV2 = (props) => {
   const {
     image = '',
-    title = 'Buy women with low price',
+    title = '',
     price = 90,
     info = 'right',
     link = '/',
-    catSlug,
-    subCatSlug,
-    thirdSubCatSlug,
+    subCatId,
   } = props;
 
-  // Generate dynamic link based on category structure
+  // Generate dynamic link based on category structure using query params
   const generateLink = () => {
-    if (thirdSubCatSlug && subCatSlug && catSlug) {
-      return `/products/${catSlug}/${subCatSlug}/${thirdSubCatSlug}`;
+    const params = new URLSearchParams();
+
+    if (subCatId) {
+      params.set('subCatId', subCatId);
+      return `/product-listing?${params.toString()}`;
     }
-    if (subCatSlug && catSlug) {
-      return `/products/${catSlug}/${subCatSlug}`;
-    }
-    if (catSlug) {
-      return `/products/${catSlug}`;
-    }
+
     return link;
   };
 

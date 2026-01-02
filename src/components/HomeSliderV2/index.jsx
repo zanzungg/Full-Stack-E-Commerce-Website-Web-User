@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectFade, Navigation, Pagination, Autoplay } from 'swiper/modules';
 
@@ -13,6 +14,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import productService from '../../api/services/productService';
 
 const HomeBannerV2 = () => {
+  const navigate = useNavigate();
   const [slides, setSlides] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -147,6 +149,7 @@ const HomeBannerV2 = () => {
                 <Button
                   variant="contained"
                   className="btn-org bg-red-600! hover:bg-red-700! text-white! font-semibold! py-3! px-6! rounded-md! shadow-lg! transition-all! duration-300! hover:scale-105!"
+                  onClick={() => navigate(`/product/${slide.productId}`)}
                 >
                   {slide.buttonText}
                 </Button>

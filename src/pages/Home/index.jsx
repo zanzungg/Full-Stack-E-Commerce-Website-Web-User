@@ -217,9 +217,9 @@ const Home = () => {
                     image={banner.image?.url}
                     title={banner.title}
                     price={banner.price}
-                    catSlug={banner.catId?.slug}
-                    subCatSlug={banner.subCatId?.slug}
-                    thirdSubCatSlug={banner.thirdSubCatId?.slug}
+                    catId={banner.catId?._id}
+                    subCatId={banner.subCatId?._id}
+                    thirdSubCatId={banner.thirdSubCatId?._id}
                   />
                 ))
             ) : (
@@ -252,7 +252,7 @@ const Home = () => {
             <p className="font-bold text-[30px]">- Only $200*</p>
           </div>
 
-          <AdsBannerSliderV2 items={4} />
+          {/* <AdsBannerSliderV2 items={4} /> */}
         </div>
       </section>
 
@@ -265,7 +265,7 @@ const Home = () => {
             loading={latestProductsLoading}
           />
 
-          <AdsBannerSlider items={4} />
+          <AdsBannerSlider items={3} />
         </div>
       </section>
 
