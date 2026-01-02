@@ -62,6 +62,17 @@ export const API_ENDPOINTS = {
   DECREMENT_CART_ITEM: (itemId) => `/cart/${itemId}/decrement`,
   CLEAR_CART: '/cart/clear',
   DELETE_CART_BATCH: '/cart/batch',
+
+  // My Wishlist
+  GET_WISHLIST: '/mylist',
+  ADD_TO_WISHLIST: '/mylist',
+  REMOVE_FROM_WISHLIST: (productId) => `/mylist/${productId}`,
+  CLEAR_WISHLIST: '/mylist',
+
+  CHECK_WISHLIST: (productId) => `/mylist/check/${productId}`,
+  COUNT_WISHLIST: '/mylist/count',
+  WISHLIST_STATS: '/mylist/stats',
+  SYNC_WISHLIST: '/mylist/sync',
 };
 
 export const STORAGE_KEYS = {

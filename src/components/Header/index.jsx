@@ -25,6 +25,7 @@ import { MdOutlineSettings } from 'react-icons/md';
 import { useAuth } from '../../hooks/useAuth';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { useCart } from '../../hooks/useCart.jsx';
+import { useWishlist } from '../../hooks/useWishlist.jsx';
 
 // Custom Styled Badge
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -48,6 +49,9 @@ const Header = () => {
 
   // Sử dụng useCart để lấy cart count
   const { cartSummary } = useCart();
+
+  // Sử dụng useWishlist để lấy wishlist count
+  const { wishlistCount } = useWishlist();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -299,7 +303,10 @@ const Header = () => {
                       transition: 'all 0.2s ease-in-out',
                     }}
                   >
-                    <StyledBadge badgeContent={0} color="secondary">
+                    <StyledBadge
+                      badgeContent={isAuthenticated ? wishlistCount || 0 : 0}
+                      color="secondary"
+                    >
                       <FaRegHeart size={21} className="text-gray-700" />
                     </StyledBadge>
                   </IconButton>

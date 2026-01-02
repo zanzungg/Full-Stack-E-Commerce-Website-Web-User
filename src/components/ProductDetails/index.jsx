@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import QtyBox from '../../components/QtyBox';
 import { MdOutlineShoppingCart } from 'react-icons/md';
-import { FaRegHeart } from 'react-icons/fa';
+import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { IoGitCompareOutline } from 'react-icons/io5';
 import Rating from '@mui/material/Rating';
 import { Button, CircularProgress, Tooltip } from '@mui/material';
 import { useCart } from '../../hooks/useCart.jsx';
+import { useWishlist } from '../../hooks/useWishlist.jsx';
+import { useAuthContext } from '../../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
 
 const ProductDetailsComponent = ({ product }) => {
@@ -16,7 +18,34 @@ const ProductDetailsComponent = ({ product }) => {
     value: null,
   });
   const { addToCart, isAdding } = useCart();
+  const {
+    toggleWishlist,
+    useCheckWishlist,
+    isAdding: isAddingToWishlist,
+    isRemoving: isRemovingFromWishlist,
+  } = useWishlist();
+  const { isAuthenticated } = useAuthContext();
 
+  // Extract product data with fallbacks - do this BEFORE early return
+  const {
+    _id = null,
+    name = '',
+    brand = '',
+    rating = 0,
+    price = 0,
+    oldPrice = 0,
+    countInStock = 0,
+    description = '',
+    productSize = [],
+    productRam = [],
+    productWeight = [],
+    reviews = [],
+  } = product || {};
+
+  // Call useCheckWishlist BEFORE any conditional returns
+  const { data: isInWishlist } = useCheckWishlist(_id);
+
+  // NOW safe to do early return after all hooks are called
   if (!product) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -24,21 +53,6 @@ const ProductDetailsComponent = ({ product }) => {
       </div>
     );
   }
-
-  const {
-    _id,
-    name,
-    brand,
-    rating = 0,
-    price,
-    oldPrice,
-    countInStock = 0,
-    description,
-    productSize = [],
-    productRam = [],
-    productWeight = [],
-    reviews = [],
-  } = product;
 
   const handleAddToCart = () => {
     if (countInStock === 0) return;
@@ -67,6 +81,20 @@ const ProductDetailsComponent = ({ product }) => {
 
   const isOutOfStock = countInStock === 0;
   const maxQuantity = Math.min(countInStock, 100);
+
+  // Handle wishlist toggle
+  const handleWishlistClick = () => {
+    if (!isAuthenticated) {
+      toast.error('Please login to add products to your wishlist', {
+        duration: 3000,
+        position: 'top-right',
+        icon: '🔒',
+      });
+      return;
+    }
+
+    toggleWishlist(_id);
+  };
 
   return (
     <>
@@ -230,10 +258,45 @@ const ProductDetailsComponent = ({ product }) => {
       </div>
 
       <div className="flex items-center gap-4 mt-4">
-        <span className="flex items-center gap-2 text-[15px] link cursor-pointer font-medium">
-          <FaRegHeart className="text-[18px]" />
-          Add To Wishlist
-        </span>
+        <Tooltip
+          title={
+            !isAuthenticated
+              ? 'Login to add to wishlist'
+              : isInWishlist
+              ? 'Remove from wishlist'
+              : 'Add to wishlist'
+          }
+          arrow
+        >
+          <span
+            className={`flex items-center gap-2 text-[15px] cursor-pointer font-medium transition-colors ${
+              isInWishlist
+                ? 'text-red-500 hover:text-red-600'
+                : 'link hover:text-primary'
+            } ${
+              isAddingToWishlist || isRemovingFromWishlist
+                ? 'opacity-50 cursor-not-allowed'
+                : ''
+            }`}
+            onClick={handleWishlistClick}
+          >
+            {isAddingToWishlist || isRemovingFromWishlist ? (
+              <>
+                <CircularProgress size={18} className="text-current" />
+                {isInWishlist ? 'Removing...' : 'Adding...'}
+              </>
+            ) : (
+              <>
+                {isInWishlist ? (
+                  <FaHeart className="text-[18px]" />
+                ) : (
+                  <FaRegHeart className="text-[18px]" />
+                )}
+                {isInWishlist ? 'Remove from Wishlist' : 'Add To Wishlist'}
+              </>
+            )}
+          </span>
+        </Tooltip>
         <span className="flex items-center gap-2 text-[15px] link cursor-pointer font-medium">
           <IoGitCompareOutline className="text-[18px]" />
           Add To Compare

@@ -1,22 +1,31 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import '../ProductItem/style.css';
 import { Link } from 'react-router-dom';
 import Rating from '@mui/material/Rating';
 import { Button, CircularProgress, Tooltip } from '@mui/material';
-import { FaRegHeart } from 'react-icons/fa';
+import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { IoGitCompareOutline } from 'react-icons/io5';
 import { MdZoomOutMap } from 'react-icons/md';
 import { MdOutlineShoppingCart } from 'react-icons/md';
 import { IoCloseSharp } from 'react-icons/io5';
 import { MyContext } from '../../App';
 import { useCart } from '../../hooks/useCart.jsx';
+import { useWishlist } from '../../hooks/useWishlist.jsx';
+import { useAuthContext } from '../../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
 
 const ProductItemListView = ({ product }) => {
   const context = useContext(MyContext);
   const { addToCart, isAdding } = useCart();
-  const [showVariantSelector, setShowVariantSelector] = React.useState(false);
-  const [selectedVariant, setSelectedVariant] = React.useState({
+  const {
+    toggleWishlist,
+    useCheckWishlist,
+    isAdding: isAddingToWishlist,
+    isRemoving: isRemovingFromWishlist,
+  } = useWishlist();
+  const { isAuthenticated } = useAuthContext();
+  const [showVariantSelector, setShowVariantSelector] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState({
     type: null,
     value: null,
   });
@@ -61,6 +70,26 @@ const ProductItemListView = ({ product }) => {
   };
 
   const variantInfo = getVariantType();
+
+  // Check if product is in wishlist
+  const { data: isInWishlist } = useCheckWishlist(_id);
+
+  // Handle wishlist toggle
+  const handleWishlistClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isAuthenticated) {
+      toast.error('Please login to add products to your wishlist', {
+        duration: 3000,
+        position: 'top-right',
+        icon: '🔒',
+      });
+      return;
+    }
+
+    toggleWishlist(_id);
+  };
 
   // Handle add to cart
   const handleAddToCart = () => {
@@ -138,9 +167,9 @@ const ProductItemListView = ({ product }) => {
                  flex-col w-[50px] transition-all duration-300 group-hover:top-[15px] opacity-0 group-hover:opacity-100"
           >
             <Button
-              className="w-[35px]! h-[35px]! min-w-[35px]! rounded-full! bg-white!
+              className="w-[35px]! h-[35px]! min-[35px]! rounded-full! bg-white!
                    text-black hover:bg-primary! hover:text-white group"
-              onClick={() => context.setOpenProductDetailsModal(true)}
+              onClick={() => context.setOpenProductDetailsModal(product)}
             >
               <MdZoomOutMap className="text-[18px] text-black! group-hover:text-white hover:text-white!" />
             </Button>
@@ -152,12 +181,34 @@ const ProductItemListView = ({ product }) => {
               <IoGitCompareOutline className="text-[18px] text-black! group-hover:text-white hover:text-white!" />
             </Button>
 
-            <Button
-              className="w-[35px]! h-[35px]! min-[35px]! rounded-full! bg-white!
-                   text-black hover:bg-primary! hover:text-white group"
+            <Tooltip
+              title={
+                !isAuthenticated
+                  ? 'Login to add to wishlist'
+                  : isInWishlist
+                  ? 'Remove from wishlist'
+                  : 'Add to wishlist'
+              }
+              arrow
             >
-              <FaRegHeart className="text-[18px] text-black! group-hover:text-white hover:text-white!" />
-            </Button>
+              <Button
+                className={`w-[35px]! h-[35px]! min-[35px]! rounded-full! ${
+                  isInWishlist
+                    ? 'bg-red-500! text-white!'
+                    : 'bg-white! text-black hover:bg-primary! hover:text-white'
+                } group`}
+                onClick={handleWishlistClick}
+                disabled={isAddingToWishlist || isRemovingFromWishlist}
+              >
+                {isAddingToWishlist || isRemovingFromWishlist ? (
+                  <CircularProgress size={16} className="text-current" />
+                ) : isInWishlist ? (
+                  <FaHeart className="text-[18px] text-white!" />
+                ) : (
+                  <FaRegHeart className="text-[18px] text-black! group-hover:text-white hover:text-white!" />
+                )}
+              </Button>
+            </Tooltip>
           </div>
         </div>
 
