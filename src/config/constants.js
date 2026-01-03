@@ -14,11 +14,16 @@ export const API_ENDPOINTS = {
   GOOGLE_LOGIN: '/users/auth/google-login',
 
   // Address Management
-  CREATE_ADDRESS: '/addresses/create',
-  SELECT_ADDRESS: (addressId) => `/addresses/select/${addressId}`,
-  UPDATE_ADDRESS: (addressId) => `/addresses/update/${addressId}`,
-  DEACTIVATE_ADDRESS: (addressId) => `/addresses/deactivate/${addressId}`,
-  RESTORE_ADDRESS: (addressId) => `/addresses/restore/${addressId}`,
+  GET_ADDRESSES: '/addresses/',
+  GET_SELECTED_ADDRESS: '/addresses/selected',
+  GET_ADDRESS_BY_ID: (addressId) => `/addresses/${addressId}`,
+  CREATE_ADDRESS: '/addresses/',
+  SELECT_ADDRESS: (addressId) => `/addresses/${addressId}/select`,
+  UPDATE_ADDRESS: (addressId) => `/addresses/${addressId}`,
+  // Soft Delete
+  DEACTIVATE_ADDRESS: (addressId) => `/addresses/${addressId}/deactivate`,
+  RESTORE_ADDRESS: (addressId) => `/addresses/${addressId}/restore`,
+  HARD_DELETE_ADDRESS: (addressId) => `/addresses/${addressId}`,
 
   // User Profile
   USER_PROFILE: '/users/profile',
@@ -68,7 +73,6 @@ export const API_ENDPOINTS = {
   ADD_TO_WISHLIST: '/mylist',
   REMOVE_FROM_WISHLIST: (productId) => `/mylist/${productId}`,
   CLEAR_WISHLIST: '/mylist',
-
   CHECK_WISHLIST: (productId) => `/mylist/check/${productId}`,
   COUNT_WISHLIST: '/mylist/count',
   WISHLIST_STATS: '/mylist/stats',
