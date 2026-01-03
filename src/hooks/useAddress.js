@@ -73,9 +73,9 @@ export const useAddress = (options = {}) => {
         setAddresses(fetchedAddresses);
         calculateStatistics(fetchedAddresses);
 
-        if (onSuccess) {
-          onSuccess('Addresses loaded successfully', fetchedAddresses);
-        }
+        // if (onSuccess) {
+        //   onSuccess('Addresses loaded successfully', fetchedAddresses);
+        // }
 
         return fetchedAddresses;
       } catch (err) {
