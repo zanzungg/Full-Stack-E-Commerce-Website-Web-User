@@ -77,6 +77,17 @@ export const API_ENDPOINTS = {
   COUNT_WISHLIST: '/mylist/count',
   WISHLIST_STATS: '/mylist/stats',
   SYNC_WISHLIST: '/mylist/sync',
+
+  // Orders
+  CREATE_ORDER: '/orders/create',
+  GET_ORDERS: '/orders/users',
+  GET_ORDER_BY_ID: (orderId) => `/orders/${orderId}`,
+  CANCEL_ORDER: (orderId) => `/orders/${orderId}/cancel`,
+
+  // Payments (VNPay)
+  CREATE_PAYMENT_URL: '/payment/vnpay/create',
+  VNPAY_VERIFY_RETURN: '/payment/vnpay/verify-return',
+  QUERY_VNPAY_TRANSACTION: (orderId) => `/payment/vnpay/query/${orderId}`,
 };
 
 export const STORAGE_KEYS = {

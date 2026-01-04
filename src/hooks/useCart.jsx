@@ -197,6 +197,7 @@ export const useCart = () => {
     decrement: decrementMutation.mutate,
     removeItem: removeItemMutation.mutate,
     clearCart: clearCartMutation.mutate,
+    clearCartAsync: clearCartMutation.mutateAsync,
     deleteBatch: deleteBatchMutation.mutate,
 
     // Loading states

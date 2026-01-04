@@ -118,13 +118,17 @@ const CartItems = ({ item }) => {
           </Link>
         </h3>
 
-        <Rating
-          name="size-small"
-          value={product.rating || 0}
-          size="small"
-          readOnly
-          precision={0.5}
-        />
+        {product.rating > 0 ? (
+          <Rating
+            name="size-small"
+            value={product.rating || 0}
+            size="small"
+            readOnly
+            precision={0.5}
+          />
+        ) : (
+          <span className="text-xs text-gray-400">No reviews</span>
+        )}
 
         {/* Variant Display and Selector */}
         {hasVariant && (

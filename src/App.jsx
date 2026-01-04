@@ -25,6 +25,9 @@ import toast, { Toaster } from 'react-hot-toast';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Checkout from './pages/Checkout';
+import PaymentSuccess from './pages/Checkout/success';
+import PaymentFailed from './pages/Checkout/failed';
+import VNPayReturn from './pages/Checkout/vnpay-return';
 import MyAccount from './pages/MyAccount';
 import MyAddress from './pages/MyAddress';
 import MyWishList from './pages/MyWishList';
@@ -175,6 +178,33 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <Checkout />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/payment/vnpay/return"
+                    exact={true}
+                    element={
+                      <ProtectedRoute>
+                        <VNPayReturn />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/payment/success"
+                    exact={true}
+                    element={
+                      <ProtectedRoute>
+                        <PaymentSuccess />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/payment/failure"
+                    exact={true}
+                    element={
+                      <ProtectedRoute>
+                        <PaymentFailed />
                       </ProtectedRoute>
                     }
                   />
