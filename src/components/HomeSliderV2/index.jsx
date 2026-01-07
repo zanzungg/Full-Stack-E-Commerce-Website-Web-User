@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectFade, Navigation, Pagination, Autoplay } from 'swiper/modules';
@@ -11,55 +11,28 @@ import 'swiper/css/pagination';
 
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import productService from '../../api/services/productService';
+import { useActiveBanners } from '../../hooks/useProduct';
 
 const HomeBannerV2 = () => {
   const navigate = useNavigate();
-  const [slides, setSlides] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { banners, loading, error } = useActiveBanners();
 
-  useEffect(() => {
-    const fetchActiveBanners = async () => {
-      try {
-        setLoading(true);
-        const response = await productService.getActiveBanners();
-
-        // Axios interceptor already returns response.data
-        // So response here is actually { message, error, success, data, count }
-        if (
-          response.success &&
-          Array.isArray(response.data) &&
-          response.data.length > 0
-        ) {
-          // Map API response to slides format
-          const formattedSlides = response.data.map((product) => ({
-            id: product._id,
-            src: product.banner?.image?.url || product.images?.[0]?.url || '',
-            alt: product.name || 'Banner',
-            badge: product.banner?.content?.badge || '',
-            title: product.banner?.content?.title || product.name,
-            subtitle: product.banner?.content?.subtitle || '',
-            priceDisplay:
-              product.banner?.content?.priceDisplay ||
-              `Starting At $${product.price}`,
-            buttonText: product.banner?.content?.buttonText || 'SHOP NOW',
-            productId: product._id,
-          }));
-
-          setSlides(formattedSlides);
-        } else {
-          console.warn('No banner data found in response');
-        }
-      } catch (err) {
-        setError(err.message || 'Failed to load banners');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchActiveBanners();
-  }, []);
+  const slides = useMemo(() => {
+    if (!banners || banners.length === 0) return [];
+    return banners.map((product) => ({
+      id: product._id,
+      src: product.banner?.image?.url || product.images?.[0]?.url || '',
+      alt: product.name || 'Banner',
+      badge: product.banner?.content?.badge || '',
+      title: product.banner?.content?.title || product.name,
+      subtitle: product.banner?.content?.subtitle || '',
+      priceDisplay:
+        product.banner?.content?.priceDisplay ||
+        `Starting At $${product.price}`,
+      buttonText: product.banner?.content?.buttonText || 'SHOP NOW',
+      productId: product._id,
+    }));
+  }, [banners]);
 
   if (loading) {
     return (
@@ -77,7 +50,7 @@ const HomeBannerV2 = () => {
     );
   }
 
-  if (!slides || slides.length === 0) {
+  if (slides.length === 0) {
     return (
       <div className="relative w-full h-96 flex items-center justify-center bg-gray-100 rounded-md">
         <p className="text-gray-600 text-lg">No active banners available</p>

@@ -16,7 +16,7 @@ export const CategoryProvider = ({ children }) => {
     try {
       setLoading(true);
       const response = await categoryService.getCategoryTree();
-      setCategories(response.data || []);
+      setCategories(response.data?.data || []);
       setError(null);
     } catch (err) {
       console.error('Error fetching categories:', err);

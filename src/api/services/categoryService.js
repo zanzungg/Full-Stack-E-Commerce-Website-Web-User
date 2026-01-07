@@ -1,4 +1,3 @@
-// categoryService.js - Complete version
 import axiosInstance from '../axiosConfig';
 import { API_ENDPOINTS } from '../../config/constants';
 

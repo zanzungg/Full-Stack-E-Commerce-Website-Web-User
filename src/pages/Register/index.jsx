@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { useAuth } from '../../hooks/useAuth';
-import { useAuthContext } from '../../contexts/AuthContext';
-import toast from 'react-hot-toast';
 
 const Register = () => {
-  const { register, loading } = useAuth();
-  const { isAuthenticated, loginWithGoogle, authLoading } = useAuthContext();
+  const { register, loginWithGoogle, isAuthenticated, authLoading } = useAuth();
+
   const navigate = useNavigate();
 
   const [isShowPassword, setIsShowPassword] = useState(false);
@@ -34,6 +32,7 @@ const Register = () => {
 
   const onChangeField = (e) => {
     const { name, value } = e.target;
+
     setFormFields({
       ...formFields,
       [name]: value,
@@ -68,7 +67,7 @@ const Register = () => {
     }
 
     // Validate password
-    if (!formFields.password) {
+    if (!formFields.password.trim()) {
       newErrors.password = 'Password is required';
     } else if (formFields.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
@@ -92,45 +91,20 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    e.stopPropagation();
-
-    console.log('handleRegister called');
 
     if (!validateForm()) {
-      console.log('Validation failed:', errors);
       return;
     }
 
-    try {
-      console.log('Attempting registration...');
-
-      const userData = {
-        name: formFields.name.trim(),
-        email: formFields.email.trim().toLowerCase(),
-        password: formFields.password,
-      };
-
-      await register(userData);
-    } catch (error) {
-      console.error('Registration failed:', error);
-    }
+    await register({
+      name: formFields.name.trim(),
+      email: formFields.email.trim().toLowerCase(),
+      password: formFields.password,
+    });
   };
 
   const handleGoogleLogin = async () => {
-    try {
-      await loginWithGoogle();
-      toast.success('Login with Google successful!');
-      navigate('/', { replace: true });
-    } catch (error) {
-      console.error('Google login failed:', error);
-      if (error.message !== 'Login cancelled') {
-        toast.error(
-          error.response?.data?.message ||
-            error.message ||
-            'Google login failed'
-        );
-      }
-    }
+    await loginWithGoogle();
   };
 
   return (
@@ -153,8 +127,8 @@ const Register = () => {
                 onChange={onChangeField}
                 error={!!errors.name}
                 helperText={errors.name}
-                disabled={loading}
-                autoComplete="name"
+                disabled={authLoading}
+                autoComplete="off"
               />
             </div>
 
@@ -170,8 +144,8 @@ const Register = () => {
                 onChange={onChangeField}
                 error={!!errors.email}
                 helperText={errors.email}
-                disabled={loading}
-                autoComplete="email"
+                disabled={authLoading}
+                autoComplete="off"
               />
             </div>
 
@@ -187,8 +161,8 @@ const Register = () => {
                 onChange={onChangeField}
                 error={!!errors.password}
                 helperText={errors.password}
-                disabled={loading}
-                autoComplete="new-password"
+                disabled={authLoading}
+                autoComplete="off"
               />
 
               <Button
@@ -199,7 +173,7 @@ const Register = () => {
                   e.preventDefault();
                   setIsShowPassword(!isShowPassword);
                 }}
-                disabled={loading}
+                disabled={authLoading}
               >
                 {isShowPassword ? (
                   <IoMdEyeOff className="text-[20px] opacity-75" />
@@ -221,8 +195,8 @@ const Register = () => {
                 onChange={onChangeField}
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword}
-                disabled={loading}
-                autoComplete="new-password"
+                disabled={authLoading}
+                autoComplete="off"
               />
 
               <Button
@@ -233,7 +207,7 @@ const Register = () => {
                   e.preventDefault();
                   setIsShowConfirmPassword(!isShowConfirmPassword);
                 }}
-                disabled={loading}
+                disabled={authLoading}
               >
                 {isShowConfirmPassword ? (
                   <IoMdEyeOff className="text-[20px] opacity-75" />
@@ -247,9 +221,9 @@ const Register = () => {
               <Button
                 type="submit"
                 className="btn-org btn-lg w-full"
-                disabled={loading}
+                disabled={authLoading}
               >
-                {loading ? 'Registering...' : 'Register'}
+                {authLoading ? 'Registering...' : 'Register'}
               </Button>
             </div>
 
@@ -272,7 +246,7 @@ const Register = () => {
               type="button"
               className="flex gap-3 w-full bg-[#f1f1f1]! btn-lg text-black! font-medium!"
               onClick={handleGoogleLogin}
-              disabled={loading || authLoading}
+              disabled={authLoading}
             >
               <FcGoogle className="text-[20px]" />
               {authLoading ? 'Signing in...' : 'Register with Google'}

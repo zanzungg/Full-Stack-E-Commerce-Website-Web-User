@@ -1,4 +1,3 @@
-import React from 'react';
 import '../BannerBoxV2/style.css';
 import { Link } from 'react-router-dom';
 

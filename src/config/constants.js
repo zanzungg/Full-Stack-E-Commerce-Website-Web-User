@@ -3,15 +3,21 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const API_ENDPOINTS = {
   // Auth
   LOGIN: '/users/login',
+  GOOGLE_LOGIN: '/users/auth/google-login',
   REGISTER: '/users/register',
-  LOGOUT: '/users/logout',
-  REFRESH_TOKEN: '/users/refresh-token',
   VERIFY_EMAIL: '/users/verify-email',
-  RESEND_OTP: '/users/resend-verification-email',
   FORGOT_PASSWORD: '/users/forgot-password',
   VERIFY_RESET_CODE: '/users/verify-reset-code',
   RESET_PASSWORD: '/users/reset-password',
-  GOOGLE_LOGIN: '/users/auth/google-login',
+  RESEND_OTP: '/users/resend-verification-email',
+  REFRESH_TOKEN: '/users/refresh-token',
+  LOGOUT: '/users/logout',
+
+  // User Profile
+  USER_PROFILE: '/users/profile',
+  UPDATE_PROFILE: '/users/profile',
+  UPDATE_AVATAR: '/users/avatar',
+  CHANGE_PASSWORD: '/users/change-password',
 
   // Address Management
   GET_ADDRESSES: '/addresses/',
@@ -20,19 +26,19 @@ export const API_ENDPOINTS = {
   CREATE_ADDRESS: '/addresses/',
   SELECT_ADDRESS: (addressId) => `/addresses/${addressId}/select`,
   UPDATE_ADDRESS: (addressId) => `/addresses/${addressId}`,
-  // Soft Delete
   DEACTIVATE_ADDRESS: (addressId) => `/addresses/${addressId}/deactivate`,
   RESTORE_ADDRESS: (addressId) => `/addresses/${addressId}/restore`,
   HARD_DELETE_ADDRESS: (addressId) => `/addresses/${addressId}`,
 
-  // User Profile
-  USER_PROFILE: '/users/profile',
-  UPDATE_PROFILE: '/users/profile',
-  UPDATE_AVATAR: '/users/avatar',
-  CHANGE_PASSWORD: '/users/change-password',
-
   // Home Slider Banner
   GET_BANNERS: '/home-slider-banner',
+
+  // Home Banner V1
+  GET_HOME_BANNERS_V1: '/home-banner-v1/',
+
+  // Blogs
+  GET_BLOGS: '/blogs/',
+  GET_BLOG_BY_ID: (blogId) => `/blogs/${blogId}`,
 
   // Categories
   GET_CATEGORIES: '/categories/',
@@ -50,13 +56,6 @@ export const API_ENDPOINTS = {
   GET_FEATURED_PRODUCTS: '/products/featured',
   GET_PRODUCT_DETAILS: (productId) => `/products/${productId}`,
   GET_ACTIVE_BANNERS: '/products/banners/active',
-
-  // Home Banner V1
-  GET_HOME_BANNERS_V1: '/home-banner-v1/',
-
-  // Blogs
-  GET_BLOGS: '/blogs/',
-  GET_BLOG_BY_ID: (blogId) => `/blogs/${blogId}`,
 
   // Cart
   GET_CART: '/cart/',
@@ -80,13 +79,12 @@ export const API_ENDPOINTS = {
 
   // Orders
   CREATE_ORDER: '/orders/create',
-  GET_ORDERS: '/orders/users',
+  GET_ORDERS: '/orders/user',
   GET_ORDER_BY_ID: (orderId) => `/orders/${orderId}`,
   CANCEL_ORDER: (orderId) => `/orders/${orderId}/cancel`,
 
   // Payments (VNPay)
   CREATE_PAYMENT_URL: '/payment/vnpay/create',
-  VNPAY_VERIFY_RETURN: '/payment/vnpay/verify-return',
   QUERY_VNPAY_TRANSACTION: (orderId) => `/payment/vnpay/query/${orderId}`,
 };
 

@@ -3,7 +3,7 @@ import { BsFillBagCheckFill } from 'react-icons/bs';
 import { MdOutlineShoppingCart } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import CartItems from './cartItems';
-import { useCart } from '../../hooks/useCart.jsx';
+import { useCart } from '../../hooks/useCart';
 
 const CartPage = () => {
   const { cartItems, cartSummary, isLoading, error, stockAlerts } = useCart();

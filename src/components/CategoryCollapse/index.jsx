@@ -160,36 +160,52 @@ const CategoryCollapse = ({
         })}
       </List>
 
-      <Divider />
+      <Divider sx={{ my: 1.5, opacity: 0.6 }} />
 
       <List sx={{ mt: 1 }}>
-        {extraCategories.map((text) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton
-              onClick={handleExtraItemClick}
-              sx={{
-                py: 1.8,
-                borderRadius: '8px',
-                mx: 0.5,
-                backgroundColor: 'rgba(255, 82, 82, 0.04)',
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 82, 82, 0.12)',
-                  transform: 'translateX(2px)',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-            >
-              <ListItemText
-                primary={text}
-                primaryTypographyProps={{
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  color: 'rgba(0, 0, 0, 0.75)',
+        {extraCategories.map((item) => {
+          const Icon = item.icon;
+          return (
+            <ListItem key={item.name} disablePadding>
+              <ListItemButton
+                onClick={() => handleExtraItemClick(item.path)}
+                sx={{
+                  py: 1.8,
+                  borderRadius: '10px',
+                  mx: 0.5,
+                  background:
+                    'linear-gradient(135deg, rgba(255, 82, 82, 0.06) 0%, rgba(255, 152, 0, 0.04) 100%)',
+                  border: '1px solid rgba(255, 82, 82, 0.15)',
+                  '&:hover': {
+                    background:
+                      'linear-gradient(135deg, rgba(255, 82, 82, 0.12) 0%, rgba(255, 152, 0, 0.08) 100%)',
+                    transform: 'translateX(4px)',
+                    boxShadow: '0 2px 8px rgba(255, 82, 82, 0.15)',
+                  },
+                  transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                  mb: 1,
                 }}
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
+              >
+                <div className="flex items-center gap-2.5 w-full">
+                  <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
+                    <Icon size={16} className="text-primary" />
+                  </div>
+                  <ListItemText
+                    primary={item.name}
+                    primaryTypographyProps={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: 'rgba(0, 0, 0, 0.8)',
+                    }}
+                  />
+                  <span className="text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                    →
+                  </span>
+                </div>
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
       </List>
     </>
   );

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IoCloseSharp } from 'react-icons/io5';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import Rating from '@mui/material/Rating';
-import { Button, CircularProgress, IconButton, Tooltip } from '@mui/material';
-import { useCart } from '../../hooks/useCart.jsx';
+import { CircularProgress, IconButton, Tooltip } from '@mui/material';
+import { useCart } from '../../hooks/useCart';
 
 const CartItems = ({ item }) => {
   const {

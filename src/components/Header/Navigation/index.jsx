@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { RiMenu2Fill } from 'react-icons/ri';
 import { FaAngleDown } from 'react-icons/fa6';
@@ -6,14 +6,21 @@ import { GoRocket } from 'react-icons/go';
 import { AiOutlineHome } from 'react-icons/ai';
 import { Button } from '@mui/material';
 import CategoryPanel from './CategoryPanel';
-import { useCategories } from '../../../contexts/CategoryContext';
+import { useCategory } from '../../../hooks/useCategory';
 
 const Navigation = () => {
   const [isOpenCategoryPanel, setIsOpenCategoryPanel] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
   const [timeoutId, setTimeoutId] = useState(null);
-  const { categories, loading } = useCategories();
   const location = useLocation();
+
+  // Use category hook
+  const { categories, loading } = useCategory({
+    autoFetch: true,
+    fetchTree: true,
+    enableCache: true,
+    cacheTime: 10 * 60 * 1000,
+  });
 
   const openCategoryPanel = () => setIsOpenCategoryPanel(true);
   const closeCategoryPanel = () => setIsOpenCategoryPanel(false);
@@ -25,26 +32,27 @@ const Navigation = () => {
     };
   }, [timeoutId]);
 
-  // Transform categories data để phù hợp với menu structure
-  const menuItems = categories.map((cat) => ({
-    _id: cat._id,
-    name: cat.name,
-    slug: cat.slug,
-    path: `/product-listing?catId=${cat._id}`,
-    sub: cat.subcategories || [],
-  }));
+  // Transform categories data with safety check
+  const menuItems = Array.isArray(categories)
+    ? categories.map((cat) => ({
+        _id: cat._id,
+        name: cat.name,
+        slug: cat.slug,
+        path: `/product-listing?catId=${cat._id}`,
+        sub: cat.subcategories || [],
+      }))
+    : [];
 
-  // Hover vào menu item hoặc submenu
+  // Hover handlers
   const handleMouseEnter = (name) => {
     if (timeoutId) clearTimeout(timeoutId);
     setHoveredItem(name);
   };
 
-  // Rời khỏi toàn bộ vùng (li + submenu)
   const handleMouseLeave = () => {
     const id = setTimeout(() => {
       setHoveredItem(null);
-    }, 500); // Delay 500ms để di chuyển chuột mượt mà
+    }, 500);
     setTimeoutId(id);
   };
 
@@ -202,41 +210,44 @@ const Navigation = () => {
                     {/* Submenu */}
                     {item.sub.length > 0 && hoveredItem === item.name && (
                       <div
-                        className="absolute top-full left-0 mt-0 pt-1 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 overflow-hidden" // Đổi thành left-0, loại bỏ -translate-x-1/2 và left-1/2
+                        className="absolute top-full left-0 mt-1 pt-2 w-56 z-50"
                         style={{
                           animation:
-                            'slideDown 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                            'slideDown 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                         }}
                         onMouseEnter={() => handleMouseEnter(item.name)}
                         onMouseLeave={handleMouseLeave}
                       >
-                        <div className="py-2">
-                          {item.sub.map((subItem, index) => (
-                            <div
-                              key={subItem._id}
-                              style={{
-                                animation: `fadeInUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${
-                                  index * 0.05
-                                }s both`,
-                              }}
-                            >
-                              <Link
-                                to={`/product-listing?subCatId=${subItem._id}`}
-                                className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50 hover:text-primary hover:pl-6 transition-all duration-200 relative group"
-                                onClick={() => {
-                                  setHoveredItem(null);
-                                  if (timeoutId) clearTimeout(timeoutId);
+                        <div className="absolute -top-1 left-6 w-3 h-3 bg-white border-l border-t border-gray-100 transform rotate-45 z-10"></div>
+
+                        <div className="bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
+                          <div className="py-2">
+                            {item.sub.map((subItem, index) => (
+                              <div
+                                key={subItem._id}
+                                style={{
+                                  animation: `fadeInUp 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${
+                                    index * 0.04
+                                  }s both`,
                                 }}
                               >
-                                <span className="absolute left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                  →
-                                </span>
-                                <span className="group-hover:ml-2 transition-all duration-200">
-                                  {subItem.name}
-                                </span>
-                              </Link>
-                            </div>
-                          ))}
+                                <Link
+                                  to={`/product-listing?subCatId=${subItem._id}`}
+                                  className="flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-linear-to-r hover:from-red-50 hover:to-orange-50 hover:text-primary transition-all duration-200 relative group"
+                                  onClick={() => {
+                                    setHoveredItem(null);
+                                    if (timeoutId) clearTimeout(timeoutId);
+                                  }}
+                                >
+                                  <span className="w-1.5 h-1.5 rounded-full bg-gray-300 group-hover:bg-primary group-hover:scale-150 transition-all duration-200"></span>
+                                  <span className="flex-1">{subItem.name}</span>
+                                  <span className="opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-200 text-primary">
+                                    →
+                                  </span>
+                                </Link>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     )}
@@ -268,7 +279,6 @@ const Navigation = () => {
         onClose={closeCategoryPanel}
       />
 
-      {/* Add keyframes for animations */}
       <style>{`
         @keyframes fadeIn {
           from {

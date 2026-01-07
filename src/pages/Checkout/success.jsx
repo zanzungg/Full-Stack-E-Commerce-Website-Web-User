@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { Button, CircularProgress } from '@mui/material';
 import {
@@ -9,7 +9,7 @@ import {
   MdReceipt,
 } from 'react-icons/md';
 import { FaArrowRight } from 'react-icons/fa';
-import { usePayment } from '../../hooks/usePayment';
+import { useOrder } from '../../hooks/useOrder';
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -17,12 +17,7 @@ const PaymentSuccess = () => {
   const [isVerifying, setIsVerifying] = useState(true);
   const [orderInfo, setOrderInfo] = useState(null);
 
-  const {
-    handlePaymentCallback,
-    queryTransactionAsync,
-    formatAmount,
-    getPaymentStatusLabel,
-  } = usePayment();
+  const { getOrderByIdAsync } = useOrder();
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -36,10 +31,10 @@ const PaymentSuccess = () => {
           return;
         }
 
-        // Fetch order details
-        const response = await queryTransactionAsync(orderId);
+        // Fetch order details using order service (works for both COD and VNPAY)
+        const orderData = await getOrderByIdAsync(orderId);
 
-        if (!response || !response.success || !response.data) {
+        if (!orderData) {
           setOrderInfo({
             orderId: orderId,
             transactionId: transactionId,
@@ -48,19 +43,18 @@ const PaymentSuccess = () => {
           return;
         }
 
-        const orderData = response.data;
-
         setOrderInfo({
           orderId: orderId,
           transactionId:
             transactionId || orderData.paymentResult?.transactionId,
-          amount: orderData.totalAmount || 0,
-          paymentMethod: orderData.paymentMethod || 'COD',
-          paymentStatus: orderData.paymentStatus || 'unpaid',
-          orderStatus: orderData.orderStatus || 'confirmed',
-          createdAt: orderData.createdAt || new Date().toISOString(),
+          totalAmount: orderData.totalAmount,
+          paymentMethod: orderData.paymentMethod,
+          paymentStatus: orderData.paymentStatus,
+          orderStatus: orderData.orderStatus,
+          createdAt: orderData.createdAt,
         });
       } catch (error) {
+        console.error('Failed to fetch order details:', error);
         // Even if verification fails, stay on success page with limited info
         setOrderInfo({
           orderId: searchParams.get('orderId'),
@@ -72,7 +66,7 @@ const PaymentSuccess = () => {
     };
 
     verifyPayment();
-  }, [searchParams, navigate, queryTransactionAsync]);
+  }, [searchParams, navigate, getOrderByIdAsync]);
 
   if (isVerifying) {
     return (
@@ -181,7 +175,7 @@ const PaymentSuccess = () => {
                   <div>
                     <p className="text-sm text-gray-500">Total Amount</p>
                     <p className="text-2xl font-bold text-green-600">
-                      ${orderInfo.amount?.toFixed(2) || '0.00'}
+                      ${orderInfo.totalAmount?.toFixed(2) || '0.00'}
                     </p>
                   </div>
                   {orderInfo.createdAt && (
@@ -216,8 +210,8 @@ const PaymentSuccess = () => {
                 <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
                   <p className="text-orange-800 text-sm">
                     <strong>💵 Note:</strong> Please prepare the amount of{' '}
-                    <strong>${orderInfo.amount?.toFixed(2)}</strong> for payment
-                    upon delivery.
+                    <strong>${orderInfo.totalAmount?.toFixed(2)}</strong> for
+                    payment upon delivery.
                   </p>
                 </div>
               )}

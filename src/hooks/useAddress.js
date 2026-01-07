@@ -68,14 +68,10 @@ export const useAddress = (options = {}) => {
         setError(null);
 
         const response = await addressService.getAddresses(params);
-        const fetchedAddresses = response.data || [];
+        const fetchedAddresses = response?.data?.data;
 
         setAddresses(fetchedAddresses);
         calculateStatistics(fetchedAddresses);
-
-        // if (onSuccess) {
-        //   onSuccess('Addresses loaded successfully', fetchedAddresses);
-        // }
 
         return fetchedAddresses;
       } catch (err) {
@@ -105,7 +101,7 @@ export const useAddress = (options = {}) => {
         setError(null);
 
         const response = await addressService.getAddressById(addressId);
-        return response.data;
+        return response?.data?.data;
       } catch (err) {
         const errorMessage =
           err.response?.data?.message || 'Failed to get address';
@@ -132,7 +128,7 @@ export const useAddress = (options = {}) => {
       setError(null);
 
       const response = await addressService.getSelectedAddress();
-      const selected = response.data;
+      const selected = response?.data?.data;
       setSelectedAddress(selected);
       return selected;
     } catch (err) {
@@ -160,16 +156,13 @@ export const useAddress = (options = {}) => {
         setError(null);
 
         const response = await addressService.createAddress(addressData);
-        const newAddress = response.data;
+        const newAddress = response?.data?.data;
 
         // Update local state
         await fetchAddresses();
 
         if (onSuccess) {
-          onSuccess(
-            response.message || 'Address created successfully',
-            newAddress
-          );
+          onSuccess('Address created successfully', newAddress);
         }
 
         return newAddress;
@@ -203,16 +196,13 @@ export const useAddress = (options = {}) => {
           addressId,
           addressData
         );
-        const updatedAddress = response.data;
+        const updatedAddress = response?.data?.data;
 
         // Update local state
         await fetchAddresses();
 
         if (onSuccess) {
-          onSuccess(
-            response.message || 'Address updated successfully',
-            updatedAddress
-          );
+          onSuccess('Address updated successfully', updatedAddress);
         }
 
         return updatedAddress;
@@ -243,13 +233,13 @@ export const useAddress = (options = {}) => {
         setError(null);
 
         const response = await addressService.selectAddress(addressId);
-        const selected = response.data;
+        const selected = response?.data?.data;
 
         // Update local state
         await fetchAddresses();
 
         if (onSuccess) {
-          onSuccess(response.message || 'Default address updated', selected);
+          onSuccess('Default address updated', selected);
         }
 
         return selected;
@@ -285,13 +275,10 @@ export const useAddress = (options = {}) => {
         await fetchAddresses();
 
         if (onSuccess) {
-          onSuccess(
-            response.message || 'Address deleted successfully',
-            response.data
-          );
+          onSuccess('Address deleted successfully', response?.data?.data);
         }
 
-        return response.data;
+        return response?.data?.data;
       } catch (err) {
         const errorMessage =
           err.response?.data?.message || 'Failed to delete address';
@@ -324,13 +311,10 @@ export const useAddress = (options = {}) => {
         await fetchAddresses();
 
         if (onSuccess) {
-          onSuccess(
-            response.message || 'Address restored successfully',
-            response.data
-          );
+          onSuccess('Address restored successfully', response?.data?.data);
         }
 
-        return response.data;
+        return response?.data?.data;
       } catch (err) {
         const errorMessage =
           err.response?.data?.message || 'Failed to restore address';
@@ -363,13 +347,10 @@ export const useAddress = (options = {}) => {
         await fetchAddresses();
 
         if (onSuccess) {
-          onSuccess(
-            response.message || 'Address permanently deleted',
-            response.data
-          );
+          onSuccess('Address permanently deleted', response?.data?.data);
         }
 
-        return response.data;
+        return response?.data?.data;
       } catch (err) {
         const errorMessage =
           err.response?.data?.message || 'Failed to delete address permanently';

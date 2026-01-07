@@ -1,130 +1,87 @@
-import React, { useState, useEffect, useContext } from 'react';
-import OtpBox from '../../components/OtpBox';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MyContext } from '../../App';
+import OtpBox from '../../components/OtpBox';
 import { useAuth } from '../../hooks/useAuth';
-import { authService } from '../../api/services/authService';
+
+const OTP_EXPIRE_SECONDS = 600;
+const RESEND_COOLDOWN = 60;
 
 const Verify = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const context = useContext(MyContext);
-  const auth = useAuth();
+  const {
+    verifyEmail,
+    verifyResetCode,
+    resendOTP,
+    forgotPassword,
+    authLoading,
+  } = useAuth();
 
   const [email, setEmail] = useState('');
+  const [type, setType] = useState('register');
+
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [otpCountdown, setOtpCountdown] = useState(OTP_EXPIRE_SECONDS);
   const [resendLoading, setResendLoading] = useState(false);
-  const [countdown, setCountdown] = useState(0);
-  const [otpCountdown, setOtpCountdown] = useState(600); // 10 phút = 600 giây
-  const [verificationType, setVerificationType] = useState('register');
 
   useEffect(() => {
-    if (location.state?.email) {
-      setEmail(location.state.email);
-      setVerificationType(location.state.type || 'register');
-    } else {
-      context.openAlertBox(
-        'error',
-        'Please register or request password reset first'
-      );
-      navigate('/register', { replace: true });
+    if (!location.state?.email) {
+      navigate('/login', { replace: true });
+      return;
     }
-  }, [location, navigate, context]);
+
+    setEmail(location.state.email);
+    setType(location.state.type || 'register');
+  }, [location, navigate]);
 
   useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    if (resendCooldown > 0) {
+      const timer = setTimeout(() => setResendCooldown((v) => v - 1), 1000);
       return () => clearTimeout(timer);
     }
-  }, [countdown]);
+  }, [resendCooldown]);
 
   useEffect(() => {
     if (otpCountdown > 0) {
-      const timer = setTimeout(() => setOtpCountdown(otpCountdown - 1), 1000);
+      const timer = setTimeout(() => setOtpCountdown((v) => v - 1), 1000);
       return () => clearTimeout(timer);
     }
   }, [otpCountdown]);
 
   // Format thời gian countdown (mm:ss)
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
+  const formatTime = (s) =>
+    `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
-  const handleOtpComplete = async (otpValue) => {
-    if (otpValue.length !== 6) {
-      context.openAlertBox('error', 'Please enter a valid 6-digit OTP');
-      return;
-    }
+  const handleOtpComplete = async (otp) => {
+    if (otp.length !== 6 || otpCountdown === 0) return;
 
     if (otpCountdown === 0) {
       context.openAlertBox('error', 'OTP has expired. Please resend a new one');
       return;
     }
 
-    try {
-      if (verificationType === 'register') {
-        await auth.verifyEmail(email, otpValue);
-      } else if (verificationType === 'reset-password') {
-        await auth.verifyResetCode(email, otpValue);
-      }
-    } catch (error) {
-      console.error('Verify error:', error);
+    if (type === 'register') {
+      await verifyEmail(email, otp);
+    } else {
+      await verifyResetCode(email, otp);
     }
   };
 
   const handleResendOTP = async () => {
-    if (countdown > 0 || resendLoading || auth.loading) {
-      return;
-    }
+    if (resendCooldown > 0 || resendLoading || authLoading) return;
+
+    setResendLoading(true);
 
     try {
-      setResendLoading(true);
-
-      if (verificationType === 'register') {
-        // Resend OTP cho email verification
-        await auth.resendOTP(email);
-        setCountdown(60);
-        setOtpCountdown(600); // Reset countdown 10 phút
-      } else if (verificationType === 'reset-password') {
-        // Resend OTP cho reset password - gọi trực tiếp service để tránh navigate
-        const response = await authService.forgotPassword(email);
-        context.openAlertBox(
-          'success',
-          response.message || `OTP has been resent to ${email}`
-        );
-        setCountdown(60);
-        setOtpCountdown(600); // Reset countdown 10 phút
+      if (type === 'register') {
+        await resendOTP(email);
+      } else {
+        // reset-password → gửi lại OTP reset
+        await forgotPassword(email);
       }
-    } catch (error) {
-      console.error('Resend OTP error:', error);
 
-      // Xử lý error cho reset-password type
-      if (verificationType === 'reset-password') {
-        let errorMessage = 'Failed to resend OTP';
-
-        if (error.response) {
-          const data = error.response.data;
-
-          if (data?.message) {
-            errorMessage = data.message;
-          } else if (error.response.status === 404) {
-            errorMessage = 'Email not found';
-          } else if (error.response.status === 429) {
-            errorMessage = 'Too many requests. Please try again later';
-          } else if (error.response.status === 400) {
-            errorMessage = 'Invalid email address';
-          }
-        } else if (error.request) {
-          errorMessage =
-            'Cannot connect to server. Please check your internet connection.';
-        } else {
-          errorMessage = error.message || 'An unexpected error occurred';
-        }
-
-        context.openAlertBox('error', errorMessage);
-      }
-      // Error cho register type đã được xử lý trong useAuth hook
+      setResendCooldown(RESEND_COOLDOWN);
+      setOtpCountdown(OTP_EXPIRE_SECONDS);
     } finally {
       setResendLoading(false);
     }
@@ -142,7 +99,7 @@ const Verify = () => {
           </h3>
 
           <p className="text-center mt-0 text-sm text-gray-600">
-            {verificationType === 'register'
+            {type === 'register'
               ? 'Please verify your email to complete registration'
               : 'Please verify OTP to reset your password'}
             <br />
@@ -168,8 +125,8 @@ const Verify = () => {
 
           <OtpBox
             onComplete={handleOtpComplete}
-            disabled={auth.loading || otpCountdown === 0}
-            loading={auth.loading}
+            disabled={authLoading || otpCountdown === 0}
+            loading={authLoading}
           />
 
           <div className="text-center mt-4">
@@ -177,9 +134,9 @@ const Verify = () => {
               Didn't receive code?{' '}
               <button
                 onClick={handleResendOTP}
-                disabled={countdown > 0 || resendLoading || auth.loading}
+                disabled={resendCooldown > 0 || resendLoading || authLoading}
                 className={`font-semibold transition-colors ${
-                  countdown > 0 || resendLoading || auth.loading
+                  resendCooldown > 0 || resendLoading || authLoading
                     ? 'text-gray-400 cursor-not-allowed'
                     : 'text-blue-600 hover:text-blue-700 hover:underline'
                 }`}
@@ -187,8 +144,8 @@ const Verify = () => {
               >
                 {resendLoading
                   ? 'Sending...'
-                  : countdown > 0
-                  ? `Resend (${countdown}s)`
+                  : resendCooldown > 0
+                  ? `Resend (${resendCooldown}s)`
                   : 'Resend'}
               </button>
             </p>

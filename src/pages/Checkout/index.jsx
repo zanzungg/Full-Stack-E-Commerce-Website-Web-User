@@ -7,7 +7,7 @@ import {
   Alert,
   Chip,
 } from '@mui/material';
-import React, { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { BsFillBagCheckFill } from 'react-icons/bs';
 import {
   MdAdd,
@@ -18,13 +18,13 @@ import {
   MdWarning,
 } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
+import AddressFormDialog from '../../components/AddressFormDialog';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAddress } from '../../hooks/useAddress';
 import { useCart } from '../../hooks/useCart';
 import { useOrder } from '../../hooks/useOrder';
 import { usePayment } from '../../hooks/usePayment';
 import { MyContext } from '../../App';
-import AddressFormDialog from '../../components/AddressFormDialog';
 import { usdToVnPayAmount } from '../../utils/currency.js';
 
 const Checkout = () => {
@@ -203,9 +203,7 @@ const Checkout = () => {
         paymentMethod: selectedPaymentMethod,
       };
 
-      const response = await createOrderAsync(orderData);
-
-      const createdOrder = response?.data;
+      const createdOrder = await createOrderAsync(orderData);
 
       if (!createdOrder || !createdOrder._id) {
         throw new Error('Failed to create order - Invalid response');
@@ -217,11 +215,16 @@ const Checkout = () => {
         queryClient.invalidateQueries({ queryKey: ['cart'] });
 
         // Redirect to success page
-        setTimeout(() => {
-          navigate(`/payment/success?orderId=${createdOrder._id}`, {
-            replace: true,
-          });
-        }, 1500);
+        setTimeout(
+          () =>
+            navigate(`/payment/success?orderId=${createdOrder._id}`, {
+              replace: true,
+            }),
+          1000
+        );
+
+        setIsCheckingOut(false);
+        return;
       } else if (selectedPaymentMethod === 'VNPAY') {
         try {
           const vnpAmount = usdToVnPayAmount(createdOrder.totalAmount);
@@ -545,10 +548,8 @@ const Checkout = () => {
                       const product = item.productId;
                       if (!product) return null;
 
-                      const mainImage =
-                        product.images?.[0]?.url ||
-                        'https://via.placeholder.com/300';
-                      const currentPrice = product.price || 0;
+                      const mainImage = product.images?.[0]?.url;
+                      const currentPrice = product.price;
                       const itemTotal = currentPrice * item.quantity;
 
                       return (

@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
-import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { useAuth } from '../../hooks/useAuth';
-import { useAuthContext } from '../../contexts/AuthContext';
-import toast from 'react-hot-toast';
 
 const Login = () => {
-  const { login, loading, isAuthenticated } = useAuth();
-  const { loginWithGoogle, authLoading } = useAuthContext();
+  const { login, loginWithGoogle, authLoading, isAuthenticated } = useAuth();
+
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [formFields, setFormFields] = useState({
     email: '',
@@ -22,9 +22,10 @@ const Login = () => {
   // Redirect nếu đã login
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/', { replace: true });
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location]);
 
   const onChangeField = (e) => {
     const { name, value } = e.target;
@@ -77,17 +78,8 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       await loginWithGoogle();
-      toast.success('Login with Google successful!');
-      navigate('/', { replace: true });
     } catch (error) {
       console.error('Google login failed:', error);
-      if (error.message !== 'Login cancelled') {
-        toast.error(
-          error.response?.data?.message ||
-            error.message ||
-            'Google login failed'
-        );
-      }
     }
   };
 
@@ -111,8 +103,8 @@ const Login = () => {
                 onChange={onChangeField}
                 error={!!errors.email}
                 helperText={errors.email}
-                disabled={loading}
-                autoComplete="email"
+                disabled={authLoading}
+                autoComplete="off"
               />
             </div>
 
@@ -128,8 +120,8 @@ const Login = () => {
                 onChange={onChangeField}
                 error={!!errors.password}
                 helperText={errors.password}
-                disabled={loading}
-                autoComplete="current-password"
+                disabled={authLoading || false}
+                autoComplete="off"
               />
 
               <Button
@@ -140,7 +132,7 @@ const Login = () => {
                   e.preventDefault();
                   setIsShowPassword(!isShowPassword);
                 }}
-                disabled={loading}
+                disabled={authLoading}
               >
                 {isShowPassword ? (
                   <IoMdEyeOff className="text-[20px] opacity-75" />
@@ -161,9 +153,9 @@ const Login = () => {
               <Button
                 type="submit"
                 className="btn-org btn-lg w-full"
-                disabled={loading}
+                disabled={authLoading}
               >
-                {loading ? 'Logging in...' : 'Login'}
+                {authLoading ? 'Logging in...' : 'Login'}
               </Button>
             </div>
 
@@ -186,7 +178,7 @@ const Login = () => {
               type="button"
               className="flex gap-3 w-full bg-[#f1f1f1]! btn-lg text-black! font-medium!"
               onClick={handleGoogleLogin}
-              disabled={loading || authLoading}
+              disabled={authLoading}
             >
               <FcGoogle className="text-[20px]" />
               {authLoading ? 'Signing in...' : 'Login with Google'}

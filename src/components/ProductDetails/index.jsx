@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import QtyBox from '../../components/QtyBox';
 import { MdOutlineShoppingCart } from 'react-icons/md';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { IoGitCompareOutline } from 'react-icons/io5';
 import Rating from '@mui/material/Rating';
 import { Button, CircularProgress, Tooltip } from '@mui/material';
-import { useCart } from '../../hooks/useCart.jsx';
-import { useWishlist } from '../../hooks/useWishlist.jsx';
-import { useAuthContext } from '../../contexts/AuthContext';
+import { useCart } from '../../hooks/useCart';
+import { useWishlist } from '../../hooks/useWishlist';
+import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-hot-toast';
 
 const ProductDetailsComponent = ({ product }) => {
@@ -24,7 +24,7 @@ const ProductDetailsComponent = ({ product }) => {
     isAdding: isAddingToWishlist,
     isRemoving: isRemovingFromWishlist,
   } = useWishlist();
-  const { isAuthenticated } = useAuthContext();
+  const { isAuthenticated } = useAuth();
 
   // Extract product data with fallbacks - do this BEFORE early return
   const {
@@ -55,6 +55,15 @@ const ProductDetailsComponent = ({ product }) => {
   }
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      toast.error('Please login to add products to your cart', {
+        duration: 3000,
+        position: 'top-right',
+        icon: '🔒',
+      });
+      return;
+    }
+
     if (countInStock === 0) return;
 
     // Check if product has variants and user hasn't selected one
@@ -231,7 +240,20 @@ const ProductDetailsComponent = ({ product }) => {
         </div>
 
         <Tooltip
-          title={isOutOfStock ? 'Out of stock' : ''}
+          title={
+            !isAuthenticated
+              ? 'Login to add to cart'
+              : isOutOfStock
+              ? 'Out of stock'
+              : isAdding
+              ? 'Adding to cart...'
+              : (productSize?.length ||
+                  productRam?.length ||
+                  productWeight?.length) &&
+                !selectedVariant.value
+              ? 'Please select a variant'
+              : 'Add to cart'
+          }
           arrow
           placement="top"
         >
@@ -266,6 +288,7 @@ const ProductDetailsComponent = ({ product }) => {
               ? 'Remove from wishlist'
               : 'Add to wishlist'
           }
+          placement="top"
           arrow
         >
           <span

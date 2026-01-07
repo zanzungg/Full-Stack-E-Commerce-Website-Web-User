@@ -35,18 +35,110 @@ export const useOrder = (options = {}) => {
     totalAmount: 0,
   });
 
+  // Helper to extract data from API response
+  const extractData = (response) => response?.data?.data;
+
   // Fetch orders - React Query
   const {
-    data: ordersResponse,
+    data: ordersData,
     isLoading,
     error: fetchError,
     refetch,
   } = useQuery({
     queryKey: ['orders', queryParams],
-    queryFn: () => orderService.getUserOrders(queryParams),
+    queryFn: async () => {
+      const response = await orderService.getUserOrders(queryParams);
+      return extractData(response);
+    },
     staleTime: 1000 * 60 * 5, // 5 minutes
     enabled: autoFetch,
-    select: (response) => response.data,
+  });
+
+  /**
+   * Create order mutation
+   */
+  const createOrderMutation = useMutation({
+    mutationFn: async (orderData) => {
+      const response = await orderService.createOrder(orderData);
+      return extractData(response);
+    },
+    onSuccess: (order) => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+
+      const message = 'Order created successfully!';
+      const orderId = order?._id || 'N/A';
+
+      toast.success(`${message}\nOrder ID: ${orderId}`, {
+        duration: 3000,
+        position: 'top-right',
+        style: {
+          background: '#f0fdf4',
+          color: '#166534',
+          padding: '16px',
+          whiteSpace: 'pre-line',
+        },
+        icon: '✅',
+      });
+
+      if (onSuccess) {
+        onSuccess(message, order);
+      }
+    },
+    onError: (error) => {
+      const message = error.response?.data?.message || 'Failed to create order';
+
+      if (onError) {
+        onError(message, error);
+      }
+    },
+  });
+
+  /**
+   * Get order by ID mutation
+   */
+  const getOrderByIdMutation = useMutation({
+    mutationFn: async (orderId) => {
+      const response = await orderService.getOrderById(orderId);
+      return extractData(response);
+    },
+    onSuccess: (order) => {
+      setSelectedOrder(order);
+    },
+    onError: (error) => {
+      const message =
+        error.response?.data?.message || 'Failed to fetch order details';
+
+      // toast.error(message);
+
+      if (onError) {
+        onError(message, error);
+      }
+    },
+  });
+
+  /**
+   * Cancel order mutation
+   */
+  const cancelOrderMutation = useMutation({
+    mutationFn: async (orderId) => {
+      const response = await orderService.cancelOrder(orderId);
+      return extractData(response);
+    },
+    onSuccess: (order) => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+
+      if (onSuccess) {
+        onSuccess('Order cancelled successfully', order);
+      }
+    },
+    onError: (error) => {
+      const message = error.response?.data?.message || 'Failed to cancel order';
+      toast.error(message);
+
+      if (onError) {
+        onError(message, error);
+      }
+    },
   });
 
   /**
@@ -86,115 +178,11 @@ export const useOrder = (options = {}) => {
    * Update orders when data changes
    */
   useEffect(() => {
-    if (ordersResponse?.success && ordersResponse?.data) {
-      setOrders(ordersResponse.data);
-      calculateStatistics(ordersResponse.data);
+    if (ordersData) {
+      setOrders(ordersData);
+      calculateStatistics(ordersData);
     }
-  }, [ordersResponse, calculateStatistics]);
-
-  /**
-   * Create order mutation
-   */
-  const createOrderMutation = useMutation({
-    mutationFn: (orderData) => orderService.createOrder(orderData),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
-
-      const order = response?.data;
-      console.log('Order created successfully:', order);
-      const message = response?.message || 'Order created successfully!';
-      const orderId = order?._id || order?.orderId || 'N/A';
-
-      toast.success(`${message}\nOrder ID: ${orderId}`, {
-        duration: 3000,
-        position: 'top-right',
-        style: {
-          background: '#f0fdf4',
-          color: '#166534',
-          padding: '16px',
-          whiteSpace: 'pre-line',
-        },
-        icon: '✅',
-      });
-
-      // Vẫn gọi callback nếu component cần xử lý thêm
-      if (onSuccess) {
-        onSuccess(message, order);
-      }
-
-      return order;
-    },
-    onError: (error) => {
-      const message = error.response?.message || 'Failed to create order';
-
-      // Chỉ gọi callback để component quyết định cách hiển thị
-      // Không hiện toast ở đây để tránh trùng lặp
-      if (onError) {
-        onError(message, error);
-      }
-    },
-  });
-
-  /**
-   * Get order by ID mutation
-   */
-  const getOrderByIdMutation = useMutation({
-    mutationFn: (orderId) => orderService.getOrderById(orderId),
-    onSuccess: (response) => {
-      const order = response?.data;
-      setSelectedOrder(order);
-      return order;
-    },
-    onError: (error) => {
-      const message =
-        error.response?.message || 'Failed to fetch order details';
-
-      // Toast cho lỗi thông thường
-      toast.error(message, {
-        duration: 4000,
-        position: 'top-right',
-      });
-
-      if (onError) {
-        onError(message, error);
-      }
-    },
-  });
-
-  /**
-   * Cancel order mutation
-   */
-  const cancelOrderMutation = useMutation({
-    mutationFn: (orderId) => orderService.cancelOrder(orderId),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
-
-      const message = response?.message || 'Order cancelled successfully';
-
-      // Toast cho success
-      toast.success(message, {
-        duration: 4000,
-        position: 'top-right',
-        icon: '🚫',
-      });
-
-      if (onSuccess) {
-        onSuccess(message, response?.data);
-      }
-    },
-    onError: (error) => {
-      const message = error.response?.message || 'Failed to cancel order';
-      // Toast cho lỗi
-      toast.error(message, {
-        duration: 4000,
-        position: 'top-right',
-      });
-
-      if (onError) {
-        onError(message, error);
-      }
-    },
-  });
+  }, [ordersData, calculateStatistics]);
 
   /**
    * Get orders by status
@@ -207,20 +195,9 @@ export const useOrder = (options = {}) => {
           page,
           limit
         );
-        return response?.data || [];
+        return response?.data?.data || [];
       } catch (error) {
-        const message =
-          error.response?.message || 'Failed to fetch orders';
-
-        toast.error(message, {
-          duration: 3000,
-          position: 'top-right',
-        });
-
-        if (onError) {
-          onError(message, error);
-        }
-
+        if (onError) onError(error.response?.data?.message, error);
         return [];
       }
     },
@@ -233,13 +210,10 @@ export const useOrder = (options = {}) => {
   const getOrderStats = useCallback(async () => {
     try {
       const response = await orderService.getOrderStats();
-      if (response?.success) {
-        setStatistics(response?.data);
-        return response?.data;
-      }
-      return null;
+      const data = extractData(response);
+      if (data) setStatistics(data);
+      return data;
     } catch (error) {
-      console.error('Failed to get order stats:', error);
       return null;
     }
   }, []);
@@ -316,7 +290,7 @@ export const useOrder = (options = {}) => {
     orders,
     selectedOrder,
     statistics,
-    pagination: ordersResponse?.pagination || null,
+    pagination: ordersData?.pagination || null,
 
     // States
     isLoading,

@@ -1,9 +1,9 @@
 import { createContext, useState, useContext, useEffect } from 'react';
+import { STORAGE_KEYS } from '../config/constants';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
 import { authService } from '../api/services/authService';
 import { userService } from '../api/services/userService';
-import { STORAGE_KEYS } from '../config/constants';
 
 const AuthContext = createContext(null);
 
@@ -15,7 +15,13 @@ export const AuthProvider = ({ children }) => {
 
   // Khôi phục trạng thái khi load trang
   useEffect(() => {
-    checkAuth();
+    const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+
+    if (token) {
+      checkAuth();
+    } else {
+      setLoading(false);
+    }
 
     // Lắng nghe event logout từ axios interceptor
     const handleAuthLogout = (event) => {
@@ -31,67 +37,9 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
-      const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-
-      // Nếu có accessToken, fetch profile
-      if (token) {
-        try {
-          const response = await userService.getProfile();
-          const userData = response.data;
-
-          setUser(userData);
-          setIsAuthenticated(true);
-          localStorage.setItem(
-            STORAGE_KEYS.USER_INFO,
-            JSON.stringify(userData)
-          );
-        } catch (error) {
-          // Nếu có refreshToken, axios interceptor sẽ tự động refresh
-          // Nếu không có, logout
-          if (!refreshToken) {
-            logout();
-          }
-        }
-      }
-      // Nếu không có accessToken nhưng có refreshToken
-      else if (refreshToken) {
-        try {
-          // Thử refresh token trước
-          const refreshResponse = await authService.refreshToken();
-
-          // Backend trả về: { data: { accessToken, refreshToken } }
-          const newAccessToken =
-            refreshResponse.data?.accessToken || refreshResponse.accessToken;
-          const newRefreshToken =
-            refreshResponse.data?.refreshToken || refreshResponse.refreshToken;
-
-          if (newAccessToken) {
-            localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, newAccessToken);
-            if (newRefreshToken) {
-              localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
-            }
-
-            // Fetch profile sau khi có token mới
-            const response = await userService.getProfile();
-            const userData = response.data;
-
-            setUser(userData);
-            setIsAuthenticated(true);
-            localStorage.setItem(
-              STORAGE_KEYS.USER_INFO,
-              JSON.stringify(userData)
-            );
-          } else {
-            logout();
-          }
-        } catch (error) {
-          logout();
-        }
-      } else {
-        // Không có cả 2 token → logout
-        logout();
-      }
+      const response = await userService.getProfile();
+      updateUser(response.data?.data);
+      setIsAuthenticated(true);
     } catch (error) {
       logout();
     } finally {
@@ -106,12 +54,8 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.login(credentials);
 
       // Backend trả về: { data: { accessToken, refreshToken } }
-      const accessToken = response.data?.accessToken;
-      const refreshToken = response.data?.refreshToken;
-
-      if (!accessToken) {
-        throw new Error('No access token received from server');
-      }
+      const accessToken = response.data?.data.accessToken;
+      const refreshToken = response.data?.data.refreshToken;
 
       // Save tokens
       localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
@@ -121,7 +65,7 @@ export const AuthProvider = ({ children }) => {
 
       // Fetch user profile
       const profileResponse = await userService.getProfile();
-      const userData = profileResponse.data;
+      const userData = profileResponse.data?.data;
 
       localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(userData));
       setUser(userData);
@@ -135,11 +79,67 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithGoogle = async () => {
+    try {
+      setAuthLoading(true);
+
+      // Đăng nhập với Google qua Firebase
+      const result = await signInWithPopup(auth, googleProvider);
+      const firebaseUser = result.user;
+
+      // Chuẩn bị dữ liệu user để gửi lên backend
+      const userData = {
+        name: firebaseUser.displayName || '',
+        email: firebaseUser.email,
+        avatar: firebaseUser.photoURL || '',
+        mobile: firebaseUser.phoneNumber || '',
+      };
+
+      // Gửi thông tin user lên backend
+      const response = await authService.loginWithGoogle(userData);
+
+      // Backend trả về: { data: { user, accessToken, refreshToken } }
+      const responseData = response.data?.data;
+
+      if (!responseData || !responseData.accessToken) {
+        throw new Error('No access token received from server');
+      }
+
+      const accessToken = responseData.accessToken;
+      const refreshToken = responseData.refreshToken;
+      const userInfo = responseData.user;
+      console.log('User info from backend:', userInfo);
+
+      // Save tokens
+      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
+      if (refreshToken) {
+        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+      }
+
+      // Save user info
+      if (userInfo) {
+        localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(userInfo));
+        setUser(userInfo);
+        setIsAuthenticated(true);
+      }
+
+      return response;
+    } catch (error) {
+      // Nếu user đóng popup, không hiển thị lỗi
+      if (error.code === 'auth/popup-closed-by-user') {
+        throw new Error('Login cancelled');
+      }
+      throw error;
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
   const register = async (userData) => {
     try {
       setAuthLoading(true);
       const response = await authService.register(userData);
-      return response;
+      return response?.data;
     } catch (error) {
       throw error;
     } finally {
@@ -151,11 +151,126 @@ export const AuthProvider = ({ children }) => {
     try {
       setAuthLoading(true);
       const response = await authService.verifyEmail({ email, otp });
-      return response;
+      return response?.data;
     } catch (error) {
       throw error;
     } finally {
       setAuthLoading(false);
+    }
+  };
+
+  const forgotPassword = async (email) => {
+    try {
+      setAuthLoading(true);
+      const response = await authService.forgotPassword(email);
+      return response?.data;
+    } catch (error) {
+      throw error;
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const verifyResetCode = async (email, otp) => {
+    try {
+      setAuthLoading(true);
+      const response = await authService.verifyResetCode({ email, otp });
+
+      // Lưu resetToken vào localStorage
+      if (response?.data?.resetToken) {
+        localStorage.setItem(
+          STORAGE_KEYS.RESET_TOKEN,
+          response.data.resetToken
+        );
+      }
+
+      return response?.data;
+    } catch (error) {
+      throw error;
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const resetPassword = async (resetToken, newPassword) => {
+    try {
+      setAuthLoading(true);
+      const response = await authService.resetPassword({
+        resetToken,
+        newPassword,
+      });
+
+      // Clear resetToken sau khi thành công
+      localStorage.removeItem(STORAGE_KEYS.RESET_TOKEN);
+
+      return response?.data;
+    } catch (error) {
+      throw error;
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const resendOTP = async (email) => {
+    try {
+      setAuthLoading(true);
+      const response = await authService.resendVerificationOTP(email);
+      return response?.data;
+    } catch (error) {
+      throw error;
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const updateProfile = async (profileData) => {
+    try {
+      const response = await userService.updateProfile(profileData);
+      // Update user state with new data
+      if (response?.data?.data) {
+        updateUser(response.data.data);
+      }
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const changePassword = async (passwordData) => {
+    try {
+      const response = await userService.changePassword(passwordData);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const updateAvatar = async (file) => {
+    try {
+      const response = await userService.updateAvatar(file);
+      await refreshUserProfile();
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const updateUser = (userData) => {
+    setUser((prevUser) => {
+      const newUser = { ...prevUser, ...userData };
+      localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(newUser));
+      return newUser;
+    });
+  };
+
+  const refreshUserProfile = async () => {
+    try {
+      const response = await userService.getProfile();
+      const userData = response?.data?.data;
+      updateUser(userData);
+      return userData;
+    } catch (error) {
+      throw error;
     }
   };
 
@@ -187,185 +302,6 @@ export const AuthProvider = ({ children }) => {
       // Reset state
       setUser(null);
       setIsAuthenticated(false);
-      setAuthLoading(false);
-    }
-  };
-
-  const forgotPassword = async (email) => {
-    try {
-      setAuthLoading(true);
-      const response = await authService.forgotPassword(email);
-      return response;
-    } catch (error) {
-      throw error;
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const verifyResetCode = async (email, otp) => {
-    try {
-      setAuthLoading(true);
-      const response = await authService.verifyResetCode({ email, otp });
-
-      // Lưu resetToken vào localStorage
-      if (response.resetToken) {
-        localStorage.setItem(STORAGE_KEYS.RESET_TOKEN, response.resetToken);
-      }
-
-      return response;
-    } catch (error) {
-      throw error;
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const resetPassword = async (resetToken, newPassword) => {
-    try {
-      setAuthLoading(true);
-      const response = await authService.resetPassword({
-        resetToken,
-        newPassword,
-      });
-
-      // Clear resetToken sau khi thành công
-      localStorage.removeItem(STORAGE_KEYS.RESET_TOKEN);
-
-      return response;
-    } catch (error) {
-      throw error;
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const resendOTP = async (email) => {
-    try {
-      setAuthLoading(true);
-      const response = await authService.resendVerificationOTP(email);
-      return response;
-    } catch (error) {
-      throw error;
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const updateProfile = async (profileData) => {
-    try {
-      setAuthLoading(true);
-      const response = await userService.updateProfile(profileData);
-
-      // Update user state with new data
-      if (response.data) {
-        updateUser(response.data);
-      }
-
-      return response;
-    } catch (error) {
-      throw error;
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const changePassword = async (passwordData) => {
-    try {
-      setAuthLoading(true);
-      const response = await userService.changePassword(passwordData);
-      return response;
-    } catch (error) {
-      throw error;
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const updateAvatar = async (file) => {
-    try {
-      setAuthLoading(true);
-      const response = await userService.updateAvatar(file);
-
-      // Update user state with new avatar
-      if (response.data) {
-        updateUser(response.data);
-      }
-
-      return response;
-    } catch (error) {
-      throw error;
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const updateUser = (userData) => {
-    setUser(userData);
-    localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(userData));
-  };
-
-  const refreshUserProfile = async () => {
-    try {
-      const response = await userService.getProfile();
-      const userData = response.data;
-      updateUser(userData);
-      return userData;
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const loginWithGoogle = async () => {
-    try {
-      setAuthLoading(true);
-
-      // Đăng nhập với Google qua Firebase
-      const result = await signInWithPopup(auth, googleProvider);
-      const firebaseUser = result.user;
-
-      // Chuẩn bị dữ liệu user để gửi lên backend
-      const userData = {
-        name: firebaseUser.displayName || '',
-        email: firebaseUser.email,
-        avatar: firebaseUser.photoURL || '',
-        mobile: firebaseUser.phoneNumber || '',
-      };
-
-      // Gửi thông tin user lên backend
-      const response = await authService.loginWithGoogle(userData);
-
-      // Backend trả về: { data: { user, accessToken, refreshToken } }
-      const responseData = response.data || response;
-      const accessToken = responseData.accessToken;
-      const refreshToken = responseData.refreshToken;
-      const userInfo = responseData.user;
-
-      if (!accessToken) {
-        throw new Error('No access token received from server');
-      }
-
-      // Save tokens
-      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
-      if (refreshToken) {
-        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
-      }
-
-      // Save user info
-      if (userInfo) {
-        localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(userInfo));
-        setUser(userInfo);
-        setIsAuthenticated(true);
-      }
-
-      return response;
-    } catch (error) {
-      // Nếu user đóng popup, không hiển thị lỗi
-      if (error.code === 'auth/popup-closed-by-user') {
-        throw new Error('Login cancelled');
-      }
-      throw error;
-    } finally {
       setAuthLoading(false);
     }
   };

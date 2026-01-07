@@ -1,40 +1,18 @@
-import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { IoMdTime } from 'react-icons/io';
 import { IoChevronBack } from 'react-icons/io5';
-import { blogService } from '../../api/services/blogService';
+import { useBlogById } from '../../hooks/useBlog';
 
 const BlogDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [blog, setBlog] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchBlogDetail = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await blogService.getBlogById(id);
-
-        if (response.success && response.data) {
-          setBlog(response.data);
-        } else {
-          setError('Blog not found');
-        }
-      } catch (err) {
-        console.error('Error fetching blog detail:', err);
-        setError('Failed to load blog. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) {
-      fetchBlogDetail();
-    }
-  }, [id]);
+  // Sử dụng hook useBlogById
+  const { blog, loading, error, refresh } = useBlogById(id, {
+    autoFetch: true,
+    enableCache: true,
+    cacheTime: 5 * 60 * 1000, // 5 phút
+  });
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -86,7 +64,7 @@ const BlogDetail = () => {
     );
   }
 
-  // No blog found
+  // Blog not found
   if (!blog) {
     return (
       <div className="bg-gray-50 py-12">
@@ -110,11 +88,10 @@ const BlogDetail = () => {
     );
   }
 
-  const blogImage =
-    blog.images?.[0]?.url || 'https://via.placeholder.com/1200x600';
-  const blogTitle = blog.title || 'Untitled Blog';
-  const blogDescription = blog.description || '';
-  const blogDate = blog.createdAt || new Date().toISOString();
+  const blogImage = blog.images?.[0]?.url;
+  const blogTitle = blog.title;
+  const blogDescription = blog.description;
+  const blogDate = blog.createdAt;
 
   return (
     <div className="bg-gray-50 py-8 min-h-screen">

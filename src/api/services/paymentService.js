@@ -1,6 +1,11 @@
-// src/api/services/paymentService.js
 import axiosInstance from '../axiosConfig';
 import { API_ENDPOINTS } from '../../config/constants';
+
+// Centralized error handler
+const handleServiceError = (error) => {
+  console.error('Payment Service Error:', error);
+  throw error;
+};
 
 export const paymentService = {
   /**
@@ -21,21 +26,16 @@ export const paymentService = {
         orderInfo:
           paymentData.orderInfo || `Thanh toan don hang ${paymentData.orderId}`,
         locale: paymentData.locale || 'vn',
+        bankCode: paymentData.bankCode || undefined,
       };
 
-      // Add optional fields if provided
-      if (paymentData.bankCode) {
-        payload.bankCode = paymentData.bankCode;
-      }
-
-      const response = await axiosInstance.post(
+      const { data } = await axiosInstance.post(
         API_ENDPOINTS.CREATE_PAYMENT_URL,
         payload
       );
-
-      return response;
+      return data; // Luôn trả về cấu trúc { success, data, message }
     } catch (error) {
-      throw error;
+      handleServiceError(error);
     }
   },
 
@@ -46,45 +46,12 @@ export const paymentService = {
    */
   queryVNPayTransaction: async (orderId) => {
     try {
-      const response = await axiosInstance.get(
+      const { data } = await axiosInstance.get(
         API_ENDPOINTS.QUERY_VNPAY_TRANSACTION(orderId)
       );
-      return response;
+      return data;
     } catch (error) {
-      throw error;
-    }
-  },
-
-  /**
-   * Redirect to VNPay payment gateway
-   * @param {string} orderId - Order ID
-   * @param {number} amount - Payment amount
-   * @param {Object} options - Additional options
-   * @param {string} options.orderInfo - Order description
-   * @param {string} options.bankCode - Bank code
-   * @param {string} options.locale - Language (vn/en)
-   * @returns {Promise} Redirects to payment URL
-   */
-  redirectToVNPay: async (orderId, amount, options = {}) => {
-    try {
-      const response = await paymentService.createVNPayPayment({
-        orderId,
-        amount,
-        orderInfo: options.orderInfo,
-        bankCode: options.bankCode,
-        locale: options.locale || 'vn',
-      });
-
-      if (response.success && response.data?.paymentUrl) {
-        // Redirect to VNPay payment page
-        window.location.href = response.data.paymentUrl;
-      } else {
-        throw new Error(response.message || 'Failed to create payment URL');
-      }
-
-      return response;
-    } catch (error) {
-      throw error;
+      handleServiceError(error);
     }
   },
 
@@ -94,25 +61,21 @@ export const paymentService = {
    * @param {URLSearchParams} params - URL search parameters
    * @returns {Object} Parsed payment result
    */
-  parseVNPayReturn: (params) => {
-    const vnpParams = {};
-
-    for (const [key, value] of params.entries()) {
-      vnpParams[key] = value;
-    }
+  parseVNPayReturn: (searchParams) => {
+    const params = Object.fromEntries(searchParams.entries());
 
     return {
-      responseCode: vnpParams.vnp_ResponseCode,
-      transactionNo: vnpParams.vnp_TransactionNo,
-      amount: vnpParams.vnp_Amount ? parseInt(vnpParams.vnp_Amount) / 100 : 0, // Convert back from VNPay format
-      orderId: vnpParams.vnp_TxnRef,
-      bankCode: vnpParams.vnp_BankCode,
-      bankTranNo: vnpParams.vnp_BankTranNo,
-      cardType: vnpParams.vnp_CardType,
-      orderInfo: vnpParams.vnp_OrderInfo,
-      payDate: vnpParams.vnp_PayDate,
-      transactionStatus: vnpParams.vnp_TransactionStatus,
-      secureHash: vnpParams.vnp_SecureHash,
+      responseCode: params.vnp_ResponseCode,
+      transactionNo: params.vnp_TransactionNo,
+      amount: params.vnp_Amount ? parseInt(params.vnp_Amount) / 100 : 0, // Convert back from VNPay format
+      orderId: params.vnp_TxnRef,
+      bankCode: params.vnp_BankCode,
+      bankTranNo: params.vnp_BankTranNo,
+      cardType: params.vnp_CardType,
+      orderInfo: params.vnp_OrderInfo,
+      payDate: params.vnp_PayDate,
+      transactionStatus: params.vnp_TransactionStatus,
+      secureHash: params.vnp_SecureHash,
     };
   },
 
@@ -150,32 +113,6 @@ export const paymentService = {
     return (
       messages[responseCode] || `Mã phản hồi không xác định (${responseCode})`
     );
-  },
-
-  /**
-   * Handle payment callback and verify transaction
-   * @param {Object} order - Order object
-   * @returns {Promise} Transaction verification result
-   */
-  verifyPayment: async (order) => {
-    try {
-      const response = await paymentService.queryVNPayTransaction(order._id);
-
-      if (response.success) {
-        return {
-          success: true,
-          paymentStatus: response.data.paymentStatus,
-          transactionInfo: response.data.paymentResult,
-        };
-      }
-
-      return { success: false, message: 'Failed to verify payment' };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || error.message,
-      };
-    }
   },
 
   /**

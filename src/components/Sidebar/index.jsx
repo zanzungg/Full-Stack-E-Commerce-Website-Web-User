@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import '../Sidebar/style.css';
@@ -8,9 +8,9 @@ import Button from '@mui/material/Button';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import Rating from '@mui/material/Rating';
-import { useCategories } from '../../contexts/CategoryContext';
 import CircularProgress from '@mui/material/CircularProgress';
 import useDebounce from '../../hooks/useDebounce';
+import { useCategory } from '../../hooks/useCategory';
 
 const Sidebar = ({
   availableFilters,
@@ -19,11 +19,16 @@ const Sidebar = ({
   onClearFilters,
   loading,
 }) => {
-  const { categories } = useCategories();
+  // Use category hook
+  const { categories, loading: categoriesLoading } = useCategory({
+    autoFetch: true,
+    fetchTree: true,
+    enableCache: true,
+  });
+
   const [isOpenCategoryFilter, setIsOpenCategoryFilter] = useState(true);
   const [isOpenPriceFilter, setIsOpenPriceFilter] = useState(true);
   const [isOpenRatingFilter, setIsOpenRatingFilter] = useState(true);
-  const [hasUserChangedPrice, setHasUserChangedPrice] = useState(false);
   const [isApplyingPriceFilter, setIsApplyingPriceFilter] = useState(false);
 
   // Price range state
@@ -59,7 +64,6 @@ const Sidebar = ({
   }, [appliedFilters]);
 
   const handlePriceRangeChange = (values) => {
-    setHasUserChangedPrice(true);
     setIsApplyingPriceFilter(true);
     setPriceRange(values);
   };
@@ -97,7 +101,7 @@ const Sidebar = ({
       )}
 
       {/* Categories Filter */}
-      {categories.length > 0 && (
+      {!categoriesLoading && categories.length > 0 && (
         <div className="box">
           <h3 className="w-full mb-3 text-[16px] font-semibold flex items-center pr-5">
             Shop by Category
@@ -131,6 +135,19 @@ const Sidebar = ({
               ))}
             </div>
           </Collapse>
+        </div>
+      )}
+
+      {/* Loading state for categories */}
+      {categoriesLoading && (
+        <div className="box">
+          <h3 className="w-full mb-3 text-[16px] font-semibold">
+            Shop by Category
+          </h3>
+          <div className="px-4 py-6 text-center">
+            <CircularProgress size={24} />
+            <p className="text-xs text-gray-500 mt-2">Loading categories...</p>
+          </div>
         </div>
       )}
 

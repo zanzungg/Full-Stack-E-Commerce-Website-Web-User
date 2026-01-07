@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
+﻿import { memo } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {
   Navigation,
@@ -11,69 +11,20 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
-import homeSliderBannerService from '../../api/services/homeSliderBannerService';
 import './style.css';
+import { useHomeSliderBanner } from '../../hooks/useHomeSliderBanner';
 
 const HomeSlider = memo(() => {
-  const [banners, setBanners] = useState([]);
-  const [loadedImages, setLoadedImages] = useState(new Set());
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isAutoplayPaused, setIsAutoplayPaused] = useState(false);
-  const swiperRef = useRef(null);
-  const fetchAttempted = useRef(false);
-
-  useEffect(() => {
-    if (fetchAttempted.current) return;
-    fetchAttempted.current = true;
-
-    const fetchBanners = async () => {
-      try {
-        setLoading(true);
-        const response = await homeSliderBannerService.getBanners();
-
-        const bannersData = Array.isArray(response.data)
-          ? response.data
-          : response.data?.data;
-
-        if (bannersData && Array.isArray(bannersData)) {
-          const allImages = bannersData
-            .flatMap((banner) => banner.images.map((img) => img.url))
-            .filter((url) => url && url.trim());
-
-          setBanners(allImages);
-
-          // Preload first image
-          if (allImages.length > 0) {
-            const img = new Image();
-            img.src = allImages[0];
-          }
-        }
-      } catch (err) {
-        setError(err.message || 'Failed to load banners');
-        console.error('Banner fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBanners();
-  }, []);
-
-  const handleImageLoad = useCallback((index) => {
-    setLoadedImages((prev) => new Set(prev).add(index));
-  }, []);
-
-  const handleAutoplayToggle = useCallback(() => {
-    if (!swiperRef.current) return;
-
-    if (isAutoplayPaused) {
-      swiperRef.current.autoplay.start();
-    } else {
-      swiperRef.current.autoplay.stop();
-    }
-    setIsAutoplayPaused(!isAutoplayPaused);
-  }, [isAutoplayPaused]);
+  const {
+    banners,
+    loadedImages,
+    loading,
+    error,
+    isAutoplayPaused,
+    handleImageLoad,
+    handleAutoplayToggle,
+    setSwiperInstance,
+  } = useHomeSliderBanner();
 
   if (loading) {
     return (
@@ -99,9 +50,7 @@ const HomeSlider = memo(() => {
       <div className="container mx-auto px-3 md:px-4">
         <div className="relative group">
           <Swiper
-            onSwiper={(swiper) => {
-              swiperRef.current = swiper;
-            }}
+            onSwiper={setSwiperInstance}
             modules={[Navigation, Autoplay, Pagination, Keyboard, EffectFade]}
             navigation={{
               prevEl: '.banner-prev',

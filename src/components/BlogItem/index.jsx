@@ -1,4 +1,3 @@
-import React from 'react';
 import { IoMdTime } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 import { IoIosArrowForward } from 'react-icons/io';
@@ -24,11 +23,10 @@ const BlogItem = ({ blog }) => {
       : text;
   };
 
-  const blogImage =
-    blog.images?.[0]?.url || 'https://via.placeholder.com/400x300';
-  const blogTitle = blog.title || 'Untitled Blog';
-  const blogDescription = blog.description || '';
-  const blogDate = blog.createdAt || new Date().toISOString();
+  const blogImage = blog.images?.[0]?.url;
+  const blogTitle = blog.title;
+  const blogDescription = blog.description;
+  const blogDate = blog.createdAt;
 
   return (
     <div className="blogItem group">

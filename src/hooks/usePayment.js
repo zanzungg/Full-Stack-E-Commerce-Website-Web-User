@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { paymentService } from '../api/services/paymentService';
 import { toast } from 'react-hot-toast';
@@ -10,37 +10,23 @@ import { toast } from 'react-hot-toast';
  * @param {Function} options.onError - Error callback
  */
 export const usePayment = (options = {}) => {
-  const { onSuccess = null, onError = null } = options;
+  const { onSuccess, onError } = options;
 
   // State management
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('COD');
-  const [paymentMethods, setPaymentMethods] = useState([]);
   const [paymentResult, setPaymentResult] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  /**
-   * Initialize payment methods
-   */
-  useEffect(() => {
-    const methods = paymentService.getPaymentMethods();
-    setPaymentMethods(methods);
-  }, []);
+  const paymentMethods = useMemo(() => paymentService.getPaymentMethods(), []);
 
   /**
    * Create VNPay payment mutation
    */
   const createVNPayMutation = useMutation({
-    mutationFn: (paymentData) => paymentService.createVNPayPayment(paymentData),
+    mutationFn: paymentService.createVNPayPayment,
     onSuccess: (response) => {
-      if (response.success && response.data?.paymentUrl) {
+      if (response?.success && response?.data?.paymentUrl) {
         const paymentUrl = response.data.paymentUrl;
-
-        if (onSuccess) {
-          onSuccess(
-            response.message || 'Payment URL created successfully',
-            response.data
-          );
-        }
 
         toast.success('Redirecting to payment gateway...', {
           duration: 2000,
@@ -51,7 +37,7 @@ export const usePayment = (options = {}) => {
         // Redirect after a short delay
         setTimeout(() => {
           window.location.href = paymentUrl;
-        }, 1500);
+        }, 1000);
       } else {
         const message = response.message || 'Failed to create payment URL';
         toast.error(message, {
@@ -60,6 +46,7 @@ export const usePayment = (options = {}) => {
           icon: '❌',
         });
       }
+      onSuccess?.(response.message, response.data);
     },
     onError: (error) => {
       const message =
@@ -67,15 +54,12 @@ export const usePayment = (options = {}) => {
         error.message ||
         'Failed to create VNPay payment';
 
-      if (onError) {
-        onError(message, error);
-      }
-
       toast.error(message, {
         duration: 4000,
         position: 'top-right',
         icon: '❌',
       });
+      onError?.(message, error);
     },
   });
 
@@ -85,12 +69,12 @@ export const usePayment = (options = {}) => {
   const queryTransactionMutation = useMutation({
     mutationFn: (orderId) => paymentService.queryVNPayTransaction(orderId),
     onSuccess: (response) => {
-      if (response.success && response.data) {
-        setPaymentResult(response.data);
-        return response.data;
+      if (response?.data?.success && response?.data?.data) {
+        setPaymentResult(response.data.data);
+        return response.data.data;
       } else {
         const message =
-          response.message || 'Failed to query transaction status';
+          response?.data?.message || 'Failed to query transaction status';
         toast.error(message, {
           duration: 4000,
           position: 'top-right',
@@ -114,38 +98,6 @@ export const usePayment = (options = {}) => {
       });
 
       return null;
-    },
-  });
-
-  /**
-   * Verify payment mutation (legacy - for compatibility)
-   */
-  const verifyPaymentMutation = useMutation({
-    mutationFn: (order) => paymentService.verifyPayment(order),
-    onSuccess: (response) => {
-      if (response.success) {
-        toast.success('Payment verification successful', {
-          duration: 3000,
-          position: 'top-right',
-          icon: '✅',
-        });
-      }
-      return response;
-    },
-    onError: (error) => {
-      const message =
-        error.response?.data?.message ||
-        error.message ||
-        'Failed to verify payment';
-
-      if (onError) {
-        onError(message, error);
-      }
-
-      toast.error(message, {
-        duration: 4000,
-        position: 'top-right',
-      });
     },
   });
 
@@ -191,7 +143,7 @@ export const usePayment = (options = {}) => {
           });
 
           setIsProcessing(false);
-          return response;
+          return response.data;
         } else if (paymentMethod === 'MOMO' || paymentMethod === 'STRIPE') {
           // Not implemented yet
           setIsProcessing(false);
@@ -219,35 +171,6 @@ export const usePayment = (options = {}) => {
   );
 
   /**
-   * Redirect to VNPay (alternative method)
-   */
-  const redirectToVNPay = useCallback(
-    async (orderId, amount, options = {}) => {
-      try {
-        setIsProcessing(true);
-        await paymentService.redirectToVNPay(orderId, amount, options);
-      } catch (error) {
-        setIsProcessing(false);
-
-        const message =
-          error.response?.data?.message ||
-          error.message ||
-          'Failed to redirect to VNPay';
-
-        if (onError) {
-          onError(message, error);
-        }
-
-        toast.error(message, {
-          duration: 4000,
-          position: 'top-right',
-        });
-      }
-    },
-    [onError]
-  );
-
-  /**
    * Parse VNPay return URL (client-side only, for display)
    * WARNING: Does NOT verify signature
    */
@@ -270,51 +193,6 @@ export const usePayment = (options = {}) => {
   const getPaymentMessage = useCallback((responseCode) => {
     return paymentService.getVNPayMessage(responseCode);
   }, []);
-
-  /**
-   * Handle payment callback (DEPRECATED - use verifyVNPayReturnAsync instead)
-   * This method only parses and shows toast, doesn't verify with backend
-   */
-  const handlePaymentCallback = useCallback(
-    async (searchParams) => {
-      const result = parseVNPayReturn(searchParams);
-
-      if (checkPaymentSuccess(result.responseCode)) {
-        const successMessage = 'Payment successful!';
-
-        toast.success(successMessage, {
-          duration: 4000,
-          position: 'top-right',
-          icon: '✅',
-        });
-
-        if (onSuccess) {
-          onSuccess(successMessage, result);
-        }
-      } else {
-        const errorMessage = getPaymentMessage(result.responseCode);
-
-        toast.error(`Payment failed: ${errorMessage}`, {
-          duration: 5000,
-          position: 'top-right',
-          icon: '❌',
-        });
-
-        if (onError) {
-          onError(errorMessage, result);
-        }
-      }
-
-      return result;
-    },
-    [
-      parseVNPayReturn,
-      checkPaymentSuccess,
-      getPaymentMessage,
-      onSuccess,
-      onError,
-    ]
-  );
 
   /**
    * Select payment method
@@ -403,7 +281,6 @@ export const usePayment = (options = {}) => {
     isProcessing,
     isCreatingPayment: createVNPayMutation.isPending,
     isQuerying: queryTransactionMutation.isPending,
-    isVerifying: verifyPaymentMutation.isPending,
 
     // Actions
     processPayment,
@@ -411,10 +288,6 @@ export const usePayment = (options = {}) => {
     createVNPayPaymentAsync: createVNPayMutation.mutateAsync,
     queryTransaction: queryTransactionMutation.mutate,
     queryTransactionAsync: queryTransactionMutation.mutateAsync,
-    verifyPayment: verifyPaymentMutation.mutate,
-    verifyPaymentAsync: verifyPaymentMutation.mutateAsync,
-    redirectToVNPay,
-    handlePaymentCallback, // DEPRECATED
     selectPaymentMethod,
 
     // Utilities

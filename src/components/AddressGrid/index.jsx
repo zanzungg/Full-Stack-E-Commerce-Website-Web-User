@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '@mui/material';
 import { IoLocationSharp } from 'react-icons/io5';
 import { MdDelete } from 'react-icons/md';

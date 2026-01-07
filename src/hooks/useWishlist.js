@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import wishlistService from '../api/services/wishlistService';
 import { toast } from 'react-hot-toast';
+import { createElement } from 'react';
+import wishlistService from '../api/services/wishlistService';
 import { useAuthContext } from '../contexts/AuthContext';
 
 export const useWishlist = () => {
@@ -17,7 +18,7 @@ export const useWishlist = () => {
     queryKey: ['wishlist'],
     queryFn: wishlistService.getWishlist,
     staleTime: 1000 * 60 * 5, // 5 minutes
-    select: (response) => response?.data, // Extract data directly
+    select: (response) => response?.data?.data, // Extract data directly
     enabled: isAuthenticated, // Only fetch when authenticated
   });
 
@@ -31,20 +32,25 @@ export const useWishlist = () => {
 
       // Enhanced success toast with action button
       toast.success(
-        (t) => (
-          <div className="flex flex-col gap-2">
-            <span className="font-medium">
-              {response.data.message || 'Product added to wishlist!'}
-            </span>
-            <a
-              href="/my-wishlist"
-              className="text-sm text-primary hover:underline font-medium"
-              onClick={() => toast.dismiss(t.id)}
-            >
-              View Wishlist →
-            </a>
-          </div>
-        ),
+        (t) =>
+          createElement(
+            'div',
+            { className: 'flex flex-col gap-2' },
+            createElement(
+              'span',
+              { className: 'font-medium' },
+              response.data.message || 'Product added to wishlist!'
+            ),
+            createElement(
+              'a',
+              {
+                href: '/my-wishlist',
+                className: 'text-sm text-primary hover:underline font-medium',
+                onClick: () => toast.dismiss(t.id),
+              },
+              'View Wishlist →'
+            )
+          ),
         {
           duration: 4000,
           position: 'top-right',
@@ -124,7 +130,7 @@ export const useWishlist = () => {
       queryKey: ['wishlist-check', productId],
       queryFn: () => wishlistService.checkWishlist(productId),
       staleTime: 1000 * 60 * 5, // 5 minutes
-      select: (response) => response?.data?.inWishlist || false,
+      select: (response) => response?.data?.data?.inWishlist || false,
       enabled: isAuthenticated && !!productId,
     });
   };
@@ -134,7 +140,7 @@ export const useWishlist = () => {
     queryKey: ['wishlist-count'],
     queryFn: wishlistService.getWishlistCount,
     staleTime: 1000 * 60 * 5, // 5 minutes
-    select: (response) => response?.data?.count || 0,
+    select: (response) => response?.data?.data?.count || 0,
     enabled: isAuthenticated,
   });
 
@@ -155,17 +161,20 @@ export const useWishlist = () => {
       queryClient.invalidateQueries({ queryKey: ['wishlist-count'] });
       queryClient.invalidateQueries({ queryKey: ['wishlist-check'] });
 
-      const data = response?.data;
+      const data = response?.data?.data;
       const message = response?.data?.message || 'Wishlist synced';
       const details = data
         ? `Updated: ${data.updated?.length || 0}, Failed: ${data.failed || 0}`
         : '';
 
       toast.success(
-        <div className="flex flex-col gap-1">
-          <span className="font-medium">{message}</span>
-          {details && <span className="text-xs opacity-80">{details}</span>}
-        </div>,
+        createElement(
+          'div',
+          { className: 'flex flex-col gap-1' },
+          createElement('span', { className: 'font-medium' }, message),
+          details &&
+            createElement('span', { className: 'text-xs opacity-80' }, details)
+        ),
         {
           duration: 3000,
           position: 'top-right',
@@ -186,7 +195,7 @@ export const useWishlist = () => {
   const toggleWishlist = async (productId) => {
     try {
       const checkResponse = await wishlistService.checkWishlist(productId);
-      const isInWishlist = checkResponse?.data?.inWishlist;
+      const isInWishlist = checkResponse?.data?.data?.inWishlist;
 
       if (isInWishlist) {
         removeFromWishlistMutation.mutate(productId);

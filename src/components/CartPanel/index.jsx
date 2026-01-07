@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MdOutlineDeleteOutline } from 'react-icons/md';
-import { Button, CircularProgress, IconButton, Tooltip } from '@mui/material';
-import { MdOutlineShoppingCart } from 'react-icons/md';
+import { MdOutlineDeleteOutline, MdOutlineShoppingCart } from 'react-icons/md';
 import { FaRegUser } from 'react-icons/fa';
-import { useCart } from '../../hooks/useCart.jsx';
-import { useAuthContext } from '../../contexts/AuthContext';
+import { Button, CircularProgress, IconButton, Tooltip } from '@mui/material';
+
+import { useAuth } from '../../hooks/useAuth';
+import { useCart } from '../../hooks/useCart';
 
 const CartPanel = () => {
-  const { isAuthenticated } = useAuthContext();
+  const { isAuthenticated } = useAuth();
   const { cartItems, cartSummary, isLoading, removeItem } = useCart();
+
   const [removingItemId, setRemovingItemId] = useState(null);
 
-  const handleRemove = (itemId) => {
+  const handleRemove = async (itemId) => {
     setRemovingItemId(itemId);
-    removeItem(itemId);
+    try {
+      await removeItem(itemId);
+    } finally {
+      setRemovingItemId(null);
+    }
   };
 
   // Not authenticated - show login prompt

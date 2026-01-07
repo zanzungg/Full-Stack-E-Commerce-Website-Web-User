@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import cartService from '../api/services/cartService';
 import { toast } from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { createElement } from 'react';
+import cartService from '../api/services/cartService';
 import { useAuthContext } from '../contexts/AuthContext';
 
 export const useCart = () => {
@@ -18,7 +18,7 @@ export const useCart = () => {
     queryKey: ['cart'],
     queryFn: cartService.getCart,
     staleTime: 1000 * 60 * 5, // 5 minutes
-    select: (response) => response.data, // Extract data from response
+    select: (response) => response?.data?.data, // Extract data from response
     enabled: isAuthenticated, // Only fetch when authenticated
   });
 
@@ -31,20 +31,25 @@ export const useCart = () => {
 
       // Enhanced success toast with action button
       toast.success(
-        (t) => (
-          <div className="flex flex-col gap-2">
-            <span className="font-medium">
-              {response.data.message || 'Product added to cart!'}
-            </span>
-            <a
-              href="/cart"
-              className="text-sm text-primary hover:underline font-medium"
-              onClick={() => toast.dismiss(t.id)}
-            >
-              View Cart →
-            </a>
-          </div>
-        ),
+        (t) =>
+          createElement(
+            'div',
+            { className: 'flex flex-col gap-2' },
+            createElement(
+              'span',
+              { className: 'font-medium' },
+              response?.data?.message || 'Product added to cart!'
+            ),
+            createElement(
+              'a',
+              {
+                href: '/cart',
+                className: 'text-sm text-primary hover:underline font-medium',
+                onClick: () => toast.dismiss(t.id),
+              },
+              'View Cart →'
+            )
+          ),
         {
           duration: 4000,
           position: 'top-right',
@@ -78,7 +83,7 @@ export const useCart = () => {
       cartService.updateCartItem(itemId, quantity),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
-      toast.success(response.data.message || 'Quantity updated');
+      toast.success(response?.data?.message || 'Quantity updated');
     },
     onError: (error) => {
       const message = error.response?.data?.message || 'Failed to update';
@@ -93,10 +98,10 @@ export const useCart = () => {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
 
-      const isMerged = response.data.data?.merged;
+      const isMerged = response?.data?.data?.merged;
       const message = isMerged
         ? 'Items merged successfully'
-        : response.data.message || 'Variant updated';
+        : response?.data?.message || 'Variant updated';
 
       toast.success(message, {
         duration: 3000,
@@ -142,7 +147,7 @@ export const useCart = () => {
     mutationFn: (itemId) => cartService.removeCartItem(itemId),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
-      toast.success(response.data.message || 'Item removed');
+      toast.success(response?.data?.message || 'Item removed');
     },
     onError: (error) => {
       const message = error.response?.data?.message || 'Failed to remove';
@@ -155,7 +160,7 @@ export const useCart = () => {
     mutationFn: () => cartService.clearCart(),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
-      toast.success(response.data.message || 'Cart cleared');
+      toast.success(response?.data?.message || 'Cart cleared');
     },
     onError: (error) => {
       const message = error.response?.data?.message || 'Failed to clear cart';
@@ -168,7 +173,7 @@ export const useCart = () => {
     mutationFn: (cartItemIds) => cartService.deleteCartBatch(cartItemIds),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
-      toast.success(response.data.message || 'Items deleted');
+      toast.success(response?.data?.message || 'Items deleted');
     },
     onError: (error) => {
       const message = error.response?.data?.message || 'Failed to delete';

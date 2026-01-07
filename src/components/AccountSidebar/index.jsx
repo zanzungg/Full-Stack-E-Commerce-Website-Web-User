@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -17,16 +17,15 @@ import { RiLockPasswordLine } from 'react-icons/ri';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MyContext } from '../../App';
 import { useAuth } from '../../hooks/useAuth';
-import { useAuthContext } from '../../contexts/AuthContext';
-import { userService } from '../../api/services/userService';
+import { useUser } from '../../hooks/useUser';
 
 const AccountSidebar = ({ onAvatarUpdate }) => {
   const context = useContext(MyContext);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user, updateUser, refreshUserProfile } = useAuthContext();
-  const { logout, loading } = useAuth();
+  const { user, updateAvatar } = useUser();
+  const { logout, authLoading } = useAuth();
 
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -60,35 +59,11 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
     try {
       setUploadingAvatar(true);
 
-      const response = await userService.updateAvatar(file);
+      const response = await updateAvatar(file);
 
-      const updatedUser = {
-        ...user,
-        avatar: response.data.avatar,
-      };
-      updateUser(updatedUser);
-
-      if (onAvatarUpdate) {
+      if (onAvatarUpdate && response?.data?.avatar) {
         onAvatarUpdate(response.data.avatar);
       }
-
-      context.openAlertBox(
-        'success',
-        response.message || 'Avatar updated successfully!'
-      );
-    } catch (error) {
-      console.error('Upload avatar error:', error);
-
-      let errorMessage = 'Failed to upload avatar';
-
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.request) {
-        errorMessage =
-          'Cannot connect to server. Please check your internet connection.';
-      }
-
-      context.openAlertBox('error', errorMessage);
     } finally {
       setUploadingAvatar(false);
       e.target.value = '';
@@ -110,53 +85,80 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
 
   return (
     <>
-      <div className="card bg-white shadow-md rounded-md overflow-hidden">
+      <div className="card bg-white shadow-md rounded-md overflow-hidden sticky top-5">
         <div className="w-full p-5 flex items-center justify-center flex-col">
-          <div className="w-[110px] h-[110px] rounded-full overflow-hidden mb-4 relative group">
+          <div className="w-[110px] h-[110px] rounded-full overflow-hidden mb-4 relative group shadow-lg">
             <img
               src={user?.avatar || '/avatar_default.png'}
               alt="User Avatar"
-              className="w-full h-full object-cover"
+              className={`w-full h-full object-cover transition-all duration-300 ${
+                uploadingAvatar
+                  ? 'blur-sm scale-110 brightness-75'
+                  : 'group-hover:scale-110'
+              }`}
             />
 
-            <div
-              className="overlay w-full h-full absolute top-0 left-0
-                        z-50 bg-[rgba(0,0,0,0.7)] flex items-center justify-center cursor-pointer opacity-0 
-                        transition-all group-hover:opacity-100"
-            >
-              {uploadingAvatar ? (
-                <CircularProgress size={25} className="text-white" />
-              ) : (
-                <>
-                  <MdOutlineCloudUpload className="text-white text-[25px]" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarChange}
-                    disabled={uploadingAvatar}
-                    className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                </>
-              )}
-            </div>
+            {/* Loading Overlay - Always visible when uploading */}
+            {uploadingAvatar && (
+              <div
+                className="absolute top-0 left-0 w-full h-full z-50 
+                         bg-[rgba(0,0,0,0.7)] flex flex-col items-center justify-center"
+              >
+                <CircularProgress
+                  size={35}
+                  thickness={4}
+                  className="text-white mb-2"
+                />
+                <span className="text-white text-xs font-medium">
+                  Uploading...
+                </span>
+              </div>
+            )}
+
+            {/* Hover Overlay - Only show when NOT uploading */}
+            {!uploadingAvatar && (
+              <div
+                className="overlay w-full h-full absolute top-0 left-0
+                          z-50 bg-[rgba(0,0,0,0.7)] flex items-center justify-center cursor-pointer opacity-0 
+                          transition-all duration-300 group-hover:opacity-100"
+              >
+                <MdOutlineCloudUpload className="text-white text-[25px]" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  disabled={uploadingAvatar}
+                  className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </div>
+            )}
           </div>
 
-          <h3 className="font-bold">{user?.name || 'User Name'}</h3>
-          <h6 className="text-[13px] font-medium text-gray-600">
-            {user?.email || 'User Email'}
+          <h3 className="font-bold text-lg text-center">{user?.name}</h3>
+          <h6 className="text-[13px] font-medium text-gray-600 text-center break-all px-2">
+            {user?.email}
           </h6>
           {user?.mobile && (
             <p className="text-[12px] text-gray-500 mt-1">{user.mobile}</p>
+          )}
+
+          {/* Upload Status */}
+          {uploadingAvatar && (
+            <div className="mt-2 px-3 py-1 bg-blue-50 rounded-full">
+              <p className="text-[11px] text-blue-600 font-medium">
+                Please wait, uploading avatar...
+              </p>
+            </div>
           )}
         </div>
 
         <ul className="list-none pb-5 bg-[#f1f1f1]">
           <li className="w-full">
             <Button
-              className={`w-full text-left! justify-start! py-2! px-5! capitalize! rounded-none! flex items-center gap-2 ${
+              className={`w-full text-left! justify-start! py-3! px-5! capitalize! rounded-none! flex items-center gap-3 transition-all duration-200 ${
                 activeTab === 'profile'
-                  ? 'bg-primary! text-white!'
-                  : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]!'
+                  ? 'bg-primary! text-white! shadow-md!'
+                  : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]! hover:translate-x-1!'
               }`}
               onClick={() => navigate('/my-account')}
             >
@@ -167,10 +169,10 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
 
           <li className="w-full">
             <Button
-              className={`w-full text-left! justify-start! py-2! px-5! capitalize! rounded-none! flex items-center gap-2 ${
+              className={`w-full text-left! justify-start! py-3! px-5! capitalize! rounded-none! flex items-center gap-3 transition-all duration-200 ${
                 activeTab === 'address'
-                  ? 'bg-primary! text-white!'
-                  : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]!'
+                  ? 'bg-primary! text-white! shadow-md!'
+                  : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]! hover:translate-x-1!'
               }`}
               onClick={() => navigate('/my-address')}
             >
@@ -181,10 +183,10 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
 
           <li className="w-full">
             <Button
-              className={`w-full text-left! justify-start! py-2! px-5! capitalize! rounded-none! flex items-center gap-2 ${
+              className={`w-full text-left! justify-start! py-3! px-5! capitalize! rounded-none! flex items-center gap-3 transition-all duration-200 ${
                 activeTab === 'wishlist'
-                  ? 'bg-primary! text-white!'
-                  : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]!'
+                  ? 'bg-primary! text-white! shadow-md!'
+                  : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]! hover:translate-x-1!'
               }`}
               onClick={() => navigate('/my-wishlist')}
             >
@@ -195,10 +197,10 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
 
           <li className="w-full">
             <Button
-              className={`w-full text-left! justify-start! py-2! px-5! capitalize! rounded-none! flex items-center gap-2 ${
+              className={`w-full text-left! justify-start! py-3! px-5! capitalize! rounded-none! flex items-center gap-3 transition-all duration-200 ${
                 activeTab === 'orders'
-                  ? 'bg-primary! text-white!'
-                  : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]!'
+                  ? 'bg-primary! text-white! shadow-md!'
+                  : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]! hover:translate-x-1!'
               }`}
               onClick={() => navigate('/my-orders')}
             >
@@ -209,10 +211,10 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
 
           <li className="w-full">
             <Button
-              className={`w-full text-left! justify-start! py-2! px-5! capitalize! rounded-none! flex items-center gap-2 ${
+              className={`w-full text-left! justify-start! py-3! px-5! capitalize! rounded-none! flex items-center gap-3 transition-all duration-200 ${
                 activeTab === 'password'
-                  ? 'bg-primary! text-white!'
-                  : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]!'
+                  ? 'bg-primary! text-white! shadow-md!'
+                  : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]! hover:translate-x-1!'
               }`}
               onClick={() => navigate('/change-password')}
             >
@@ -221,18 +223,15 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
             </Button>
           </li>
 
-          <li className="w-full">
+          <li className="w-full mt-2 border-t border-gray-200 pt-2">
             <Button
-              className="w-full text-left! justify-start! py-2! px-5! capitalize! text-[rgba(0,0,0,0.7)]! rounded-none! flex items-center gap-2 hover:bg-[rgba(0,0,0,0.05)]!"
+              className="w-full text-left! justify-start! py-3! px-5! capitalize! text-red-600! rounded-none! flex items-center gap-3 hover:bg-red-50! transition-all duration-200 hover:translate-x-1!"
               onClick={handleOpenLogoutDialog}
-              disabled={loading}
+              disabled={authLoading || uploadingAvatar}
             >
-              {loading ? (
+              {authLoading ? (
                 <>
-                  <CircularProgress
-                    size={17}
-                    className="text-[rgba(0,0,0,0.7)]!"
-                  />
+                  <CircularProgress size={17} className="text-red-600!" />
                   <span className="font-semibold">Logging out...</span>
                 </>
               ) : (
@@ -270,7 +269,7 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
           <Button
             onClick={handleCloseLogoutDialog}
             className="capitalize! text-gray-600!"
-            disabled={loading}
+            disabled={authLoading}
           >
             Cancel
           </Button>
@@ -278,12 +277,14 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
             onClick={handleLogout}
             variant="contained"
             className="capitalize! bg-red-500! hover:bg-red-600!"
-            disabled={loading}
+            disabled={authLoading}
             startIcon={
-              loading ? <CircularProgress size={16} color="inherit" /> : null
+              authLoading ? (
+                <CircularProgress size={16} color="inherit" />
+              ) : null
             }
           >
-            {loading ? 'Logging out...' : 'Logout'}
+            {authLoading ? 'Logging out...' : 'Logout'}
           </Button>
         </DialogActions>
       </Dialog>

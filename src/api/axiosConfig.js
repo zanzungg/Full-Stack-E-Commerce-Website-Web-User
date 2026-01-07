@@ -34,7 +34,7 @@ axiosInstance.interceptors.request.use(
 // Response interceptor
 axiosInstance.interceptors.response.use(
   (response) => {
-    return response.data;
+    return response;
   },
   async (error) => {
     const originalRequest = error.config;
@@ -51,16 +51,12 @@ axiosInstance.interceptors.response.use(
         API_ENDPOINTS.FORGOT_PASSWORD,
         API_ENDPOINTS.VERIFY_RESET_CODE,
         API_ENDPOINTS.RESET_PASSWORD,
-        API_ENDPOINTS.LOGOUT,
+        API_ENDPOINTS.GOOGLE_LOGIN,
       ];
 
-      const requestUrl = originalRequest.url.replace(API_BASE_URL, '');
-      const isAuthEndpoint = authEndpoints.some(
-        (endpoint) => requestUrl === endpoint
-      );
+      const requestPath = new URL(originalRequest.url, API_BASE_URL).pathname;
 
-      // Nếu là auth endpoint, throw error luôn
-      if (isAuthEndpoint) {
+      if (authEndpoints.includes(requestPath)) {
         return Promise.reject(error);
       }
 
@@ -68,58 +64,32 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // Nếu đang có refresh token đang chạy, chờ nó
-        if (refreshTokenPromise) {
-          await refreshTokenPromise;
-          // Lấy token mới từ localStorage và retry request
-          const newToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
-          if (newToken) {
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            return axiosInstance(originalRequest);
-          }
+        if (!refreshTokenPromise) {
+          const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+          if (!refreshToken) throw new Error('No refresh token');
+
+          // Use raw axios to avoid interceptor recursion
+          refreshTokenPromise = axios
+            .post(`${API_BASE_URL}${API_ENDPOINTS.REFRESH_TOKEN}`, {
+              refreshToken,
+            })
+            .finally(() => {
+              refreshTokenPromise = null;
+            });
         }
 
-        const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+        const refreshResponse = await refreshTokenPromise;
+        const { accessToken, refreshToken: newRefreshToken } =
+          refreshResponse.data.data;
 
-        if (!refreshToken) {
-          throw new Error('No refresh token available');
-        }
-
-        // Tạo promise mới để các request khác chờ
-        refreshTokenPromise = axios
-          .post(`${API_BASE_URL}${API_ENDPOINTS.REFRESH_TOKEN}`, {
-            refreshToken,
-          })
-          .finally(() => {
-            // Reset promise sau khi hoàn thành
-            refreshTokenPromise = null;
-          });
-
-        const response = await refreshTokenPromise;
-
-        // Backend trả về: { message, error, success, data: { accessToken, refreshToken } }
-        const newAccessToken =
-          response.data?.data?.accessToken || response.data?.accessToken;
-        const newRefreshToken =
-          response.data?.data?.refreshToken || response.data?.refreshToken;
-
-        if (!newAccessToken) {
-          throw new Error('No access token in refresh response');
-        }
-
-        // Lưu tokens mới
-        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, newAccessToken);
+        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
         if (newRefreshToken) {
           localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
         }
 
-        // Retry request với token mới
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        // Reset promise
-        refreshTokenPromise = null;
-
         // Clear storage
         localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
         localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);

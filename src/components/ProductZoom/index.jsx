@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import InnerImageZoom from 'react-inner-image-zoom';
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.min.css';
 
@@ -18,11 +18,9 @@ const ProductZoom = ({ images = [] }) => {
   const nextRef = useRef(null);
   const thumbsSwiperRef = useRef(null);
 
-  // Convert images array from API or use placeholder
+  // Convert images array from API to array of URLs
   const imageUrls =
-    images.length > 0
-      ? images.map((img) => img.url || img)
-      : ['https://via.placeholder.com/500x500?text=No+Image'];
+    images.length > 0 ? images.map((img) => img.url || img) : [];
 
   const handleThumbClick = (index) => {
     setActiveIndex(index);

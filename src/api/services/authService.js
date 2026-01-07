@@ -1,5 +1,5 @@
 import axiosInstance from '../axiosConfig';
-import { API_ENDPOINTS, STORAGE_KEYS } from '../../config/constants';
+import { API_ENDPOINTS } from '../../config/constants';
 
 export const authService = {
   login: async (credentials) => {
@@ -15,7 +15,6 @@ export const authService = {
 
   logout: async () => {
     const response = await axiosInstance.post(API_ENDPOINTS.LOGOUT);
-    localStorage.clear();
     return response;
   },
 
@@ -61,24 +60,22 @@ export const authService = {
     return response;
   },
 
-  refreshToken: async () => {
-    const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-    if (!refreshToken) {
-      throw new Error('No refresh token available');
-    }
-    const response = await axiosInstance.post(API_ENDPOINTS.REFRESH_TOKEN, {
-      refreshToken,
-    });
-    return response;
-  },
-
   // Google Authentication
   loginWithGoogle: async (userData) => {
     // userData = { name, email, avatar, mobile }
-    const response = await axiosInstance.post(
-      API_ENDPOINTS.GOOGLE_LOGIN,
-      userData
-    );
-    return response;
+    try {
+      const response = await axiosInstance.post(
+        API_ENDPOINTS.GOOGLE_LOGIN,
+        userData
+      );
+      return response;
+    } catch (error) {
+      // Nếu email đã tồn tại với password login
+      if (error.response?.status === 409) {
+        const err = new Error('Email already registered with password login');
+        err.code = 'GOOGLE_EMAIL_CONFLICT';
+        throw err;
+      }
+    }
   },
 };

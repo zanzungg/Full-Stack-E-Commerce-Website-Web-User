@@ -1,9 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-const BannerBox = ({ img, link = "/", ...props }) => {
+const BannerBox = ({ img, link = '/', ...props }) => {
   return (
-    <div className='box bannerBox rounded-lg overflow-hidden group' {...props}>
+    <div className="box bannerBox rounded-lg overflow-hidden group" {...props}>
       <Link to={link}>
         <img
           src={img}

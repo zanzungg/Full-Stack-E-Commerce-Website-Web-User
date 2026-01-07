@@ -1,10 +1,10 @@
-import React, { memo, useState } from 'react';
+import { memo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { useCategories } from '../../contexts/CategoryContext';
+import { useCategory } from '../../hooks/useCategory';
 
 const CategorySkeleton = () => {
   return (
@@ -22,13 +22,13 @@ const CategorySkeleton = () => {
   );
 };
 
-const CategoryCard = ({ cat }) => {
+const CategoryCard = memo(({ cat }) => {
   const [imgError, setImgError] = useState(false);
   const imageUrl =
     cat.images && cat.images.length > 0 ? cat.images[0].url : null;
 
   return (
-    <Link to={`/category/${cat.slug}`} className="block h-full">
+    <Link to={`/product-listing?catId=${cat._id}`} className="block h-full">
       <div className="group h-full flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-white p-4 text-center shadow-sm transition-all duration-300 hover:border-red-500 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
         <div className="relative mb-3 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-gray-50 transition-transform duration-300 group-hover:scale-105">
           {!imgError && imageUrl ? (
@@ -49,10 +49,18 @@ const CategoryCard = ({ cat }) => {
       </div>
     </Link>
   );
-};
+});
+
+CategoryCard.displayName = 'CategoryCard';
 
 const HomeCategorySlider = memo(() => {
-  const { categories, loading } = useCategories();
+  // Use category hook
+  const { categories, loading, isEmpty } = useCategory({
+    autoFetch: true,
+    fetchTree: true,
+    enableCache: true,
+    cacheTime: 10 * 60 * 1000,
+  });
 
   if (loading) {
     return (
@@ -64,7 +72,7 @@ const HomeCategorySlider = memo(() => {
     );
   }
 
-  if (!categories || categories.length === 0) {
+  if (isEmpty) {
     return null;
   }
 
@@ -116,7 +124,9 @@ const HomeCategorySlider = memo(() => {
   );
 });
 
-const NavButton = ({ direction, className }) => {
+HomeCategorySlider.displayName = 'HomeCategorySlider';
+
+const NavButton = memo(({ direction, className }) => {
   const isPrev = direction === 'prev';
   return (
     <button
@@ -138,6 +148,8 @@ const NavButton = ({ direction, className }) => {
       </svg>
     </button>
   );
-};
+});
+
+NavButton.displayName = 'NavButton';
 
 export default HomeCategorySlider;

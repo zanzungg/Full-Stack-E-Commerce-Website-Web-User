@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import '../ProductItem/style.css';
 import { Link } from 'react-router-dom';
 import Rating from '@mui/material/Rating';
@@ -9,9 +9,9 @@ import { MdZoomOutMap } from 'react-icons/md';
 import { MdOutlineShoppingCart } from 'react-icons/md';
 import { IoCloseSharp } from 'react-icons/io5';
 import { MyContext } from '../../App';
-import { useCart } from '../../hooks/useCart.jsx';
-import { useWishlist } from '../../hooks/useWishlist.jsx';
-import { useAuthContext } from '../../contexts/AuthContext';
+import { useCart } from '../../hooks/useCart';
+import { useWishlist } from '../../hooks/useWishlist';
+import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-hot-toast';
 
 const ProductItemListView = ({ product }) => {
@@ -23,7 +23,7 @@ const ProductItemListView = ({ product }) => {
     isAdding: isAddingToWishlist,
     isRemoving: isRemovingFromWishlist,
   } = useWishlist();
-  const { isAuthenticated } = useAuthContext();
+  const { isAuthenticated } = useAuth();
   const [showVariantSelector, setShowVariantSelector] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState({
     type: null,
@@ -49,7 +49,7 @@ const ProductItemListView = ({ product }) => {
   } = product;
 
   // Get first two images for hover effect
-  const mainImage = images[0]?.url || 'https://via.placeholder.com/300';
+  const mainImage = images[0]?.url;
   const hoverImage = images[1]?.url || mainImage;
 
   // Check if product has variants
@@ -93,6 +93,15 @@ const ProductItemListView = ({ product }) => {
 
   // Handle add to cart
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      toast.error('Please login to add products to your cart', {
+        duration: 3000,
+        position: 'top-right',
+        icon: '🔒',
+      });
+      return;
+    }
+
     if (hasVariants) {
       // Show variant selector
       setShowVariantSelector(true);
@@ -252,7 +261,15 @@ const ProductItemListView = ({ product }) => {
 
           <div className="mt-4">
             <Tooltip
-              title={isAdding ? 'Adding to cart...' : 'Add to cart'}
+              title={
+                !isAuthenticated
+                  ? 'Login to add to cart'
+                  : isAdding
+                  ? 'Adding to cart...'
+                  : hasVariants
+                  ? 'Select variant'
+                  : 'Add to cart'
+              }
               arrow
             >
               <span>

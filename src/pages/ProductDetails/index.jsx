@@ -1,73 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link, useParams } from 'react-router-dom';
+
 import ProductZoom from '../../components/ProductZoom';
 import ProductsSlider from '../../components/ProductsSlider';
 import ProductDetailsComponent from '../../components/ProductDetails';
 import Reviews from './reviews';
-import { productService } from '../../api/services/productService';
+
+import {
+  useProductDetail,
+  useProductsByCategory,
+} from '../../hooks/useProduct';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState(0);
-  const [product, setProduct] = useState(null);
-  const [relatedProducts, setRelatedProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [relatedLoading, setRelatedLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  // Fetch product details
-  useEffect(() => {
-    const fetchProductDetails = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await productService.getProductDetails(id);
-        if (response?.success && response.data?.product) {
-          setProduct(response.data.product);
-        } else if (response?.data) {
-          setProduct(response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching product details:', error);
-        setError(error.message || 'Failed to load product details');
-      } finally {
-        setLoading(false);
-      }
-    };
+  /* ---------- Product detail ---------- */
+  const { product, productLoading, error } = useProductDetail(id);
 
-    if (id) {
-      fetchProductDetails();
-    }
-  }, [id]);
-
-  // Fetch related products
-  useEffect(() => {
-    const fetchRelatedProducts = async () => {
-      if (!product?.catId) return;
-
-      try {
-        setRelatedLoading(true);
-        const response = await productService.getProductsByCategoryId(
-          product.catId,
-          { page: 1, limit: 8 }
-        );
-        if (response?.success && response.data) {
-          const filtered = response.data.filter((p) => p._id !== product._id);
-          setRelatedProducts(filtered);
-        }
-      } catch (error) {
-        console.error('Error fetching related products:', error);
-      } finally {
-        setRelatedLoading(false);
-      }
-    };
-
-    fetchRelatedProducts();
-  }, [product]);
+  /* ---------- Related products ---------- */
+  const { products: relatedProducts, productsLoading: relatedLoading } =
+    useProductsByCategory(product?.catId, {
+      autoFetch: !!product?.catId,
+      params: { page: 1, limit: 8 },
+    });
 
   // Loading state
-  if (loading) {
+  if (productLoading) {
     return (
       <div className="py-20">
         <div className="container">

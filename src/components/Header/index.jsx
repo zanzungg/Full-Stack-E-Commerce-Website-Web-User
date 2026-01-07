@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Search from '../Search';
 import Badge from '@mui/material/Badge';
@@ -23,17 +23,19 @@ import { MdOutlineSettings } from 'react-icons/md';
 
 // Import useAuth và useAuthContext
 import { useAuth } from '../../hooks/useAuth';
-import { useAuthContext } from '../../contexts/AuthContext';
-import { useCart } from '../../hooks/useCart.jsx';
-import { useWishlist } from '../../hooks/useWishlist.jsx';
+import { useUser } from '../../hooks/useUser';
+import { useCart } from '../../hooks/useCart';
+import { useWishlist } from '../../hooks/useWishlist';
 
 // Custom Styled Badge
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
-    right: -3,
-    top: 13,
-    border: `2px solid ${(theme.vars ?? theme).palette.background.paper}`,
+    right: -2,
+    top: 4,
+    border: `2px solid ${theme.palette.background.paper}`,
     padding: '0 4px',
+    fontSize: '11px',
+    fontWeight: 600,
   },
 }));
 
@@ -43,9 +45,9 @@ const Header = () => {
   const navigate = useNavigate();
   const context = useContext(MyContext);
 
-  // Sử dụng AuthContext và useAuth
-  const { user, isAuthenticated } = useAuthContext();
-  const { logout, loading } = useAuth();
+  const { logout, isAuthenticated, authLoading } = useAuth();
+
+  const { user } = useUser();
 
   // Sử dụng useCart để lấy cart count
   const { cartSummary } = useCart();
@@ -86,7 +88,7 @@ const Header = () => {
               <ul className="flex items-center gap-4">
                 <li className="list-none">
                   <Link
-                    to="/help-center"
+                    to="/"
                     className="text-[13px] link font-medium transition hover:text-primary"
                   >
                     Help Center
@@ -97,7 +99,7 @@ const Header = () => {
                 </li>
                 <li className="list-none">
                   <Link
-                    to="/order-tracking"
+                    to="/"
                     className="text-[13px] link font-medium transition hover:text-primary"
                   >
                     Order Tracking
@@ -116,7 +118,7 @@ const Header = () => {
           <div className="w-[25%]">
             <Link
               to="/"
-              className="inline-block transition-transform hover:scale-105"
+              className="inline-block transition-all duration-300 hover:scale-105 hover:drop-shadow-lg"
             >
               <img src="/logo.jpg" alt="ClassyShop Logo" className="h-11" />
             </Link>
@@ -154,28 +156,34 @@ const Header = () => {
                     aria-controls={open ? 'account-menu' : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
-                    disabled={loading}
+                    disabled={authLoading}
                     sx={{
                       textTransform: 'none',
                       padding: '6px 12px',
-                      borderRadius: '8px',
-                      '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' },
+                      borderRadius: '10px',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 82, 82, 0.06)',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 4px 12px rgba(255, 82, 82, 0.15)',
+                      },
                     }}
                   >
                     <div
                       className="w-10 h-10 min-w-10 rounded-full
-                          bg-linear-to-br from-primary/10 to-primary/5 flex items-center justify-center
-                          border border-primary/20"
+                          bg-linear-to-br from-red-100 via-orange-50 to-red-50 flex items-center justify-center
+                          border-2 border-red-200 shadow-sm
+                          transition-all duration-300 group-hover:shadow-md group-hover:border-primary"
                     >
                       <FaRegUser className="text-[15px] text-primary" />
                     </div>
 
                     <div className="info flex flex-col items-start">
                       <h4 className="text-[14px] text-gray-900 mb-0 font-semibold capitalize leading-tight">
-                        {user?.name || 'User'}
+                        {user?.name}
                       </h4>
                       <span className="text-[12px] text-gray-500 normal-case leading-tight mt-0.5">
-                        {user?.email?.split('@')[0] || 'user'}@...
+                        {user?.email}
                       </span>
                     </div>
                   </Button>
@@ -274,7 +282,7 @@ const Header = () => {
 
                     <Divider sx={{ my: 1, mx: 1 }} />
 
-                    <MenuItem onClick={handleLogout} disabled={loading}>
+                    <MenuItem onClick={handleLogout} disabled={authLoading}>
                       <ListItemIcon>
                         <IoLogOutOutline
                           fontSize="small"
@@ -282,7 +290,7 @@ const Header = () => {
                         />
                       </ListItemIcon>
                       <span className="text-[14px] font-medium text-red-500">
-                        {loading ? 'Logging out...' : 'Logout'}
+                        {authLoading ? 'Logging out...' : 'Logout'}
                       </span>
                     </MenuItem>
                   </Menu>
@@ -291,21 +299,42 @@ const Header = () => {
 
               {/* Wishlist */}
               <li>
-                <Tooltip title="Wishlist" arrow placement="bottom">
+                <Tooltip
+                  title="Wishlist"
+                  arrow
+                  placement="bottom"
+                  componentsProps={{
+                    tooltip: {
+                      sx: {
+                        bgcolor: 'rgba(0, 0, 0, 0.85)',
+                        fontSize: '12px',
+                        fontWeight: 500,
+                        py: 0.75,
+                        px: 1.5,
+                      },
+                    },
+                  }}
+                >
                   <IconButton
                     aria-label="wishlist"
                     onClick={() => navigate('/my-wishlist')}
                     sx={{
-                      '&:hover': {
-                        backgroundColor: 'rgba(255, 82, 82, 0.08)',
-                        transform: 'scale(1.05)',
-                      },
+                      p: 1,
                       transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        transform: 'scale(1.08)',
+                        bgcolor: 'rgba(255, 82, 82, 0.08)',
+                      },
                     }}
                   >
                     <StyledBadge
                       badgeContent={isAuthenticated ? wishlistCount || 0 : 0}
                       color="secondary"
+                      overlap="circular"
+                      anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
                     >
                       <FaRegHeart size={21} className="text-gray-700" />
                     </StyledBadge>
@@ -315,16 +344,32 @@ const Header = () => {
 
               {/* Cart */}
               <li>
-                <Tooltip title="Cart" arrow placement="bottom">
+                <Tooltip
+                  title="Cart"
+                  arrow
+                  placement="bottom"
+                  componentsProps={{
+                    tooltip: {
+                      sx: {
+                        bgcolor: 'rgba(0, 0, 0, 0.85)',
+                        fontSize: '12px',
+                        fontWeight: 500,
+                        py: 0.75,
+                        px: 1.5,
+                      },
+                    },
+                  }}
+                >
                   <IconButton
                     aria-label="cart"
                     onClick={() => context.setOpenCartPanel(true)}
                     sx={{
-                      '&:hover': {
-                        backgroundColor: 'rgba(255, 82, 82, 0.08)',
-                        transform: 'scale(1.05)',
-                      },
+                      p: 1,
                       transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        transform: 'scale(1.08)',
+                        bgcolor: 'rgba(255, 82, 82, 0.08)',
+                      },
                     }}
                   >
                     <StyledBadge
@@ -332,6 +377,11 @@ const Header = () => {
                         isAuthenticated ? cartSummary?.totalItems || 0 : 0
                       }
                       color="secondary"
+                      overlap="circular"
+                      anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
                     >
                       <MdOutlineShoppingCart
                         size={23}
@@ -348,6 +398,20 @@ const Header = () => {
 
       {/* Navigation Bar */}
       <Navigation />
+
+      {/* Add keyframes for badge pulse animation */}
+      <style>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.8;
+            transform: scale(1.05);
+          }
+        }
+      `}</style>
     </header>
   );
 };

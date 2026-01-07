@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -12,8 +12,9 @@ import { LuMenu } from 'react-icons/lu';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Pagination from '@mui/material/Pagination';
-import { productService } from '../../api/services/productService';
 import { useCategories } from '../../contexts/CategoryContext';
+import { useProductListing } from '../../hooks/useProduct';
+import { cleanQueryParams } from '../../utils/query';
 
 const ProductListing = () => {
   const location = useLocation();
@@ -21,25 +22,47 @@ const ProductListing = () => {
   const searchParams = new URLSearchParams(location.search);
   const { categories } = useCategories();
 
+  // Derive currentPage and sortBy from URL
+  const currentPage = parseInt(searchParams.get('page')) || 1;
+  const sortBy = searchParams.get('sort') || 'name_asc';
+
+  // Build queryParams from searchParams
+  const rawParams = {
+    page: currentPage,
+    limit: 12,
+    sort: sortBy,
+    search: searchParams.get('search'),
+    category: searchParams.get('category'),
+    catId: searchParams.get('catId'),
+    subCatId: searchParams.get('subCatId'),
+    thirdSubCatId: searchParams.get('thirdSubCatId'),
+    brand: searchParams.get('brand'),
+    minPrice: searchParams.get('minPrice'),
+    maxPrice: searchParams.get('maxPrice'),
+    rating: searchParams.get('rating'),
+    inStock: searchParams.get('inStock'),
+    productRam: searchParams.get('productRam'),
+    productSize: searchParams.get('productSize'),
+    productWeight: searchParams.get('productWeight'),
+  };
+
+  const queryParams = cleanQueryParams(rawParams);
+
+  // Use the hook
+  const {
+    products,
+    loading,
+    error,
+    pagination: { totalPages, totalProducts },
+    availableFilters,
+    appliedFilters,
+    refresh,
+  } = useProductListing(queryParams, { autoFetch: true });
+
   // UI States
   const [itemView, setItemView] = useState('grid');
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-
-  // Data States
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Pagination & Filter States
-  const [currentPage, setCurrentPage] = useState(
-    parseInt(searchParams.get('page')) || 1
-  );
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalProducts, setTotalProducts] = useState(0);
-  const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'name_asc');
-  const [availableFilters, setAvailableFilters] = useState(null);
-  const [appliedFilters, setAppliedFilters] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -49,64 +72,8 @@ const ProductListing = () => {
     setAnchorEl(null);
   };
 
-  // Fetch products from API
-  const fetchProducts = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // Build params from URL search params
-      const params = {
-        page: currentPage,
-        limit: 12,
-        sort: sortBy,
-        search: searchParams.get('search') || '',
-        category: searchParams.get('category') || '',
-        catId: searchParams.get('catId') || '',
-        subCatId: searchParams.get('subCatId') || '',
-        thirdSubCatId: searchParams.get('thirdSubCatId') || '',
-        brand: searchParams.get('brand') || '',
-        minPrice: searchParams.get('minPrice') || '',
-        maxPrice: searchParams.get('maxPrice') || '',
-        rating: searchParams.get('rating') || '',
-        inStock: searchParams.get('inStock') || '',
-        productRam: searchParams.get('productRam') || '',
-        productSize: searchParams.get('productSize') || '',
-        productWeight: searchParams.get('productWeight') || '',
-      };
-
-      // Remove empty params
-      Object.keys(params).forEach((key) => {
-        if (!params[key]) delete params[key];
-      });
-
-      const response = await productService.getProducts(params);
-
-      if (response.success) {
-        setProducts(response.data || []);
-        setTotalPages(response.pagination?.totalPages || 1);
-        setTotalProducts(response.pagination?.totalProducts || 0);
-        setAvailableFilters(response.availableFilters || null);
-        setAppliedFilters(response.appliedFilters || null);
-      } else {
-        setError(response.message || 'Failed to fetch products');
-      }
-    } catch (err) {
-      console.error('Error fetching products:', err);
-      setError(err.message || 'Failed to fetch products');
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage, sortBy, location.search]);
-
-  // Fetch products on mount and when dependencies change
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
-
   // Handle page change
   const handlePageChange = (event, page) => {
-    setCurrentPage(page);
     searchParams.set('page', page.toString());
     navigate({ search: searchParams.toString() });
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -114,8 +81,6 @@ const ProductListing = () => {
 
   // Handle sort change
   const handleSortChange = (sortValue) => {
-    setSortBy(sortValue);
-    setCurrentPage(1);
     searchParams.set('sort', sortValue);
     searchParams.set('page', '1');
     navigate({ search: searchParams.toString() });
@@ -125,43 +90,55 @@ const ProductListing = () => {
   // Handle filter change
   const handleFilterChange = useCallback(
     (filterName, filterValue) => {
-      setCurrentPage(1);
-      const newSearchParams = new URLSearchParams(location.search);
+      const params = new URLSearchParams(location.search);
+
+      if (filterName === 'catId') {
+        // Khi chọn Category → reset sub levels
+        params.delete('subCatId');
+        params.delete('thirdSubCatId');
+      }
+
+      if (filterName === 'subCatId') {
+        // Khi chọn SubCategory → reset third level
+        params.delete('thirdSubCatId');
+      }
 
       // Handle price range
       if (filterName === 'priceRange') {
-        newSearchParams.set('minPrice', filterValue.min);
-        newSearchParams.set('maxPrice', filterValue.max);
+        if (filterValue?.min != null && filterValue?.max != null) {
+          params.set('minPrice', filterValue.min);
+          params.set('maxPrice', filterValue.max);
+        } else {
+          params.delete('minPrice');
+          params.delete('maxPrice');
+        }
       } else {
         if (filterValue) {
-          newSearchParams.set(filterName, filterValue);
+          params.set(filterName, filterValue);
         } else {
-          newSearchParams.delete(filterName);
+          params.delete(filterName);
         }
       }
 
-      newSearchParams.set('page', '1');
-      navigate({ search: newSearchParams.toString() });
+      params.set('page', '1');
+      navigate({ search: params.toString() });
     },
     [location.search, navigate]
   );
 
   // Clear all filters
   const handleClearFilters = useCallback(() => {
-    setCurrentPage(1);
-    const newSearchParams = new URLSearchParams();
+    const params = new URLSearchParams();
 
-    // Keep only catId, subCatId, thirdSubCatId if they exist
-    const catId = searchParams.get('catId');
-    const subCatId = searchParams.get('subCatId');
-    const thirdSubCatId = searchParams.get('thirdSubCatId');
+    ['catId', 'subCatId', 'thirdSubCatId'].forEach((key) => {
+      const value = searchParams.get(key);
+      if (value) params.set(key, value);
+    });
 
-    if (catId) newSearchParams.set('catId', catId);
-    if (subCatId) newSearchParams.set('subCatId', subCatId);
-    if (thirdSubCatId) newSearchParams.set('thirdSubCatId', thirdSubCatId);
+    params.set('sort', 'name_asc');
+    params.set('page', '1');
 
-    newSearchParams.set('page', '1');
-    navigate({ search: newSearchParams.toString() });
+    navigate({ search: params.toString() });
   }, [searchParams, navigate]);
 
   // Get sort label
@@ -391,7 +368,7 @@ const ProductListing = () => {
               <div className="text-center py-10">
                 <p className="text-red-500 text-lg">{error}</p>
                 <Button
-                  onClick={fetchProducts}
+                  onClick={refresh}
                   className="mt-4 bg-blue-500! text-white!"
                 >
                   Retry

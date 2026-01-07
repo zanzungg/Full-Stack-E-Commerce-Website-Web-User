@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IoCloseSharp } from 'react-icons/io5';
 import Rating from '@mui/material/Rating';
@@ -148,7 +148,12 @@ const MyListItems = ({ item, onRemove, onAddToCart, isRemoving, isAdding }) => {
 
           {/* Rating */}
           {productRating > 0 ? (
-            <Rating name="size-small" value={productRating} size="small" readOnly />
+            <Rating
+              name="size-small"
+              value={productRating}
+              size="small"
+              readOnly
+            />
           ) : (
             <span className="text-xs text-gray-400">No reviews</span>
           )}

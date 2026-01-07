@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { CircularProgress } from '@mui/material';
 import { usePayment } from '../../hooks/usePayment';
