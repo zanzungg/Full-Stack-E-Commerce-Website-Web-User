@@ -625,3 +625,184 @@ export const useActiveBanners = (options = {}) => {
     isCached: isCacheValid(),
   };
 };
+
+
+/**
+ * Custom hook for product search
+ * @param {string} searchQuery - Search query string
+ * @param {Object} options - Configuration options
+ * @returns {Object} Hook state and methods
+ */
+export const useProductSearch = (searchQuery = '', options = {}) => {
+  const {
+    autoFetch = false,
+    params = { page: 1, limit: 10 },
+    minSearchLength = 2,
+  } = options;
+
+  const [searchResults, setSearchResults] = useState([]);
+  const [searching, setSearching] = useState(false);
+  const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalProducts: 0,
+    limit: params.limit,
+    hasNextPage: false,
+    hasPrevPage: false,
+    nextPage: null,
+    prevPage: null,
+  });
+  const [appliedFilters, setAppliedFilters] = useState(null);
+  const [availableFilters, setAvailableFilters] = useState(null);
+
+  const abortControllerRef = useRef(null);
+  const lastSearchRef = useRef('');
+
+  const searchProducts = useCallback(
+    async (query, searchParams = params) => {
+      const trimmedQuery = query?.trim() || '';
+
+      // Clear results if query is too short
+      if (trimmedQuery.length < minSearchLength) {
+        setSearchResults([]);
+        setSearching(false);
+        setError(null);
+        setPagination({
+          currentPage: 1,
+          totalPages: 1,
+          totalProducts: 0,
+          limit: params.limit,
+          hasNextPage: false,
+          hasPrevPage: false,
+          nextPage: null,
+          prevPage: null,
+        });
+        setAppliedFilters(null);
+        setAvailableFilters(null);
+        return [];
+      }
+
+      // Skip if same query
+      if (
+        trimmedQuery === lastSearchRef.current &&
+        searchParams.page === params.page
+      ) {
+        return searchResults;
+      }
+
+      lastSearchRef.current = trimmedQuery;
+
+      // Cancel previous request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      abortControllerRef.current = new AbortController();
+
+      try {
+        setSearching(true);
+        setError(null);
+
+        const response = await productService.getProducts({
+          search: trimmedQuery,
+          ...searchParams,
+        });
+
+        if (!response?.data?.success) {
+          throw new Error(
+            response?.data?.message || 'Failed to search products'
+          );
+        }
+
+        const { data, pagination, appliedFilters, availableFilters } =
+          response.data;
+
+        setSearchResults(data || []);
+        setPagination(
+          pagination || {
+            currentPage: 1,
+            totalPages: 1,
+            totalProducts: 0,
+            limit: params.limit,
+            hasNextPage: false,
+            hasPrevPage: false,
+            nextPage: null,
+            prevPage: null,
+          }
+        );
+        setAppliedFilters(appliedFilters || null);
+        setAvailableFilters(availableFilters || null);
+
+        return data || [];
+      } catch (err) {
+        if (err.name === 'AbortError') return [];
+
+        const errorMessage = err.message || 'Failed to search products';
+        setError(errorMessage);
+        setSearchResults([]);
+        setPagination({
+          currentPage: 1,
+          totalPages: 1,
+          totalProducts: 0,
+          limit: params.limit,
+          hasNextPage: false,
+          hasPrevPage: false,
+          nextPage: null,
+          prevPage: null,
+        });
+        console.error('Product search error:', err);
+        return [];
+      } finally {
+        setSearching(false);
+        abortControllerRef.current = null;
+      }
+    },
+    [params, minSearchLength, searchResults]
+  );
+
+  useEffect(() => {
+    if (!autoFetch || !searchQuery) return;
+    searchProducts(searchQuery);
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [autoFetch, searchQuery, searchProducts]);
+
+  const clearSearch = useCallback(() => {
+    setSearchResults([]);
+    setSearching(false);
+    setError(null);
+    setPagination({
+      currentPage: 1,
+      totalPages: 1,
+      totalProducts: 0,
+      limit: params.limit,
+      hasNextPage: false,
+      hasPrevPage: false,
+      nextPage: null,
+      prevPage: null,
+    });
+    setAppliedFilters(null);
+    setAvailableFilters(null);
+    lastSearchRef.current = '';
+  }, [params.limit]);
+
+  return {
+    searchResults,
+    searching,
+    error,
+    pagination,
+    appliedFilters,
+    availableFilters,
+    searchProducts,
+    clearSearch,
+    hasResults: searchResults.length > 0,
+    isEmpty:
+      !searching &&
+      searchResults.length === 0 &&
+      searchQuery.length >= minSearchLength,
+  };
+};

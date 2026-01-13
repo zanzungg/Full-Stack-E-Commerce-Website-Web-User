@@ -20,10 +20,10 @@ export const API_ENDPOINTS = {
   CHANGE_PASSWORD: '/users/change-password',
 
   // Address Management
-  GET_ADDRESSES: '/addresses/',
+  GET_ADDRESSES: '/addresses',
   GET_SELECTED_ADDRESS: '/addresses/selected',
   GET_ADDRESS_BY_ID: (addressId) => `/addresses/${addressId}`,
-  CREATE_ADDRESS: '/addresses/',
+  CREATE_ADDRESS: '/addresses',
   SELECT_ADDRESS: (addressId) => `/addresses/${addressId}/select`,
   UPDATE_ADDRESS: (addressId) => `/addresses/${addressId}`,
   DEACTIVATE_ADDRESS: (addressId) => `/addresses/${addressId}/deactivate`,
@@ -34,20 +34,20 @@ export const API_ENDPOINTS = {
   GET_BANNERS: '/home-slider-banner',
 
   // Home Banner V1
-  GET_HOME_BANNERS_V1: '/home-banner-v1/',
+  GET_HOME_BANNERS_V1: '/home-banner-v1',
 
   // Blogs
-  GET_BLOGS: '/blogs/',
+  GET_BLOGS: '/blogs',
   GET_BLOG_BY_ID: (blogId) => `/blogs/${blogId}`,
 
   // Categories
-  GET_CATEGORIES: '/categories/',
+  GET_CATEGORIES: '/categories',
   GET_CATEGORY_TREE: '/categories/tree',
   GET_CATEGORY_BY_ID: (categoryId) => `/categories/${categoryId}`,
   GET_CATEGORY_BY_SLUG: (slug) => `/categories/slug/${slug}`,
 
   // Products
-  GET_PRODUCTS: '/products/',
+  GET_PRODUCTS: '/products',
   GET_PRODUCT_BY_CAT_ID: (catId) => `/products/catId/${catId}`,
   GET_PRODUCT_BY_SUBCAT_ID: (subCatId) => `/products/subCatId/${subCatId}`,
   GET_PRODUCT_BY_THIRDSUBCAT_ID: (thirdSubCatId) =>
@@ -58,7 +58,7 @@ export const API_ENDPOINTS = {
   GET_ACTIVE_BANNERS: '/products/banners/active',
 
   // Cart
-  GET_CART: '/cart/',
+  GET_CART: '/cart',
   ADD_TO_CART: '/cart/create',
   UPDATE_CART_ITEM: (itemId) => `/cart/update-quantity/${itemId}`,
   REMOVE_CART_ITEM: (itemId) => `/cart/${itemId}`,
