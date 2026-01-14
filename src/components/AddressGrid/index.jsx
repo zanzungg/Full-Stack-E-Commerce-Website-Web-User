@@ -11,6 +11,7 @@ const AddressGrid = ({
   onDelete,
   onRestore,
   onSetDefault,
+  onHardDelete,
   onAddNew,
 }) => {
   if (addresses.length === 0) {
@@ -57,10 +58,10 @@ const AddressGrid = ({
   return (
     <>
       {isDeleted && (
-        <div className="bg-blue-50 p-3 rounded-md mb-4">
+        <div className="bg-blue-50 p-3 rounded-md mb-4 border border-blue-200">
           <p className="text-sm text-blue-800">
-            <strong>Note:</strong> You can restore deleted addresses anytime.
-            Restored addresses will be moved back to Active Addresses.
+            <strong>Note:</strong> You can restore deleted addresses or
+            permanently delete them. Permanent deletion cannot be undone.
           </p>
         </div>
       )}
@@ -74,6 +75,7 @@ const AddressGrid = ({
             onDelete={onDelete}
             onRestore={onRestore}
             onSetDefault={onSetDefault}
+            onHardDelete={onHardDelete}
           />
         ))}
       </div>

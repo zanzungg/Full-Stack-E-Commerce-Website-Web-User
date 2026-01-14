@@ -25,9 +25,16 @@ export const useAddress = (options = {}) => {
     active: 0,
     deleted: 0,
     byType: {
-      Home: 0,
-      Office: 0,
-      Other: 0,
+      active: {
+        Home: 0,
+        Office: 0,
+        Other: 0,
+      },
+      deleted: {
+        Home: 0,
+        Office: 0,
+        Other: 0,
+      },
     },
   });
 
@@ -39,18 +46,22 @@ export const useAddress = (options = {}) => {
     const deleted = allAddresses.filter((addr) => addr.status === false);
     const selected = allAddresses.find((addr) => addr.selected === true);
 
-    const byType = {
-      Home: allAddresses.filter((addr) => addr.addressType === 'Home').length,
-      Office: allAddresses.filter((addr) => addr.addressType === 'Office')
-        .length,
-      Other: allAddresses.filter((addr) => addr.addressType === 'Other').length,
-    };
-
     setStatistics({
       total: allAddresses.length,
       active: active.length,
       deleted: deleted.length,
-      byType,
+      byType: {
+        active: {
+          Home: active.filter((a) => a.addressType === 'Home').length,
+          Office: active.filter((a) => a.addressType === 'Office').length,
+          Other: active.filter((a) => a.addressType === 'Other').length,
+        },
+        deleted: {
+          Home: deleted.filter((a) => a.addressType === 'Home').length,
+          Office: deleted.filter((a) => a.addressType === 'Office').length,
+          Other: deleted.filter((a) => a.addressType === 'Other').length,
+        },
+      },
     });
 
     setActiveAddresses(active);

@@ -7,6 +7,7 @@ import {
   MdHome,
   MdBusiness,
   MdLocationOn,
+  MdDeleteForever,
 } from 'react-icons/md';
 
 const AddressCard = ({
@@ -16,6 +17,7 @@ const AddressCard = ({
   onDelete,
   onRestore,
   onSetDefault,
+  onHardDelete,
 }) => {
   const getAddressTypeIcon = (type) => {
     switch (type) {
@@ -133,13 +135,22 @@ const AddressCard = ({
             </Button>
           </>
         ) : (
-          <Button
-            size="small"
-            className="text-xs! text-green-600! hover:bg-green-50! w-full!"
-            onClick={() => onRestore(address)}
-          >
-            <MdRestore className="mr-1" /> Restore Address
-          </Button>
+          <>
+            <Button
+              size="small"
+              className="text-xs! text-green-600! hover:bg-green-50! flex-1!"
+              onClick={() => onRestore(address)}
+            >
+              <MdRestore className="mr-1" /> Restore
+            </Button>
+            <Button
+              size="small"
+              className="text-xs! text-red-600! hover:bg-red-50! flex-1!"
+              onClick={() => onHardDelete(address)}
+            >
+              <MdDeleteForever className="mr-1" /> Delete Forever
+            </Button>
+          </>
         )}
       </div>
     </div>

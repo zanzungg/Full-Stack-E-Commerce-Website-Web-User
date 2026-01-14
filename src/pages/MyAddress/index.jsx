@@ -6,6 +6,7 @@ import AddressGrid from '../../components/AddressGrid';
 import AddressFormDialog from '../../components/AddressFormDialog';
 import DeleteConfirmDialog from '../../components/DeleteConfirmDialog';
 import RestoreConfirmDialog from '../../components/RestoreConfirmDialog';
+import HardDeleteConfirmDialog from '../../components/HardDeleteConfirmDialog';
 import { MyContext } from '../../App';
 import { useAddress } from '../../hooks/useAddress';
 
@@ -23,6 +24,7 @@ const MyAddress = () => {
     selectAddress: selectAddressAPI,
     deactivateAddress,
     restoreAddress,
+    deleteAddressPermanent,
   } = useAddress({
     onSuccess: (message) => context.openAlertBox('success', message),
     onError: (message) => context.openAlertBox('error', message),
@@ -38,6 +40,8 @@ const MyAddress = () => {
   const [deletingAddress, setDeletingAddress] = useState(null);
   const [openRestoreDialog, setOpenRestoreDialog] = useState(false);
   const [restoringAddress, setRestoringAddress] = useState(null);
+  const [openHardDeleteDialog, setOpenHardDeleteDialog] = useState(false);
+  const [hardDeletingAddress, setHardDeletingAddress] = useState(null);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -85,6 +89,13 @@ const MyAddress = () => {
     setOpenRestoreDialog(false);
     setRestoringAddress(null);
     setTabValue(0);
+  };
+
+  const handleHardDeleteAddress = async () => {
+    if (!hardDeletingAddress) return;
+    await deleteAddressPermanent(hardDeletingAddress._id);
+    setOpenHardDeleteDialog(false);
+    setHardDeletingAddress(null);
   };
 
   const getFilteredAddresses = (addresses) => {
@@ -149,7 +160,9 @@ const MyAddress = () => {
                         ? tabValue === 0
                           ? statistics.active
                           : statistics.deleted
-                        : statistics.byType[type] || 0;
+                        : tabValue === 0
+                        ? statistics.byType.active[type] || 0
+                        : statistics.byType.deleted[type] || 0;
 
                     return (
                       <Chip
@@ -191,6 +204,10 @@ const MyAddress = () => {
                     setRestoringAddress(addr);
                     setOpenRestoreDialog(true);
                   }}
+                  onHardDelete={(addr) => {
+                    setHardDeletingAddress(addr);
+                    setOpenHardDeleteDialog(true);
+                  }}
                   onSetDefault={handleSetDefault}
                   onAddNew={handleOpenAddDialog}
                 />
@@ -220,6 +237,13 @@ const MyAddress = () => {
         onClose={() => setOpenRestoreDialog(false)}
         onConfirm={handleRestoreAddress}
         address={restoringAddress}
+      />
+
+      <HardDeleteConfirmDialog
+        open={openHardDeleteDialog}
+        onClose={() => setOpenHardDeleteDialog(false)}
+        onConfirm={handleHardDeleteAddress}
+        address={hardDeletingAddress}
       />
     </section>
   );
