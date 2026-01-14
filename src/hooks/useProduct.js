@@ -626,7 +626,6 @@ export const useActiveBanners = (options = {}) => {
   };
 };
 
-
 /**
  * Custom hook for product search
  * @param {string} searchQuery - Search query string

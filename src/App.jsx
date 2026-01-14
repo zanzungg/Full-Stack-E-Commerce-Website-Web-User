@@ -38,6 +38,7 @@ import BlogDetail from './pages/BlogDetail';
 import { AuthProvider } from './contexts/AuthContext';
 import { CategoryProvider } from './contexts/CategoryContext';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 import ChangePassword from './pages/ChangePassword';
 
 // Import React Query
@@ -111,6 +112,8 @@ function App() {
   return (
     <>
       <BrowserRouter>
+        <ScrollToTop />
+
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <CategoryProvider>

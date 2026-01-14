@@ -171,7 +171,8 @@ const ProductItem = ({ product }) => {
 
           <div
             className="actions absolute top-0 -translate-y-full right-[5px] z-50 flex items-center gap-2
-                 flex-col w-[50px] transition-all duration-300 group-hover:top-[15px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0"
+                 flex-col w-[50px] transition-all duration-300 group-hover:top-[15px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0
+                 pointer-events-none group-hover:pointer-events-auto"
           >
             <Button
               className="w-[35px]! h-[35px]! min-[35px]! rounded-full! bg-white!

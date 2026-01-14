@@ -75,7 +75,7 @@ const ProductListing = () => {
   // Handle page change
   const handlePageChange = (event, page) => {
     searchParams.set('page', page.toString());
-    navigate({ search: searchParams.toString() });
+    navigate(`/product-listing?${searchParams.toString()}`, { replace: true });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -83,7 +83,7 @@ const ProductListing = () => {
   const handleSortChange = (sortValue) => {
     searchParams.set('sort', sortValue);
     searchParams.set('page', '1');
-    navigate({ search: searchParams.toString() });
+    navigate(`/product-listing?${searchParams.toString()}`, { replace: true });
     handleClose();
   };
 
@@ -121,7 +121,7 @@ const ProductListing = () => {
       }
 
       params.set('page', '1');
-      navigate({ search: params.toString() });
+      navigate(`/product-listing?${params.toString()}`, { replace: true });
     },
     [location.search, navigate]
   );
@@ -138,7 +138,7 @@ const ProductListing = () => {
     params.set('sort', 'name_asc');
     params.set('page', '1');
 
-    navigate({ search: params.toString() });
+    navigate(`/product-listing?${params.toString()}`, { replace: true });
   }, [searchParams, navigate]);
 
   // Get sort label

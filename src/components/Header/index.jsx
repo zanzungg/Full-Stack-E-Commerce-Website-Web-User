@@ -268,7 +268,7 @@ const Header = () => {
                       </span>
                     </MenuItem>
 
-                    <MenuItem onClick={() => handleMenuClick('/settings')}>
+                    <MenuItem onClick={() => handleMenuClick('')}>
                       <ListItemIcon>
                         <MdOutlineSettings
                           fontSize="small"

@@ -88,16 +88,16 @@ const Footer = () => {
               <p className="text-[13px] font-normal pb-4">
                 Classyshop - Mega Super Store
                 <br />
-                507-Union Trade Centre France
+                DHBK - DaNang, Vietnam
               </p>
               <Link
                 className="link text-[13px]"
                 to="mailto:someone@example.com"
               >
-                sales@yourcompany.com
+                nguyenvandung@ecommerce-demo.com
               </Link>
               <span className="text-[22px] font-semibold block w-full mt-3 mb-5 text-primary">
-                (+91) 9876-543-210
+                (+84) 000 000 000
               </span>
 
               <div className="flex items-center gap-2">
