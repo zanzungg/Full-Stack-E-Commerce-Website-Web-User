@@ -24,6 +24,7 @@ export const useOrder = (options = {}) => {
   // State management
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [pagination, setPagination] = useState(null);
   const [statistics, setStatistics] = useState({
     total: 0,
     pending: 0,
@@ -36,11 +37,12 @@ export const useOrder = (options = {}) => {
   });
 
   // Helper to extract data from API response
-  const extractData = (response) => response?.data?.data;
+  const extractData = (response) => response?.data;
+  const extractOrderData = (response) => response?.data?.data;
 
   // Fetch orders - React Query
   const {
-    data: ordersData,
+    data: ordersResponse,
     isLoading,
     error: fetchError,
     refetch,
@@ -60,7 +62,7 @@ export const useOrder = (options = {}) => {
   const createOrderMutation = useMutation({
     mutationFn: async (orderData) => {
       const response = await orderService.createOrder(orderData);
-      return extractData(response);
+      return extractOrderData(response);
     },
     onSuccess: (order) => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
@@ -99,7 +101,7 @@ export const useOrder = (options = {}) => {
   const getOrderByIdMutation = useMutation({
     mutationFn: async (orderId) => {
       const response = await orderService.getOrderById(orderId);
-      return extractData(response);
+      return extractOrderData(response);
     },
     onSuccess: (order) => {
       setSelectedOrder(order);
@@ -122,7 +124,7 @@ export const useOrder = (options = {}) => {
   const cancelOrderMutation = useMutation({
     mutationFn: async (orderId) => {
       const response = await orderService.cancelOrder(orderId);
-      return extractData(response);
+      return extractOrderData(response);
     },
     onSuccess: (order) => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
@@ -178,11 +180,15 @@ export const useOrder = (options = {}) => {
    * Update orders when data changes
    */
   useEffect(() => {
-    if (ordersData) {
-      setOrders(ordersData);
-      calculateStatistics(ordersData);
+    if (ordersResponse) {
+      const ordersList = ordersResponse.data || [];
+      const paginationData = ordersResponse.pagination || null;
+
+      setOrders(ordersList);
+      setPagination(paginationData);
+      calculateStatistics(ordersList);
     }
-  }, [ordersData, calculateStatistics]);
+  }, [ordersResponse, calculateStatistics]);
 
   /**
    * Get orders by status
@@ -195,7 +201,8 @@ export const useOrder = (options = {}) => {
           page,
           limit
         );
-        return response?.data?.data || [];
+        const data = extractData(response);
+        return data?.data || [];
       } catch (error) {
         if (onError) onError(error.response?.data?.message, error);
         return [];
@@ -290,7 +297,7 @@ export const useOrder = (options = {}) => {
     orders,
     selectedOrder,
     statistics,
-    pagination: ordersData?.pagination || null,
+    pagination,
 
     // States
     isLoading,

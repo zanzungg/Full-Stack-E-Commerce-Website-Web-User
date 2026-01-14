@@ -470,7 +470,6 @@ const Checkout = () => {
                         ? 'border-blue-500 bg-blue-50 shadow-md'
                         : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
                     }`}
-                    onClick={() => selectPaymentMethod(method.code)}
                   >
                     <FormControlLabel
                       value={method.code}
