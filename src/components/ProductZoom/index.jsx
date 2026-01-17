@@ -188,7 +188,7 @@ const ProductZoom = ({ images = [] }) => {
       </div>
 
       {/* Main Image */}
-      <div className="flex-1 h-[300px] md:h-[535px] bg-white rounded-lg md:rounded-xl shadow-lg overflow-hidden border border-gray-200 p-1 md:p-2 flex items-center justify-center order-1 md:order-2">
+      <div className="flex-1 w-full aspect-3/4 md:aspect-auto md:h-[535px] bg-white rounded-lg md:rounded-xl shadow-lg overflow-hidden border border-gray-200 p-1 md:p-2 flex items-center justify-center order-1 md:order-2">
         <div className="w-full h-full flex items-center justify-center relative">
           <div className="w-full h-full flex items-center justify-center">
             {/* Desktop: Use InnerImageZoom with zoom functionality */}

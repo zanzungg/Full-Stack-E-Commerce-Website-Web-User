@@ -275,7 +275,7 @@ const ProductDetailsComponent = ({ product }) => {
                 </>
               ) : (
                 <>
-                  <MdOutlineShoppingCart className="text-[18px] md:text-[22px]" />
+                  <MdOutlineShoppingCart className="w-[18px] h-[18px] md:w-[22px] md:h-[22px]" />
                   Add To Cart
                 </>
               )}

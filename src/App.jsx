@@ -266,7 +266,7 @@ function App() {
                     <div className="flex flex-col md:flex-row items-start mt-0 md:mt-2 w-full productDetailsModalContainer relative">
                       <Button
                         className="w-9! h-9! md:w-10! md:h-10! min-w-9! md:min-w-10! rounded-full! text-black!
-          absolute! top-[8px] md:top-[15px] right-[8px] md:right-[15px] bg-[#f1f1f1]! z-50!"
+          absolute! top-2 md:top-[15px] right-2 md:right-[15px] bg-[#f1f1f1]! z-50!"
                         onClick={handleCloseProductDetailsModal}
                       >
                         <IoCloseSharp className="text-[18px] md:text-[20px]" />
