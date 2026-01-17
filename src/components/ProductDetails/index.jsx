@@ -107,10 +107,10 @@ const ProductDetailsComponent = ({ product }) => {
 
   return (
     <>
-      <h1 className="text-[24px] font-semibold mb-2">{name}</h1>
-      <div className="flex items-center gap-3">
+      <h1 className="text-[18px] md:text-[24px] font-semibold mb-2">{name}</h1>
+      <div className="flex flex-wrap items-center gap-2 md:gap-3">
         {brand && (
-          <span className="text-gray-400 text-[13px]">
+          <span className="text-gray-400 text-[11px] md:text-[13px]">
             Brands :
             <span className="font-medium text-black opacity-75">{brand}</span>
           </span>
@@ -122,24 +122,29 @@ const ProductDetailsComponent = ({ product }) => {
           size="small"
           readOnly
           precision={0.5}
+          sx={{
+            '& .MuiRating-icon': {
+              fontSize: { xs: '0.9rem', md: '1.25rem' },
+            },
+          }}
         />
-        <span className="text-[13px] cursor-pointer">
+        <span className="text-[11px] md:text-[13px] cursor-pointer">
           Review ({reviews.length || 0})
         </span>
       </div>
-      <div className="flex items-center gap-4 mt-4">
+      <div className="flex flex-wrap items-center gap-2 md:gap-4 mt-3 md:mt-4">
         {oldPrice > 0 && (
-          <span className="oldPrice line-through text-gray-500 text-[20px] font-medium">
+          <span className="oldPrice line-through text-gray-500 text-[16px] md:text-[20px] font-medium">
             ${oldPrice.toFixed(2)}
           </span>
         )}
-        <span className="price text-primary font-semibold text-[20px]">
+        <span className="price text-primary font-semibold text-[18px] md:text-[20px]">
           ${price.toFixed(2)}
         </span>
-        <span className="text-[14px]">
+        <span className="text-[12px] md:text-[14px]">
           Available In Stock:{' '}
           <span
-            className={`text-[14px] font-bold ${
+            className={`text-[12px] md:text-[14px] font-bold ${
               countInStock > 0 ? 'text-green-600' : 'text-red-600'
             }`}
           >
@@ -148,18 +153,18 @@ const ProductDetailsComponent = ({ product }) => {
         </span>
       </div>
 
-      <p className="mt-3 pr-10 mb-5 whitespace-pre-line">
+      <p className="mt-3 pr-0 md:pr-10 mb-3 md:mb-5 whitespace-pre-line text-sm md:text-base">
         {description || 'No description available.'}
       </p>
 
       {productRam && productRam.length > 0 && (
-        <div className="flex items-center gap-3 mb-3">
-          <span className="text-[16px]">RAM: </span>
-          <div className="flex items-center gap-1 actions">
+        <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2 md:mb-3">
+          <span className="text-[14px] md:text-[16px]">RAM: </span>
+          <div className="flex flex-wrap items-center gap-1 actions">
             {productRam.map((ram, index) => (
               <Button
                 key={index}
-                className={`${
+                className={`text-[12px] md:text-[14px]! min-w-[50px] md:min-w-[60px]! ${
                   selectedVariant.type === 'ram' &&
                   selectedVariant.value === ram
                     ? 'bg-primary! text-white!'
@@ -178,13 +183,13 @@ const ProductDetailsComponent = ({ product }) => {
       )}
 
       {productSize && productSize.length > 0 && (
-        <div className="flex items-center gap-3 mb-3">
-          <span className="text-[16px]">Size: </span>
-          <div className="flex items-center gap-1 actions">
+        <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2 md:mb-3">
+          <span className="text-[14px] md:text-[16px]">Size: </span>
+          <div className="flex flex-wrap items-center gap-1 actions">
             {productSize.map((s, index) => (
               <Button
                 key={index}
-                className={`${
+                className={`text-[12px] md:text-[14px]! min-w-[50px] md:min-w-[60px]! ${
                   selectedVariant.type === 'size' && selectedVariant.value === s
                     ? 'bg-primary! text-white!'
                     : ''
@@ -202,13 +207,13 @@ const ProductDetailsComponent = ({ product }) => {
       )}
 
       {productWeight && productWeight.length > 0 && (
-        <div className="flex items-center gap-3">
-          <span className="text-[16px]">Weight: </span>
-          <div className="flex items-center gap-1 actions">
+        <div className="flex flex-wrap items-center gap-2 md:gap-3">
+          <span className="text-[14px] md:text-[16px]">Weight: </span>
+          <div className="flex flex-wrap items-center gap-1 actions">
             {productWeight.map((weight, index) => (
               <Button
                 key={index}
-                className={`${
+                className={`text-[12px] md:text-[14px]! min-w-[50px] md:min-w-[60px]! ${
                   selectedVariant.type === 'weight' &&
                   selectedVariant.value === weight
                     ? 'bg-primary! text-white!'
@@ -226,12 +231,12 @@ const ProductDetailsComponent = ({ product }) => {
         </div>
       )}
 
-      <p className="text-[14px] mt-5 mb-2">
+      <p className="text-[12px] md:text-[14px] mt-4 md:mt-5 mb-2">
         Free Shipping (Est. Delivery Time 2-3 Days)
       </p>
 
-      <div className="flex items-center gap-4 py-4">
-        <div className="qtyBoxWrapper w-[70px]">
+      <div className="flex flex-wrap items-center gap-3 md:gap-4 py-3 md:py-4">
+        <div className="qtyBoxWrapper w-[60px] md:w-[70px]">
           <QtyBox
             quantity={quantity}
             onChange={setQuantity}
@@ -244,33 +249,33 @@ const ProductDetailsComponent = ({ product }) => {
             !isAuthenticated
               ? 'Login to add to cart'
               : isOutOfStock
-              ? 'Out of stock'
-              : isAdding
-              ? 'Adding to cart...'
-              : (productSize?.length ||
-                  productRam?.length ||
-                  productWeight?.length) &&
-                !selectedVariant.value
-              ? 'Please select a variant'
-              : 'Add to cart'
+                ? 'Out of stock'
+                : isAdding
+                  ? 'Adding to cart...'
+                  : (productSize?.length ||
+                        productRam?.length ||
+                        productWeight?.length) &&
+                      !selectedVariant.value
+                    ? 'Please select a variant'
+                    : 'Add to cart'
           }
           arrow
           placement="top"
         >
           <span>
             <Button
-              className="btn-org flex gap-2"
+              className="btn-org flex gap-1.5 md:gap-2 text-[12px] md:text-[14px]!"
               onClick={handleAddToCart}
               disabled={isOutOfStock || isAdding}
             >
               {isAdding ? (
                 <>
-                  <CircularProgress size={20} color="inherit" />
-                  Adding...
+                  <CircularProgress size={18} color="inherit" />
+                  <span className="hidden md:inline">Adding...</span>
                 </>
               ) : (
                 <>
-                  <MdOutlineShoppingCart className="text-[22px]" />
+                  <MdOutlineShoppingCart className="text-[18px] md:text-[22px]" />
                   Add To Cart
                 </>
               )}
@@ -279,20 +284,20 @@ const ProductDetailsComponent = ({ product }) => {
         </Tooltip>
       </div>
 
-      <div className="flex items-center gap-4 mt-4">
+      <div className="flex flex-wrap items-center gap-3 md:gap-4 mt-3 md:mt-4">
         <Tooltip
           title={
             !isAuthenticated
               ? 'Login to add to wishlist'
               : isInWishlist
-              ? 'Remove from wishlist'
-              : 'Add to wishlist'
+                ? 'Remove from wishlist'
+                : 'Add to wishlist'
           }
           placement="top"
           arrow
         >
           <span
-            className={`flex items-center gap-2 text-[15px] cursor-pointer font-medium transition-colors ${
+            className={`flex items-center gap-1.5 md:gap-2 text-[13px] md:text-[15px] cursor-pointer font-medium transition-colors ${
               isInWishlist
                 ? 'text-red-500 hover:text-red-600'
                 : 'link hover:text-primary'
@@ -305,24 +310,32 @@ const ProductDetailsComponent = ({ product }) => {
           >
             {isAddingToWishlist || isRemovingFromWishlist ? (
               <>
-                <CircularProgress size={18} className="text-current" />
-                {isInWishlist ? 'Removing...' : 'Adding...'}
+                <CircularProgress size={16} className="text-current" />
+                <span className="hidden md:inline">
+                  {isInWishlist ? 'Removing...' : 'Adding...'}
+                </span>
               </>
             ) : (
               <>
                 {isInWishlist ? (
-                  <FaHeart className="text-[18px]" />
+                  <FaHeart className="text-[16px] md:text-[18px]" />
                 ) : (
-                  <FaRegHeart className="text-[18px]" />
+                  <FaRegHeart className="text-[16px] md:text-[18px]" />
                 )}
-                {isInWishlist ? 'Remove from Wishlist' : 'Add To Wishlist'}
+                <span className="hidden sm:inline">
+                  {isInWishlist ? 'Remove from Wishlist' : 'Add To Wishlist'}
+                </span>
+                <span className="sm:hidden">
+                  {isInWishlist ? 'Remove' : 'Wishlist'}
+                </span>
               </>
             )}
           </span>
         </Tooltip>
-        <span className="flex items-center gap-2 text-[15px] link cursor-pointer font-medium">
-          <IoGitCompareOutline className="text-[18px]" />
-          Add To Compare
+        <span className="flex items-center gap-1.5 md:gap-2 text-[13px] md:text-[15px] link cursor-pointer font-medium">
+          <IoGitCompareOutline className="text-[16px] md:text-[18px]" />
+          <span className="hidden sm:inline">Add To Compare</span>
+          <span className="sm:hidden">Compare</span>
         </span>
       </div>
     </>

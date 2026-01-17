@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link, useParams } from 'react-router-dom';
 
@@ -59,9 +59,9 @@ const ProductDetails = () => {
 
   return (
     <>
-      <div className="py-3 md:py-5">
-        <div className="container px-3 md:px-4">
-          <Breadcrumbs aria-label="breadcrumb" className="text-xs md:text-sm">
+      <div className="py-5">
+        <div className="container">
+          <Breadcrumbs aria-label="breadcrumb">
             <Link
               underline="hover"
               color="inherit"
@@ -85,21 +85,19 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      <section className="bg-white py-3 md:py-5">
-        <div className="container px-3 md:px-4">
-          <div className="flex flex-col lg:flex-row gap-4 md:gap-8 items-start">
-            <div className="productZoomContainer w-full lg:w-[40%]">
-              <ProductZoom images={product.images || []} />
-            </div>
+      <section className="bg-white py-5 productDetailsPage">
+        <div className="container flex flex-col md:flex-row gap-4 md:gap-8 items-start">
+          <div className="productZoomContainer w-full md:w-[40%]">
+            <ProductZoom images={product.images || []} />
+          </div>
 
-            <div className="productContent w-full lg:w-[60%] lg:pr-10 lg:pl-10">
-              <ProductDetailsComponent product={product} />
-            </div>
+          <div className="productContent w-full md:w-[60%] px-0 md:pr-10 md:pl-10">
+            <ProductDetailsComponent product={product} />
           </div>
         </div>
 
-        <div className="container pt-6 md:pt-8 px-3 md:px-4">
-          <div className="flex items-center gap-4 md:gap-8 mb-4 md:mb-5 overflow-x-auto">
+        <div className="container pt-4 md:pt-8">
+          <div className="flex items-center gap-4 md:gap-8 mb-3 md:mb-5 overflow-x-auto">
             <span
               className={`link text-[15px] md:text-[17px] cursor-pointer font-medium whitespace-nowrap ${
                 activeTab === 0 && 'text-primary'
@@ -135,8 +133,8 @@ const ProductDetails = () => {
           )}
         </div>
 
-        <div className="container pt-6 md:pt-8 px-3 md:px-4">
-          <h2 className="font-semibold text-[18px] md:text-[20px] pb-0 mb-2">
+        <div className="container pt-4 md:pt-8">
+          <h2 className="font-semibold text-[18px] md:text-[20px] pb-0">
             Related Products
           </h2>
           <ProductsSlider

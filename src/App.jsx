@@ -260,20 +260,21 @@ function App() {
                   aria-labelledby="alert-dialog-title"
                   aria-describedby="alert-dialog-description"
                   className="productDetailsModal"
+                  fullScreen={window.innerWidth <= 768}
                 >
-                  <DialogContent>
-                    <div className="flex items-start mt-2 w-full productDetailsModalContainer relative">
+                  <DialogContent className="relative">
+                    <div className="flex flex-col md:flex-row items-start mt-0 md:mt-2 w-full productDetailsModalContainer relative">
                       <Button
-                        className="w-10! h-10! min-w-10! rounded-full! text-black!
-          absolute! top-[15px] right-[15px] bg-[#f1f1f1]!"
+                        className="w-9! h-9! md:w-10! md:h-10! min-w-9! md:min-w-10! rounded-full! text-black!
+          absolute! top-[8px] md:top-[15px] right-[8px] md:right-[15px] bg-[#f1f1f1]! z-50!"
                         onClick={handleCloseProductDetailsModal}
                       >
-                        <IoCloseSharp className="text-[20px]" />
+                        <IoCloseSharp className="text-[18px] md:text-[20px]" />
                       </Button>
-                      <div className="col1 w-[40%] px-3">
+                      <div className="col1 w-full md:w-[40%] px-2 md:px-3">
                         <ProductZoom images={selectedProduct?.images || []} />
                       </div>
-                      <div className="col2 w-[60%] py-8 px-8 pr-16 productContent">
+                      <div className="col2 w-full md:w-[60%] py-4 md:py-8 px-4 md:px-8 md:pr-16 productContent">
                         <ProductDetailsComponent product={selectedProduct} />
                       </div>
                     </div>

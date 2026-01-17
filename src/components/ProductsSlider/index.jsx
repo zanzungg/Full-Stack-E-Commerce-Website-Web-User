@@ -50,13 +50,14 @@ const ProductsSlider = ({ items = 6, products = [], loading = false }) => {
       <Swiper
         modules={[Navigation]}
         navigation={{ prevEl: '.pro-prev', nextEl: '.pro-next' }}
-        spaceBetween={12}
+        spaceBetween={8}
         slidesPerView={2}
         breakpoints={{
-          480: { slidesPerView: 2, spaceBetween: 12 },
-          640: { slidesPerView: 3, spaceBetween: 16 },
+          320: { slidesPerView: 2, spaceBetween: 8 },
+          480: { slidesPerView: 2, spaceBetween: 10 },
+          640: { slidesPerView: 3, spaceBetween: 12 },
           768: { slidesPerView: 3, spaceBetween: 16 },
-          1024: { slidesPerView: 4, spaceBetween: 20 },
+          1024: { slidesPerView: 4, spaceBetween: 18 },
           1280: { slidesPerView: items, spaceBetween: 20 },
         }}
         className="relative py-4"
@@ -67,7 +68,7 @@ const ProductsSlider = ({ items = 6, products = [], loading = false }) => {
           </SwiperSlide>
         ))}
 
-        {/* Navigation buttons */}
+        {/* Navigation buttons - hidden on mobile */}
         <NavButton direction="prev" className="pro-prev left-3" />
         <NavButton direction="next" className="pro-next right-3" />
       </Swiper>
@@ -82,13 +83,18 @@ const NavButton = ({ direction, className }) => {
       className={`
         ${className}
         absolute top-1/2 -translate-y-1/2 
-        ${isPrev ? 'left-4' : 'right-4'}
-        z-10 flex h-11 w-11 items-center justify-center 
+        ${isPrev ? 'left-1 md:left-4' : 'right-1 md:right-4'}
+        z-10 flex h-8 w-8 md:h-11 md:w-11 items-center justify-center 
         rounded-full bg-white text-gray-800 shadow-lg 
         transition-all hover:bg-red-500 hover:text-white
+        hidden sm:flex
       `}
     >
-      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+      <svg
+        className="h-4 w-4 md:h-5 md:w-5"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
         <path
           fillRule="evenodd"
           d={

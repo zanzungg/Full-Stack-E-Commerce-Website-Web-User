@@ -115,25 +115,101 @@
 
   /* Product Items */
   .productItem {
-    padding: 12px !important;
+    padding: 8px !important;
   }
 
   .productItem .imgWrapper {
-    height: 200px !important;
+    height: 180px !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+
+  .productItem .img {
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .productItem .img img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .productItem .img img:first-child {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  .productItem .img img:last-child {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 2 !important;
   }
 
   .productItem h3 {
-    font-size: 14px !important;
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+
+  .productItem h6 {
+    font-size: 11px !important;
+  }
+
+  .productItem .info {
+    padding: 8px !important;
   }
 
   .productItem .info .price {
-    font-size: 16px !important;
+    font-size: 14px !important;
+  }
+
+  .productItem .oldPrice {
+    font-size: 13px !important;
+  }
+
+  .productItem .actions {
+    gap: 6px !important;
+  }
+
+  .productItem .actions button {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+  }
+
+  /* Product Item List View - Stack Vertically */
+  .productItem.productItemListView,
+  .productItem:has(.imgWrapper + .info) {
+    flex-direction: column !important;
+  }
+
+  .productItem .imgWrapper {
+    width: 100% !important;
+  }
+
+  .productItem .info {
+    width: 100% !important;
+    padding: 12px !important;
   }
 
   /* Product Grid */
-  .productListing .productRow {
+  .productListing .productRow,
+  .rightContent > div[class*='grid'] {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
+    gap: 8px !important;
+  }
+
+  /* Pagination */
+  .MuiPagination-root {
+    margin-top: 24px !important;
+  }
+
+  .MuiPagination-root .MuiPaginationItem-root {
+    min-width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+    margin: 0 2px !important;
   }
 
   /* Product Listing Page */
@@ -143,6 +219,15 @@
 
   .rightContent {
     width: 100% !important;
+  }
+
+  /* Product Listing Toolbar */
+  .bg-\[#f1f1f1\] {
+    padding: 8px !important;
+  }
+
+  .itemViewActions {
+    gap: 4px !important;
   }
 
   .itemViewActions .MuiButton-root {
@@ -176,16 +261,38 @@
 
   /* Sidebar */
   .sidebar {
-    display: none;
+    padding: 12px 8px !important;
+  }
+
+  .sidebar .box {
+    margin-bottom: 16px !important;
+  }
+
+  .sidebar .box h3 {
+    font-size: 14px !important;
+  }
+
+  .sidebar .scroll {
+    max-height: 250px !important;
+    overflow-y: auto !important;
+  }
+
+  /* Sidebar in Mobile Drawer */
+  .MuiDrawer-paper .sidebar {
+    width: 100% !important;
+    padding: 8px !important;
   }
 
   /* Breadcrumb */
-  .breadcrumb {
+  .breadcrumb,
+  .MuiBreadcrumbs-root {
     padding: 12px 0 !important;
+    font-size: 12px !important;
   }
 
-  .breadcrumb ul {
-    font-size: 12px !important;
+  .MuiBreadcrumbs-root .MuiLink-root,
+  .MuiBreadcrumbs-root span {
+    font-size: 11px !important;
   }
 
   /* Banners */
@@ -216,7 +323,35 @@
 
   /* Product Slider */
   .productSlider .swiper-slide {
-    width: 160px !important;
+    width: 140px !important;
+  }
+
+  .productsSlider .swiper-button-prev,
+  .productsSlider .swiper-button-next {
+    display: none !important;
+  }
+
+  /* Product Zoom - Mobile Layout */
+  .productZoom {
+    flex-direction: column !important;
+    padding: 8px !important;
+  }
+
+  .productZoom .thumbs-swiper {
+    display: none !important;
+  }
+
+  .productZoom .mobile-thumbs-swiper {
+    display: block !important;
+    margin-top: 12px;
+  }
+
+  .productZoom > div:first-child {
+    display: none !important;
+  }
+
+  .productZoom .flex-1 {
+    height: 300px !important;
   }
 
   /* Checkout */
@@ -318,8 +453,52 @@
   }
 
   /* Product Grid - Single Column on Very Small Screens */
-  .productListing .productRow {
-    grid-template-columns: 1fr !important;
+  .productListing .productRow,
+  .rightContent > div[class*='grid'] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* Make product items more compact */
+  section.py-5 {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+
+  /* Container padding for very small screens */
+  .container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  /* Product Item - Extra Small Adjustments */
+  .productItem {
+    padding: 6px !important;
+  }
+
+  .productItem .imgWrapper {
+    height: 160px !important;
+  }
+
+  .productItem h3 {
+    font-size: 11px !important;
+  }
+
+  .productItem .info {
+    padding: 6px !important;
+  }
+
+  .productItem .info .price {
+    font-size: 13px !important;
+  }
+
+  .productItem .oldPrice {
+    font-size: 12px !important;
+  }
+
+  .productItem button {
+    font-size: 11px !important;
+    padding: 6px 10px !important;
   }
 
   /* Footer Features - Stack vertically */
@@ -367,25 +546,34 @@
 
   /* Spacing utilities */
   .gap-6 {
-    gap: 12px !important;
-  }
-
-  .gap-4 {
     gap: 8px !important;
   }
 
+  .gap-4 {
+    gap: 6px !important;
+  }
+
+  .gap-3 {
+    gap: 4px !important;
+  }
+
   .p-8 {
-    padding: 16px !important;
+    padding: 12px !important;
   }
 
   .px-8 {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
   }
 
   .py-8 {
-    padding-top: 16px !important;
-    padding-bottom: 16px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+
+  /* Mobile Drawer specific styles */
+  .MuiDrawer-paper {
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 }
 
@@ -556,33 +744,121 @@ img {
 /* Product Details Page Responsive */
 @media (max-width: 768px) {
   .productDetailsPage .container {
-    padding: 12px;
+    flex-direction: column !important;
   }
 
   .productDetailsPage .row {
-    flex-direction: column;
+    flex-direction: column !important;
   }
 
   .productDetailsPage .col {
     width: 100% !important;
   }
 
-  .productZoom {
+  .productZoomContainer {
+    width: 100% !important;
     margin-bottom: 20px;
   }
 
-  .productInfo {
+  .productContent {
+    width: 100% !important;
     padding: 0 !important;
+  }
+
+  .productContent h1 {
+    font-size: 18px !important;
+  }
+
+  .productContent .price {
+    font-size: 18px !important;
+  }
+
+  .productContent .oldPrice {
+    font-size: 16px !important;
+  }
+
+  .productContent .qtyBoxWrapper {
+    width: 60px !important;
+  }
+
+  .productContent .actions {
+    flex-wrap: wrap;
+  }
+
+  .productContent .actions button {
+    font-size: 12px !important;
+    padding: 6px 12px !important;
+  }
+
+  /* Product Details Modal Mobile */
+  .productDetailsModal .MuiDialog-paper {
+    margin: 0 !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  .productDetailsModal .MuiDialogContent-root {
+    padding: 12px !important;
+  }
+
+  .productDetailsModalContainer {
+    flex-direction: column !important;
+    margin-top: 0 !important;
+  }
+
+  .productDetailsModalContainer .col1 {
+    width: 100% !important;
+    padding: 8px !important;
+  }
+
+  .productDetailsModalContainer .col2 {
+    width: 100% !important;
+    padding: 16px 12px !important;
+  }
+
+  .productDetailsModalContainer .col2 h1 {
+    font-size: 18px !important;
+  }
+
+  .productDetailsModalContainer .col2 .price {
+    font-size: 18px !important;
   }
 
   /* Tabs */
   .MuiTabs-root {
-    overflow-x: auto;
+    font-size: 14px !important;
   }
 
   .MuiTab-root {
-    font-size: 12px !important;
+    font-size: 13px !important;
+    min-width: auto !important;
     padding: 8px 12px !important;
+  }
+
+  /* Reviews Section */
+  .productReviewsContainer {
+    width: 100% !important;
+  }
+
+  .reviewScroll {
+    max-height: 250px !important;
+  }
+
+  .review {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .review .info {
+    width: 100% !important;
+    margin-bottom: 12px;
+  }
+
+  .review .img {
+    width: 50px !important;
+    height: 50px !important;
   }
 }
 

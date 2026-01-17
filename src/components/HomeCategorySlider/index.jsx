@@ -43,7 +43,7 @@ const CategoryCard = memo(({ cat }) => {
             <span className="text-xl md:text-2xl opacity-40">📦</span>
           )}
         </div>
-        <h3 className="w-full text-xs sm:text-sm md:text-[15px] font-medium text-gray-700 transition-colors group-hover:text-red-600 line-clamp-2 min-h-8 sm:min-h-9 md:min-h-10 flex items-start justify-center leading-tight px-0.5">
+        <h3 className="w-full text-xs sm:text-sm md:text-[15px] font-medium text-gray-700 transition-colors group-hover:text-red-600 line-clamp-1 min-h-8 sm:min-h-9 md:min-h-10 flex items-start justify-center leading-tight px-0.5">
           {cat.name}
         </h3>
       </div>

@@ -1,0 +1,202 @@
+/* ProductListing Mobile Responsive Styles */
+
+/* Mobile Filter Drawer Header */
+.mobile-filter-header {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Desktop sidebar - hidden on mobile */
+@media (max-width: 1023px) {
+  .sidebarWrapper {
+    display: none !important;
+  }
+}
+
+/* Tablet and Desktop */
+@media (min-width: 1024px) {
+  .sidebarWrapper {
+    display: block !important;
+  }
+}
+
+/* Mobile Product Listing Container */
+@media (max-width: 768px) {
+  /* Section padding */
+  section.py-5 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  /* Breadcrumb adjustments */
+  .MuiBreadcrumbs-root {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Toolbar adjustments */
+  .bg-\[#f1f1f1\] {
+    border-radius: 4px !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* View toggle buttons */
+  .itemViewActions button {
+    border-radius: 50% !important;
+  }
+
+  /* Sort dropdown on mobile */
+  .col2 .MuiButton-root {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+  }
+
+  /* Product count text */
+  .col1 span {
+    display: none;
+  }
+
+  /* Show abbreviated product count on very small screens */
+  @media (max-width: 480px) {
+    .col1 span {
+      display: inline;
+    }
+  }
+}
+
+/* Small Mobile Screens */
+@media (max-width: 480px) {
+  /* Pagination adjustments */
+  .MuiPagination-root .MuiPaginationItem-root {
+    min-width: 24px !important;
+    height: 24px !important;
+    font-size: 11px !important;
+    padding: 0 4px !important;
+  }
+
+  /* Hide first/last buttons on very small screens */
+  .MuiPagination-root .MuiPaginationItem-firstLast {
+    display: none;
+  }
+
+  /* Compact toolbar */
+  .bg-\[#f1f1f1\] {
+    padding: 6px !important;
+  }
+
+  /* Sort button more compact */
+  .col2 .MuiButton-root {
+    font-size: 10px !important;
+    padding: 4px 8px !important;
+    max-width: 100px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+  .MuiDrawer-paper {
+    width: 60% !important;
+    max-width: 280px !important;
+  }
+}
+
+/* Tablet specific adjustments */
+@media (min-width: 769px) and (max-width: 1023px) {
+  /* 3 columns for tablets */
+  .rightContent > div[class*='grid'] {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  /* Slightly larger spacing */
+  .rightContent > div[class*='grid'] {
+    gap: 12px !important;
+  }
+}
+
+/* Loading state spacing */
+.rightContent > div[class*='grid'] > div {
+  width: 100%;
+}
+
+/* Mobile drawer scrolling */
+.MuiDrawer-paper .sidebar {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Smooth transitions */
+.MuiDrawer-paper,
+.itemViewActions button {
+  transition: all 0.3s ease-in-out !important;
+}
+
+/* Active view button */
+.itemViewActions button.active {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Ensure proper spacing in mobile drawer */
+.MuiDrawer-paper .sidebar .box {
+  padding: 0 8px;
+}
+
+/* Mobile filter toggle button highlight */
+@media (max-width: 1023px) {
+  .lg\:hidden.MuiButton-root:hover {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+  }
+}
+
+/* Empty state and error messages on mobile */
+@media (max-width: 768px) {
+  .text-center.py-10 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .text-center.py-10 p {
+    font-size: 14px !important;
+  }
+}
+
+/* Accessibility - larger tap targets */
+@media (max-width: 768px) {
+  button,
+  .MuiIconButton-root,
+  .MuiButton-root {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exception for grid/list toggle buttons */
+  .itemViewActions .MuiButton-root {
+    min-height: 36px;
+    min-width: 36px;
+  }
+}
+
+/* Safe area for notched devices */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .MuiDrawer-paper {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
+  }
+}
+
+/* Prevent horizontal scroll */
+.rightContent {
+  overflow-x: hidden;
+}
+
+/* Mobile drawer animation */
+.MuiDrawer-paper {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Backdrop for mobile drawer */
+.MuiBackdrop-root {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}

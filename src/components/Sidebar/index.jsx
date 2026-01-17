@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import '../Sidebar/style.css';
@@ -18,6 +18,7 @@ const Sidebar = ({
   onFilterChange,
   onClearFilters,
   loading,
+  isMobile = false,
 }) => {
   // Use category hook
   const { categories, loading: categoriesLoading } = useCategory({
@@ -40,13 +41,35 @@ const Sidebar = ({
   // Debounce price range to avoid too many API calls
   const debouncedPriceRange = useDebounce(priceRange, 800);
 
-  // Update price range when availableFilters change
+  // Track previous debounced value to prevent infinite loops
+  const prevDebouncedPriceRangeRef = useRef(null);
+
+  // Update price range when user changes slider (debounced)
   useEffect(() => {
     if (!availableFilters?.priceRange) return;
 
     const [min, max] = debouncedPriceRange;
+    const prevValue = prevDebouncedPriceRangeRef.current;
+
+    // Only call onFilterChange if the value actually changed
+    if (prevValue && prevValue[0] === min && prevValue[1] === max) {
+      return;
+    }
+
+    // Update ref before calling onFilterChange
+    prevDebouncedPriceRangeRef.current = [min, max];
+
+    // Only update if different from available filters
+    const currentMin = availableFilters.priceRange.minPrice;
+    const currentMax = availableFilters.priceRange.maxPrice;
+
+    // Skip if values match the current filter bounds (initial state)
+    if (min === currentMin && max === currentMax && !prevValue) {
+      return;
+    }
+
     onFilterChange('priceRange', { min, max });
-  }, [debouncedPriceRange, availableFilters, onFilterChange]);
+  }, [debouncedPriceRange, availableFilters]);
 
   useEffect(() => {
     if (loading) {
@@ -56,12 +79,25 @@ const Sidebar = ({
 
   useEffect(() => {
     if (appliedFilters?.priceRange) {
-      setPriceRange([
-        Number(appliedFilters.priceRange.min),
-        Number(appliedFilters.priceRange.max),
-      ]);
+      const newMin = Number(appliedFilters.priceRange.min);
+      const newMax = Number(appliedFilters.priceRange.max);
+
+      // Only update if different from current state
+      if (priceRange[0] !== newMin || priceRange[1] !== newMax) {
+        setPriceRange([newMin, newMax]);
+        prevDebouncedPriceRangeRef.current = [newMin, newMax];
+      }
+    } else if (availableFilters?.priceRange) {
+      // Reset to available range if no filters applied
+      const defaultMin = availableFilters.priceRange.minPrice;
+      const defaultMax = availableFilters.priceRange.maxPrice;
+
+      if (priceRange[0] !== defaultMin || priceRange[1] !== defaultMax) {
+        setPriceRange([defaultMin, defaultMax]);
+        prevDebouncedPriceRangeRef.current = null;
+      }
     }
-  }, [appliedFilters]);
+  }, [appliedFilters, availableFilters]);
 
   const handlePriceRangeChange = (values) => {
     setIsApplyingPriceFilter(true);
@@ -83,7 +119,7 @@ const Sidebar = ({
     );
 
   return (
-    <aside className="sidebar py-5">
+    <aside className={`sidebar ${isMobile ? 'py-3 px-2' : 'py-5'}`}>
       {/* Clear Filters Button */}
       {hasActiveFilters && (
         <div className="mb-4">
@@ -103,7 +139,7 @@ const Sidebar = ({
       {/* Categories Filter */}
       {!categoriesLoading && categories.length > 0 && (
         <div className="box">
-          <h3 className="w-full mb-3 text-[16px] font-semibold flex items-center pr-5">
+          <h3 className="w-full mb-3 text-[14px] md:text-[16px] font-semibold flex items-center pr-5">
             Shop by Category
             <Button
               className="w-[30px]! h-[30px]! min-w-[30px]! rounded-full! ml-auto! text-black! text-[20px]!"
@@ -113,7 +149,9 @@ const Sidebar = ({
             </Button>
           </h3>
           <Collapse isOpened={isOpenCategoryFilter}>
-            <div className="scroll px-4 relative -left-[13px]">
+            <div
+              className={`scroll px-2 md:px-4 relative -left-[13px] ${isMobile ? 'max-h-[250px]' : ''}`}
+            >
               {categories.map((cat) => (
                 <FormControlLabel
                   key={cat._id}
@@ -129,7 +167,11 @@ const Sidebar = ({
                       }
                     />
                   }
-                  label={cat.name}
+                  label={
+                    <span className="text-[13px] md:text-[14px]">
+                      {cat.name}
+                    </span>
+                  }
                   className="w-full"
                 />
               ))}
@@ -141,10 +183,10 @@ const Sidebar = ({
       {/* Loading state for categories */}
       {categoriesLoading && (
         <div className="box">
-          <h3 className="w-full mb-3 text-[16px] font-semibold">
+          <h3 className="w-full mb-3 text-[14px] md:text-[16px] font-semibold">
             Shop by Category
           </h3>
-          <div className="px-4 py-6 text-center">
+          <div className="px-2 md:px-4 py-6 text-center">
             <CircularProgress size={24} />
             <p className="text-xs text-gray-500 mt-2">Loading categories...</p>
           </div>
@@ -154,7 +196,7 @@ const Sidebar = ({
       {/* Price Range Filter */}
       {availableFilters?.priceRange && (
         <div className="box mt-4">
-          <h3 className="w-full mb-3 text-[16px] font-semibold flex items-center pr-5">
+          <h3 className="w-full mb-3 text-[14px] md:text-[16px] font-semibold flex items-center pr-5">
             Filter By Price
             <Button
               className="w-[30px]! h-[30px]! min-w-[30px]! rounded-full! ml-auto! text-black! text-[20px]!"
@@ -165,7 +207,7 @@ const Sidebar = ({
           </h3>
           <Collapse isOpened={isOpenPriceFilter}>
             <div
-              className={`px-2 transition-opacity ${
+              className={`px-2 md:px-2 transition-opacity ${
                 loading ? 'opacity-60 pointer-events-none' : ''
               }`}
             >
@@ -207,7 +249,7 @@ const Sidebar = ({
 
       {/* Rating Filter */}
       <div className="box mt-4">
-        <h3 className="w-full mb-3 text-[16px] font-semibold flex items-center pr-5">
+        <h3 className="w-full mb-3 text-[14px] md:text-[16px] font-semibold flex items-center pr-5">
           Filter By Rating
           <Button
             className="w-[30px]! h-[30px]! min-w-[30px]! rounded-full! ml-auto! text-black! text-[20px]!"
@@ -217,7 +259,7 @@ const Sidebar = ({
           </Button>
         </h3>
         <Collapse isOpened={isOpenRatingFilter}>
-          <div className="px-4 -mx-2">
+          <div className="px-2 md:px-4 -mx-2">
             {[5, 4, 3, 2, 1].map((rating) => {
               const value = rating.toString();
 

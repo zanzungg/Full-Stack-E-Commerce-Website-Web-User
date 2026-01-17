@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -7,14 +7,16 @@ import ProductItem from '../../components/ProductItem';
 import ProductItemListView from '../../components/ProductItemListView';
 import ProductLoading from '../../components/ProductLoading';
 import { Button, CircularProgress, Drawer, IconButton } from '@mui/material';
-import { IoGrid, IoFilterSharp } from 'react-icons/io5';
+import { IoGrid } from 'react-icons/io5';
 import { LuMenu } from 'react-icons/lu';
+import { MdFilterList, MdClose } from 'react-icons/md';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Pagination from '@mui/material/Pagination';
 import { useCategories } from '../../contexts/CategoryContext';
 import { useProductListing } from '../../hooks/useProduct';
 import { cleanQueryParams } from '../../utils/query';
+import './style.css';
 
 const ProductListing = () => {
   const location = useLocation();
@@ -72,6 +74,24 @@ const ProductListing = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleMobileFilterToggle = () => {
+    setMobileFilterOpen(!mobileFilterOpen);
+  };
+
+  const handleMobileFilterClose = () => {
+    setMobileFilterOpen(false);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024 && itemView === 'list') {
+        setItemView('grid');
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [itemView]);
 
   // Handle page change
   const handlePageChange = (event, page) => {
@@ -226,40 +246,38 @@ const ProductListing = () => {
   const breadcrumbTrail = getBreadcrumbTrail();
 
   return (
-    <section className="py-3 md:py-5 pb-0">
-      <div className="container px-3 md:px-4">
-        <div className="breadcrumb py-2 md:py-3">
-          <Breadcrumbs aria-label="breadcrumb" className="text-xs md:text-sm">
-            {breadcrumbTrail.map((crumb, index) => {
-              const isLast = index === breadcrumbTrail.length - 1;
+    <section className="py-5 pb-0">
+      <div className="container">
+        <Breadcrumbs aria-label="breadcrumb">
+          {breadcrumbTrail.map((crumb, index) => {
+            const isLast = index === breadcrumbTrail.length - 1;
 
-              if (isLast || !crumb.path) {
-                return (
-                  <span key={index} className="text-gray-700 font-medium">
-                    {crumb.name}
-                  </span>
-                );
-              }
-
+            if (isLast || !crumb.path) {
               return (
-                <Link
-                  key={index}
-                  underline="hover"
-                  color="inherit"
-                  href={crumb.path}
-                  className="link transition hover:text-primary"
-                >
+                <span key={index} className="text-gray-700 font-medium">
                   {crumb.name}
-                </Link>
+                </span>
               );
-            })}
-          </Breadcrumbs>
-        </div>
+            }
+
+            return (
+              <Link
+                key={index}
+                underline="hover"
+                color="inherit"
+                href={crumb.path}
+                className="link transition hover:text-primary"
+              >
+                {crumb.name}
+              </Link>
+            );
+          })}
+        </Breadcrumbs>
       </div>
-      <div className="bg-white p-2 md:p-3 mt-2 md:mt-4">
+      <div className="bg-white p-2 mt-4">
         <div className="container flex gap-3">
           {/* Desktop Sidebar */}
-          <div className="sidebarWrapper hidden lg:block lg:w-[20%] h-full bg-white">
+          <div className="sidebarWrapper w-[20%] h-full bg-white hidden lg:block">
             <Sidebar
               availableFilters={availableFilters}
               appliedFilters={appliedFilters}
@@ -273,88 +291,120 @@ const ProductListing = () => {
           <Drawer
             anchor="left"
             open={mobileFilterOpen}
-            onClose={() => setMobileFilterOpen(false)}
+            onClose={handleMobileFilterClose}
+            className="lg:hidden"
+            keepMounted={true}
             PaperProps={{
               sx: {
                 width: '85%',
                 maxWidth: '320px',
               },
             }}
+            ModalProps={{
+              keepMounted: true,
+            }}
           >
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold">Filters</h3>
-                <Button
-                  onClick={() => setMobileFilterOpen(false)}
-                  className="min-w-0! p-2!"
-                >
-                  ×
-                </Button>
-              </div>
+            <div className="p-4 flex items-center justify-between border-b mobile-filter-header">
+              <h2 className="text-lg font-bold">Filters</h2>
+              <IconButton onClick={handleMobileFilterClose}>
+                <MdClose size={24} />
+              </IconButton>
+            </div>
+            <div className="overflow-y-auto">
               <Sidebar
                 availableFilters={availableFilters}
                 appliedFilters={appliedFilters}
                 onFilterChange={handleFilterChange}
-                onClearFilters={handleClearFilters}
+                onClearFilters={() => {
+                  handleClearFilters();
+                  handleMobileFilterClose();
+                }}
                 loading={loading}
+                isMobile={true}
               />
             </div>
           </Drawer>
 
-          <div className="rightContent w-full lg:w-[80%] py-2 md:py-3">
+          <div className="rightContent w-full lg:w-[80%] py-3">
             <div
-              className="bg-[#f1f1f1] p-2 w-full mb-3 md:mb-4 rounded-md flex items-center
-                        justify-between gap-2"
+              className="bg-[#f1f1f1] p-2 w-full mb-4 rounded-md flex items-center
+                        justify-between flex-wrap gap-2"
             >
-              <div className="col1 flex items-center itemViewActions gap-1">
-                {/* Mobile Filter Button */}
+              <div className="col1 flex items-center itemViewActions flex-wrap gap-2">
+                {/* Mobile Filter Button - Only on Mobile */}
                 <Button
-                  className="lg:hidden w-9! h-9! min-w-9! rounded-full! text-black! mr-1"
-                  onClick={() => setMobileFilterOpen(true)}
+                  sx={{
+                    display: { xs: 'inline-flex', lg: 'none' },
+                    width: '40px',
+                    height: '40px',
+                    minWidth: '40px',
+                    borderRadius: '50%',
+                    bgcolor: 'white',
+                    color: 'rgba(0,0,0,0.7)',
+                    boxShadow: 1,
+                    '&:hover': {
+                      bgcolor: 'rgba(0,0,0,0.04)',
+                    },
+                  }}
+                  onClick={handleMobileFilterToggle}
                 >
-                  <IoFilterSharp className="text-[rgba(0,0,0,0.7)] text-[18px]" />
+                  <MdFilterList className="text-[20px]" />
                 </Button>
 
-                {/* View Toggle Buttons - Hidden on small mobile */}
-                <div className="hidden sm:flex items-center gap-1">
-                  <Button
-                    className={`w-9! h-9! min-w-9! rounded-full!
-                                 text-black! ${itemView === 'list' && 'active'}`}
-                    onClick={() => setItemView('list')}
-                  >
-                    <LuMenu className="text-[rgba(0,0,0,0.7)] text-[18px]" />
-                  </Button>
-                  <Button
-                    className={`w-9! h-9! min-w-9! rounded-full!
-                                 text-black! ${itemView === 'grid' && 'active'}`}
-                    onClick={() => setItemView('grid')}
-                  >
-                    <IoGrid className="text-[rgba(0,0,0,0.7)]" />
-                  </Button>
-                </div>
+                {/* List View Button - Only on Desktop */}
+                <Button
+                  sx={{
+                    display: { xs: 'none', lg: 'inline-flex' },
+                    width: '40px',
+                    height: '40px',
+                    minWidth: '40px',
+                    borderRadius: '50%',
+                    bgcolor: itemView === 'list' ? '#ef4444' : 'white',
+                    color: itemView === 'list' ? 'white' : 'rgba(0,0,0,0.7)',
+                    boxShadow: 1,
+                    '&:hover': {
+                      bgcolor:
+                        itemView === 'list' ? '#b71c1c' : 'rgba(0,0,0,0.04)',
+                    },
+                  }}
+                  onClick={() => setItemView('list')}
+                >
+                  <LuMenu className="text-[18px]" />
+                </Button>
 
-                <span className="hidden md:block text-[13px] md:text-[14px] font-medium pl-2 md:pl-3 text-[rgba(0,0,0,0.7)]">
-                  {loading
-                    ? 'Loading...'
-                    : `There ${
-                        totalProducts === 1 ? 'is' : 'are'
-                      } ${totalProducts} product${
-                        totalProducts !== 1 ? 's' : ''
-                      }.`}
+                {/* Grid View Button - Always Visible */}
+                <Button
+                  sx={{
+                    width: '40px',
+                    height: '40px',
+                    minWidth: '40px',
+                    borderRadius: '50%',
+                    bgcolor: itemView === 'grid' ? '#ef4444' : 'white',
+                    color: itemView === 'grid' ? 'white' : 'rgba(0,0,0,0.7)',
+                    boxShadow: 1,
+                    '&:hover': {
+                      bgcolor:
+                        itemView === 'grid' ? '#b71c1c' : 'rgba(0,0,0,0.04)',
+                    },
+                  }}
+                  onClick={() => setItemView('grid')}
+                >
+                  <IoGrid className="text-[18px]" />
+                </Button>
+
+                <span className="text-[12px] md:text-[14px] font-medium pl-1 md:pl-3 text-[rgba(0,0,0,0.7)]">
+                  {loading ? 'Loading...' : `Showing ${totalProducts} results`}
                 </span>
               </div>
 
-              <div className="col2 ml-auto flex items-center justify-end gap-2 md:gap-3 pr-2 md:pr-4">
-                <span className="hidden md:block text-[13px] md:text-[14px] font-medium text-[rgba(0,0,0,0.7)]">
+              <div className="col2 ml-auto flex items-center justify-end gap-1 md:gap-3 pr-2 md:pr-4">
+                <span className="hidden md:inline text-[12px] md:text-[14px] font-medium text-[rgba(0,0,0,0.7)]">
                   Sort By
                 </span>
                 <Button
                   id="basic-button"
-                  aria-controls={open ? 'basic-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? 'true' : undefined}
                   onClick={handleClick}
-                  className="bg-white! text-[11px] md:text-[12px]! text-black! capitalize! border-2 border-black! font-semibold! px-2 md:px-3!"
+                  className="bg-white! text-[11px] md:text-[12px]! text-black! capitalize! border-2 border-[#ccc]! font-semibold! px-2 md:px-4!"
                 >
                   {getSortLabel()}
                 </Button>
@@ -431,9 +481,9 @@ const ProductListing = () => {
               <div
                 className={`grid ${
                   itemView === 'grid'
-                    ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-4'
-                    : 'grid-cols-1 gap-3 md:gap-4'
-                } `}
+                    ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'
+                    : 'grid-cols-1'
+                } gap-2 md:gap-4`}
               >
                 {itemView === 'grid'
                   ? products.map((product) => (
@@ -450,7 +500,7 @@ const ProductListing = () => {
 
             {/* Pagination */}
             {!loading && !error && totalPages > 1 && (
-              <div className="flex items-center justify-center mt-6 md:mt-10">
+              <div className="flex items-center justify-center mt-10">
                 <Pagination
                   count={totalPages}
                   page={currentPage}
@@ -458,14 +508,6 @@ const ProductListing = () => {
                   showFirstButton
                   showLastButton
                   color="primary"
-                  size="medium"
-                  siblingCount={0}
-                  boundaryCount={1}
-                  sx={{
-                    '& .MuiPaginationItem-root': {
-                      fontSize: { xs: '0.75rem', md: '0.875rem' },
-                    },
-                  }}
                 />
               </div>
             )}

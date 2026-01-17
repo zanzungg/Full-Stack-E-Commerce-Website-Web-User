@@ -1,0 +1,80 @@
+/* ProductZoom Custom Styles */
+
+/* Fix InnerImageZoom component overlapping images */
+.iiz {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  position: relative !important;
+}
+
+.iiz__img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  position: relative !important;
+  display: block !important;
+}
+
+/* Ensure zoom image doesn't interfere on mobile */
+@media (max-width: 768px) {
+  .iiz__zoom-img {
+    display: none !important;
+  }
+
+  .iiz__zoom-portal {
+    display: none !important;
+  }
+
+  /* Disable zoom hint and interactions on mobile */
+  .iiz__hint {
+    display: none !important;
+  }
+
+  .iiz__img {
+    cursor: default !important;
+  }
+}
+
+/* Desktop zoom styling */
+@media (min-width: 769px) {
+  .iiz__zoom-img {
+    object-fit: contain !important;
+  }
+
+  .iiz__zoom-img--visible {
+    z-index: 1000 !important;
+  }
+}
+
+/* Thumbnail styles */
+.thumbs-swiper {
+  position: relative;
+  padding: 3px 0;
+}
+
+.thumbs-swiper .swiper-wrapper {
+  overflow: visible !important;
+}
+
+.thumbs-swiper .swiper-slide {
+  height: auto !important;
+  position: relative;
+  z-index: 1;
+}
+
+.mobile-thumbs-swiper .swiper-slide {
+  height: auto !important;
+}
+
+/* Ensure proper aspect ratio for thumbnails */
+.thumbs-swiper img,
+.mobile-thumbs-swiper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}

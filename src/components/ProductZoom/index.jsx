@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import InnerImageZoom from 'react-inner-image-zoom';
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.min.css';
+import './style.css';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
@@ -25,8 +26,22 @@ const ProductZoom = ({ images = [] }) => {
   const handleThumbClick = (index) => {
     setActiveIndex(index);
     setMainIndex(index);
+
     if (thumbsSwiperRef.current) {
-      thumbsSwiperRef.current.slideTo(index);
+      const swiper = thumbsSwiperRef.current;
+      const slidesPerView = swiper.params.slidesPerView;
+      const currentIndex = swiper.activeIndex;
+
+      // Only scroll if the clicked slide is not visible
+      // Calculate if the slide is outside the visible range
+      if (index < currentIndex) {
+        // Slide is above visible area, scroll to it
+        swiper.slideTo(index);
+      } else if (index >= currentIndex + slidesPerView) {
+        // Slide is below visible area, scroll to show it at the bottom
+        swiper.slideTo(index - slidesPerView + 1);
+      }
+      // If slide is already visible, don't scroll
     }
   };
 
@@ -42,13 +57,14 @@ const ProductZoom = ({ images = [] }) => {
   }, [showNavigation]);
 
   return (
-    <div className="flex gap-4 max-w-5xl mx-auto p-4">
-      <div className="flex flex-col w-[15%] items-center">
+    <div className="flex flex-col md:flex-row gap-3 md:gap-4 max-w-5xl mx-auto p-2 md:p-4">
+      {/* Desktop: Vertical thumbnails on the left */}
+      <div className="hidden md:flex flex-col w-[15%] items-center">
         {showNavigation && (
           <button
             ref={prevRef}
             disabled={isAtStart}
-            className={`w-full py-2 mb-2 rounded-md border flex items-center justify-center transition-all duration-200
+            className={`w-full py-2 mb-2 rounded-md border flex items-center justify-center transition-all duration-200 z-10 relative
                             ${
                               isAtStart
                                 ? 'bg-gray-200 border-gray-300 cursor-not-allowed opacity-50'
@@ -108,7 +124,7 @@ const ProductZoom = ({ images = [] }) => {
             const needNav = swiper.slides.length > swiper.params.slidesPerView;
             setShowNavigation(needNav);
           }}
-          className="thumbs-swiper h-[440px] overflow-hidden"
+          className="thumbs-swiper h-[440px] py-1"
         >
           {imageUrls.map((src, index) => (
             <SwiperSlide key={index}>
@@ -117,7 +133,7 @@ const ProductZoom = ({ images = [] }) => {
                 className={`relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300
                         ${
                           activeIndex === index
-                            ? 'ring-2 ring-blue-500 ring-offset-2 shadow-md'
+                            ? 'ring-2 ring-blue-500 shadow-md'
                             : 'shadow-sm hover:shadow-md'
                         }`}
               >
@@ -143,7 +159,7 @@ const ProductZoom = ({ images = [] }) => {
           <button
             ref={nextRef}
             disabled={isAtEnd}
-            className={`w-full py-2 mt-2 rounded-md border flex items-center justify-center transition-all duration-200
+            className={`w-full py-2 mt-2 rounded-md border flex items-center justify-center transition-all duration-200 z-10 relative
                         ${
                           isAtEnd
                             ? 'bg-gray-200 border-gray-300 cursor-not-allowed opacity-50'
@@ -171,19 +187,76 @@ const ProductZoom = ({ images = [] }) => {
         )}
       </div>
 
-      <div className="flex-1 h-[535px] bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 p-2 flex items-center justify-center">
-        <div className="w-full h-full flex items-center justify-center">
-          <InnerImageZoom
-            src={imageUrls[mainIndex]}
-            zoomSrc={imageUrls[mainIndex]}
-            zoomType="hover"
-            zoomScale={1.0}
-            zoomPreload={true}
-            hideHint={true}
-            className="max-w-full max-h-full object-contain rounded-lg"
-            fullscreenOnMobile={true}
-          />
+      {/* Main Image */}
+      <div className="flex-1 h-[300px] md:h-[535px] bg-white rounded-lg md:rounded-xl shadow-lg overflow-hidden border border-gray-200 p-1 md:p-2 flex items-center justify-center order-1 md:order-2">
+        <div className="w-full h-full flex items-center justify-center relative">
+          <div className="w-full h-full flex items-center justify-center">
+            {/* Desktop: Use InnerImageZoom with zoom functionality */}
+            <div className="hidden md:block w-full h-full">
+              <InnerImageZoom
+                src={imageUrls[mainIndex]}
+                zoomSrc={imageUrls[mainIndex]}
+                zoomType="hover"
+                zoomScale={1.5}
+                zoomPreload={true}
+                hideHint={true}
+                imgAttributes={{
+                  style: {
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                  },
+                }}
+              />
+            </div>
+
+            {/* Mobile: Use simple image without zoom */}
+            <div className="md:hidden w-full h-full flex items-center justify-center">
+              <img
+                src={imageUrls[mainIndex]}
+                alt="Product"
+                className="w-full h-full object-contain"
+              />
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* Mobile: Horizontal thumbnails below */}
+      <div className="md:hidden w-full order-2">
+        <Swiper
+          modules={[Navigation]}
+          spaceBetween={8}
+          slidesPerView={4}
+          breakpoints={{
+            320: { slidesPerView: 4 },
+            480: { slidesPerView: 5 },
+            640: { slidesPerView: 6 },
+          }}
+          className="mobile-thumbs-swiper"
+        >
+          {imageUrls.map((src, index) => (
+            <SwiperSlide key={index}>
+              <div
+                onClick={() => handleThumbClick(index)}
+                className={`relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300
+                  ${
+                    activeIndex === index
+                      ? 'ring-2 ring-blue-500 shadow-md'
+                      : 'shadow-sm opacity-60 hover:opacity-100'
+                  }`}
+              >
+                <img
+                  src={src}
+                  alt={`Thumb ${index + 1}`}
+                  className="w-full h-16 object-cover rounded-lg"
+                />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </div>
   );
