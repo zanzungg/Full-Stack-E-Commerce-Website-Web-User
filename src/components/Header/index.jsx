@@ -9,6 +9,7 @@ import { MdOutlineShoppingCart } from 'react-icons/md';
 import { FaRegUser } from 'react-icons/fa';
 import { FaRegHeart } from 'react-icons/fa6';
 import Navigation from './Navigation';
+import MobileNav from './Navigation/MobileNav';
 import { MyContext } from '../../App';
 import { Button } from '@mui/material';
 
@@ -76,7 +77,7 @@ const Header = () => {
   return (
     <header className="bg-white">
       {/* Top Strip */}
-      <div className="top-strip py-2.5 border-t border-b border-gray-200 bg-gray-50">
+      <div className="top-strip py-2.5 border-t border-b border-gray-200 bg-gray-50 hidden md:block">
         <div className="container">
           <div className="flex items-center justify-between">
             <div className="w-[50%]">
@@ -112,28 +113,37 @@ const Header = () => {
       </div>
 
       {/* Main Header */}
-      <div className="header py-5 border-b border-gray-200">
-        <div className="container flex items-center justify-between gap-6">
+      <div className="header py-3 md:py-5 border-b border-gray-200">
+        <div className="container flex items-center justify-between gap-2 md:gap-6">
+          {/* Mobile Menu */}
+          <div className="lg:hidden">
+            <MobileNav />
+          </div>
+
           {/* Logo */}
-          <div className="w-[25%]">
+          <div className="w-auto md:w-[25%]">
             <Link
               to="/"
               className="inline-block transition-all duration-300 hover:scale-105 hover:drop-shadow-lg"
             >
-              <img src="/logo.jpg" alt="ClassyShop Logo" className="h-11" />
+              <img
+                src="/logo.jpg"
+                alt="ClassyShop Logo"
+                className="mt-2 h-8 md:h-11"
+              />
             </Link>
           </div>
 
           {/* Search Bar */}
-          <div className="w-[45%]">
+          <div className="hidden md:block md:w-[45%]">
             <Search />
           </div>
 
           {/* User Actions */}
-          <div className="w-[30%] flex items-center">
-            <ul className="flex items-center justify-end w-full gap-2 pl-8">
+          <div className="w-auto md:w-[30%] flex items-center">
+            <ul className="flex items-center justify-end w-full gap-1 md:gap-2 md:pl-8">
               {!isAuthenticated ? (
-                <li className="list-none flex items-center gap-2 text-[14px] font-medium">
+                <li className="list-none hidden md:flex items-center gap-2 text-[14px] font-medium">
                   <Link
                     to="/login"
                     className="link transition hover:text-primary px-3 py-1.5 rounded-md hover:bg-gray-50"
@@ -151,7 +161,7 @@ const Header = () => {
               ) : (
                 <>
                   <Button
-                    className="myAccountWrap flex items-center gap-2.5 cursor-pointer"
+                    className="myAccountWrap hidden md:flex items-center gap-2.5 cursor-pointer"
                     onClick={handleClick}
                     aria-controls={open ? 'account-menu' : undefined}
                     aria-haspopup="true"

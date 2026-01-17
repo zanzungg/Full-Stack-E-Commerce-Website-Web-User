@@ -1,0 +1,646 @@
+/* ====================================
+   Mobile Responsive Styles
+   ==================================== */
+
+/* Tablet and Below (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Navigation */
+  .nav {
+    display: none;
+  }
+
+  /* Search */
+  .headerSearch {
+    max-width: 100%;
+  }
+}
+
+/* Mobile Landscape and Below (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Container */
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* Header */
+  header .header {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+
+  /* Logo */
+  header .header img {
+    height: 32px !important;
+  }
+
+  /* User Actions */
+  header .header ul {
+    gap: 4px !important;
+    padding-left: 0 !important;
+  }
+
+  header .header .MuiIconButton-root {
+    padding: 6px !important;
+  }
+
+  /* Hide account info text on mobile */
+  .myAccountWrap .info {
+    display: none;
+  }
+
+  /* Footer */
+  footer .footer {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  footer .footer .part1,
+  footer .footer .part2,
+  footer .footer > div {
+    width: 100% !important;
+    border-right: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  footer .footer .part2 {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  footer .footer .part2 .part2_col1,
+  footer .footer .part2 .part2_col2 {
+    width: 100% !important;
+  }
+
+  /* Footer Features */
+  footer > div:first-child > div {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px !important;
+  }
+
+  footer > div:first-child > div .col {
+    width: calc(50% - 12px) !important;
+    min-width: 140px;
+  }
+
+  /* Bottom Strip */
+  .bottomStrip > .container {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .bottomStrip ul {
+    justify-content: center;
+  }
+
+  .bottomStrip > .container > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .bottomStrip > .container > div:last-child img {
+    height: 24px;
+    width: auto;
+  }
+
+  /* Product Items */
+  .productItem {
+    padding: 12px !important;
+  }
+
+  .productItem .imgWrapper {
+    height: 200px !important;
+  }
+
+  .productItem h3 {
+    font-size: 14px !important;
+  }
+
+  .productItem .info .price {
+    font-size: 16px !important;
+  }
+
+  /* Product Grid */
+  .productListing .productRow {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  /* Cart Drawer */
+  .cartDrawer .MuiDrawer-paper {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Product Details Modal */
+  .productDetailsModal .MuiDialog-paper {
+    margin: 8px !important;
+    max-width: calc(100% - 16px) !important;
+  }
+
+  .productDetailsModalContainer {
+    flex-direction: column !important;
+  }
+
+  .productDetailsModalContainer .col1,
+  .productDetailsModalContainer .col2 {
+    width: 100% !important;
+    padding: 16px !important;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    display: none;
+  }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    padding: 12px 0 !important;
+  }
+
+  .breadcrumb ul {
+    font-size: 12px !important;
+  }
+
+  /* Banners */
+  .bannerBox,
+  .bannerBoxV2 {
+    height: 150px !important;
+  }
+
+  /* Sliders */
+  .homeSlider .swiper-slide img {
+    height: 250px !important;
+    object-fit: cover;
+  }
+
+  /* Category Slider */
+  .catSlider .item {
+    min-width: 100px !important;
+  }
+
+  .catSlider .item img {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .catSlider .item h3 {
+    font-size: 12px !important;
+  }
+
+  /* Product Slider */
+  .productSlider .swiper-slide {
+    width: 160px !important;
+  }
+
+  /* Checkout */
+  .checkoutPage .container {
+    flex-direction: column;
+  }
+
+  .checkoutPage .col1,
+  .checkoutPage .col2 {
+    width: 100% !important;
+  }
+
+  /* My Account */
+  .myAccountPage .container {
+    flex-direction: column;
+  }
+
+  .myAccountSidebar {
+    width: 100% !important;
+    margin-bottom: 20px;
+  }
+
+  .myAccountContent {
+    width: 100% !important;
+  }
+
+  /* Forms */
+  .form .row {
+    flex-direction: column;
+  }
+
+  .form .col {
+    width: 100% !important;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+  }
+
+  /* Tables */
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  table {
+    font-size: 12px !important;
+  }
+
+  table th,
+  table td {
+    padding: 8px !important;
+  }
+
+  /* Address Cards */
+  .addressGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Order Items */
+  .orderItem {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .orderItem .orderImage {
+    width: 100% !important;
+  }
+
+  .orderItem .orderDetails {
+    width: 100% !important;
+  }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+  /* Container */
+  .container {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /* Typography */
+  h1 {
+    font-size: 24px !important;
+  }
+
+  h2 {
+    font-size: 20px !important;
+  }
+
+  h3 {
+    font-size: 16px !important;
+  }
+
+  h4 {
+    font-size: 14px !important;
+  }
+
+  /* Product Grid - Single Column on Very Small Screens */
+  .productListing .productRow {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Footer Features - Stack vertically */
+  footer > div:first-child > div .col {
+    width: 100% !important;
+  }
+
+  /* Cart Items */
+  .cartItem {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cartItem .imgWrapper {
+    width: 100% !important;
+  }
+
+  .cartItem .info {
+    width: 100% !important;
+  }
+
+  /* Quantity Box */
+  .qtyBox {
+    width: 100% !important;
+  }
+
+  /* Product Details */
+  .productDetails .price {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 8px;
+  }
+
+  /* Badge sizes */
+  .MuiBadge-badge {
+    font-size: 9px !important;
+    min-width: 16px !important;
+    height: 16px !important;
+  }
+
+  /* Dialog padding */
+  .MuiDialog-paper {
+    padding: 8px !important;
+  }
+
+  /* Spacing utilities */
+  .gap-6 {
+    gap: 12px !important;
+  }
+
+  .gap-4 {
+    gap: 8px !important;
+  }
+
+  .p-8 {
+    padding: 16px !important;
+  }
+
+  .px-8 {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .py-8 {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+}
+
+/* Landscape Phones */
+@media (max-width: 768px) and (orientation: landscape) {
+  /* Adjust heights for landscape */
+  .homeSlider .swiper-slide img {
+    height: 200px !important;
+  }
+
+  .bannerBox,
+  .bannerBoxV2 {
+    height: 120px !important;
+  }
+}
+
+/* iPad Pro and Tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Product Grid - 3 columns */
+  .productListing .productRow {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  /* Footer - 2 columns */
+  footer .footer {
+    flex-wrap: wrap;
+  }
+
+  footer .footer .part1 {
+    width: 50% !important;
+  }
+
+  footer .footer .part2 {
+    width: 50% !important;
+  }
+
+  footer .footer > div:last-child {
+    width: 100% !important;
+    margin-top: 24px;
+  }
+}
+
+/* Utility Classes for Responsive */
+.mobile-only {
+  display: block;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none;
+  }
+
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* Touch friendly - increase tap targets on mobile */
+@media (max-width: 768px) {
+  button,
+  a,
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .MuiIconButton-root {
+    padding: 12px !important;
+  }
+}
+
+/* Prevent horizontal scroll */
+body {
+  overflow-x: hidden;
+}
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive tables */
+@media (max-width: 768px) {
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-responsive table {
+    min-width: 600px;
+  }
+}
+
+/* Fix MUI components on mobile */
+@media (max-width: 768px) {
+  .MuiDialog-container {
+    align-items: flex-end;
+  }
+
+  .MuiDialog-paper {
+    margin: 0;
+    max-height: 90vh;
+    border-radius: 16px 16px 0 0 !important;
+  }
+
+  .MuiDrawer-paper {
+    max-width: 100% !important;
+  }
+}
+
+/* Search Bar Responsive */
+@media (max-width: 768px) {
+  .headerSearch {
+    display: none;
+  }
+
+  /* Show search in navigation or as separate component */
+  .mobileSearch {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (min-width: 769px) {
+  .mobileSearch {
+    display: none;
+  }
+}
+
+/* Home Page Responsive */
+@media (max-width: 768px) {
+  .homeBanner .row {
+    flex-direction: column;
+  }
+
+  .homeBanner .col {
+    width: 100% !important;
+  }
+
+  /* Category Pills */
+  .categoryPills {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    gap: 8px;
+    padding-bottom: 8px;
+  }
+
+  .categoryPills::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .categoryPills::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+}
+
+/* Product Details Page Responsive */
+@media (max-width: 768px) {
+  .productDetailsPage .container {
+    padding: 12px;
+  }
+
+  .productDetailsPage .row {
+    flex-direction: column;
+  }
+
+  .productDetailsPage .col {
+    width: 100% !important;
+  }
+
+  .productZoom {
+    margin-bottom: 20px;
+  }
+
+  .productInfo {
+    padding: 0 !important;
+  }
+
+  /* Tabs */
+  .MuiTabs-root {
+    overflow-x: auto;
+  }
+
+  .MuiTab-root {
+    font-size: 12px !important;
+    padding: 8px 12px !important;
+  }
+}
+
+/* Cart Page Responsive */
+@media (max-width: 768px) {
+  .cartPage .container {
+    padding: 12px;
+  }
+
+  .cartTable {
+    display: none;
+  }
+
+  .cartMobileView {
+    display: block;
+  }
+
+  .cartSummary {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 16px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (min-width: 769px) {
+  .cartMobileView {
+    display: none;
+  }
+}
+
+/* Animation for mobile menu */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.mobile-menu-enter {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+/* Fix for iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .MuiDrawer-paper {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  header {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  /* Add dark mode styles if needed */
+}
+
+/* Print styles */
+@media print {
+  header,
+  footer,
+  .sidebar,
+  .navigation {
+    display: none;
+  }
+
+  .container {
+    max-width: 100%;
+  }
+}

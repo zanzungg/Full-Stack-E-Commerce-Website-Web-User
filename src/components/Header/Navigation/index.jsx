@@ -67,7 +67,7 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="py-2 bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40">
+      <nav className="py-2 bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40 hidden lg:block">
         <div className="container flex items-center gap-4">
           {/* Shop By Categories */}
           <div className="w-[17%] shrink-0">
