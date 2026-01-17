@@ -59,9 +59,9 @@ const ProductDetails = () => {
 
   return (
     <>
-      <div className="py-5">
-        <div className="container">
-          <Breadcrumbs aria-label="breadcrumb">
+      <div className="py-3 md:py-5">
+        <div className="container px-3 md:px-4">
+          <Breadcrumbs aria-label="breadcrumb" className="text-xs md:text-sm">
             <Link
               underline="hover"
               color="inherit"
@@ -85,21 +85,23 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      <section className="bg-white py-5">
-        <div className="container flex gap-8 items-start">
-          <div className="productZoomContainer w-[40%]">
-            <ProductZoom images={product.images || []} />
-          </div>
+      <section className="bg-white py-3 md:py-5">
+        <div className="container px-3 md:px-4">
+          <div className="flex flex-col lg:flex-row gap-4 md:gap-8 items-start">
+            <div className="productZoomContainer w-full lg:w-[40%]">
+              <ProductZoom images={product.images || []} />
+            </div>
 
-          <div className="productContent w-[60%] pr-10 pl-10">
-            <ProductDetailsComponent product={product} />
+            <div className="productContent w-full lg:w-[60%] lg:pr-10 lg:pl-10">
+              <ProductDetailsComponent product={product} />
+            </div>
           </div>
         </div>
 
-        <div className="container pt-8">
-          <div className="flex items-center gap-8 mb-5">
+        <div className="container pt-6 md:pt-8 px-3 md:px-4">
+          <div className="flex items-center gap-4 md:gap-8 mb-4 md:mb-5 overflow-x-auto">
             <span
-              className={`link text-[17px] cursor-pointer font-medium ${
+              className={`link text-[15px] md:text-[17px] cursor-pointer font-medium whitespace-nowrap ${
                 activeTab === 0 && 'text-primary'
               }`}
               onClick={() => setActiveTab(0)}
@@ -107,7 +109,7 @@ const ProductDetails = () => {
               Description
             </span>
             <span
-              className={`link text-[17px] cursor-pointer font-medium ${
+              className={`link text-[15px] md:text-[17px] cursor-pointer font-medium whitespace-nowrap ${
                 activeTab === 1 && 'text-primary'
               }`}
               onClick={() => setActiveTab(1)}
@@ -117,8 +119,8 @@ const ProductDetails = () => {
           </div>
 
           {activeTab === 0 && (
-            <div className="shadow-md w-full py-5 px-8 rounded-md">
-              <p className="whitespace-pre-line">
+            <div className="shadow-md w-full py-4 md:py-5 px-4 md:px-8 rounded-md">
+              <p className="whitespace-pre-line text-sm md:text-base">
                 {product.description || 'No description available.'}
               </p>
             </div>
@@ -133,8 +135,10 @@ const ProductDetails = () => {
           )}
         </div>
 
-        <div className="container pt-8">
-          <h2 className="font-semibold text-[20px] pb-0">Related Products</h2>
+        <div className="container pt-6 md:pt-8 px-3 md:px-4">
+          <h2 className="font-semibold text-[18px] md:text-[20px] pb-0 mb-2">
+            Related Products
+          </h2>
           <ProductsSlider
             items={6}
             products={relatedProducts}

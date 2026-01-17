@@ -108,7 +108,7 @@ const MyListItems = ({ item, onRemove, onAddToCart, isRemoving, isAdding }) => {
       <div className="cartItem w-full p-3 flex items-center gap-4 pb-5 border-b border-[rgba(0,0,0,0.1)] last:border-b-0">
         {/* Product Image */}
         <div className="img w-[15%] rounded-md overflow-hidden">
-          <Link to={`/product/${productId}`} className="group">
+          <Link to={`/product-details/${productId}`} className="group">
             <img
               src={productImage}
               className="w-full group-hover:scale-105 transition-all"
@@ -139,7 +139,7 @@ const MyListItems = ({ item, onRemove, onAddToCart, isRemoving, isAdding }) => {
           {/* Product Name */}
           <h3 className="text-[15px] font-semibold mb-2 pr-8">
             <Link
-              to={`/product/${productId}`}
+              to={`/product-details/${productId}`}
               className="link hover:text-primary transition-colors line-clamp-2"
             >
               {productName}

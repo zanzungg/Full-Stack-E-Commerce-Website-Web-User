@@ -50,13 +50,14 @@ const ProductsSlider = ({ items = 6, products = [], loading = false }) => {
       <Swiper
         modules={[Navigation]}
         navigation={{ prevEl: '.pro-prev', nextEl: '.pro-next' }}
-        spaceBetween={16}
-        slidesPerView={items}
+        spaceBetween={12}
+        slidesPerView={2}
         breakpoints={{
-          640: { slidesPerView: 2 },
-          768: { slidesPerView: 3 },
-          1024: { slidesPerView: 4 },
-          1280: { slidesPerView: items },
+          480: { slidesPerView: 2, spaceBetween: 12 },
+          640: { slidesPerView: 3, spaceBetween: 16 },
+          768: { slidesPerView: 3, spaceBetween: 16 },
+          1024: { slidesPerView: 4, spaceBetween: 20 },
+          1280: { slidesPerView: items, spaceBetween: 20 },
         }}
         className="relative py-4"
       >

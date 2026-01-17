@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Search from '../Search';
+import MobileSearch from '../Search/MobileSearch';
 import Badge from '@mui/material/Badge';
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
@@ -408,6 +409,9 @@ const Header = () => {
 
       {/* Navigation Bar */}
       <Navigation />
+
+      {/* Mobile Search Bar */}
+      <MobileSearch />
 
       {/* Add keyframes for badge pulse animation */}
       <style>{`

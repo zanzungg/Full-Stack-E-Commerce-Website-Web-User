@@ -104,18 +104,20 @@ const Home = () => {
       <HomeCategorySlider />
 
       {/* Popular Products Section */}
-      <section className="py-8 bg-white">
+      <section className="py-6 md:py-8 bg-white">
         <div className="container">
-          <div className="flex items-center justify-between">
-            <div className="leftSec w-[40%] pl-5">
-              <h2 className="font-semibold text-[20px]">Popular Products</h2>
-              <p className="font-normal text-[14px]">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-0 mb-4">
+            <div className="leftSec w-full md:w-[40%] md:pl-5">
+              <h2 className="font-semibold text-[18px] md:text-[20px]">
+                Popular Products
+              </h2>
+              <p className="font-normal text-[13px] md:text-[14px] text-gray-600">
                 Do not miss the current offers until the end of{' '}
                 {new Date().getFullYear()}.
               </p>
             </div>
 
-            <div className="rightSec w-[60%]">
+            <div className="rightSec w-full md:w-[60%] overflow-x-auto">
               <Tabs
                 value={selectedCategoryIndex}
                 onChange={handleChangeCategory}
@@ -144,12 +146,12 @@ const Home = () => {
       </section>
 
       {/* Banner Section */}
-      <section className="py-6 bg-white">
-        <div className="container flex gap-5">
-          <div className="part1 w-[70%]">
+      <section className="py-4 md:py-6 bg-white">
+        <div className="container flex flex-col lg:flex-row gap-4 md:gap-5">
+          <div className="part1 w-full lg:w-[70%]">
             <HomeBannerV2 />
           </div>
-          <div className="part2 w-[30%] flex items-center gap-5 justify-between flex-col">
+          <div className="part2 w-full lg:w-[30%] flex flex-row lg:flex-col items-center gap-4 md:gap-5 justify-between">
             {bannersLoading ? (
               // Loading skeleton
               <>
@@ -180,26 +182,28 @@ const Home = () => {
       </section>
 
       {/* Free Shipping Section */}
-      <section className="py-4 pt-6 bg-white">
+      <section className="py-4 md:pt-6 bg-white">
         <div className="container">
           <div
-            className="freeShipping w-[80%] mx-auto py-4 p-4 border-2 border-primary flex items-center 
-                    justify-between rounded-md mb-7"
+            className="freeShipping w-full md:w-[90%] lg:w-[80%] mx-auto py-3 md:py-4 px-3 md:p-4 border-2 border-primary 
+                    flex flex-col md:flex-row items-center gap-3 md:gap-4 justify-between rounded-md mb-4 md:mb-7"
           >
-            <div className="col1 flex items-center gap-4">
-              <LiaShippingFastSolid className="text-[50px]" />
-              <span className="text-[20px] font-semibold uppercase">
+            <div className="col1 flex items-center gap-3 md:gap-4">
+              <LiaShippingFastSolid className="text-[40px] md:text-[50px] text-primary" />
+              <span className="text-[16px] md:text-[20px] font-semibold uppercase">
                 Free Shipping
               </span>
             </div>
 
-            <div className="col2">
-              <p className="mb-0 font-medium">
+            <div className="col2 text-center md:text-left">
+              <p className="mb-0 font-medium text-[13px] md:text-[14px]">
                 Free Delivery Now On Your First Order and over $200
               </p>
             </div>
 
-            <p className="font-bold text-[30px]">- Only $200*</p>
+            <p className="font-bold text-[24px] md:text-[30px] text-primary">
+              - Only $200*
+            </p>
           </div>
 
           {/* <AdsBannerSliderV2 items={4} /> */}
@@ -207,9 +211,11 @@ const Home = () => {
       </section>
 
       {/* Latest Products Section */}
-      <section className="py-5 pt-0 bg-white">
+      <section className="py-4 md:py-5 pt-0 bg-white">
         <div className="container">
-          <h2 className="font-semibold text-[20px]">Latest Products</h2>
+          <h2 className="font-semibold text-[18px] md:text-[20px] mb-2">
+            Latest Products
+          </h2>
           <ProductsSlider
             items={6}
             products={latestProducts}
@@ -221,9 +227,11 @@ const Home = () => {
       </section>
 
       {/* Featured Products Section */}
-      <section className="py-5 pt-0 bg-white">
+      <section className="py-4 md:py-5 pt-0 bg-white">
         <div className="container">
-          <h2 className="font-semibold text-[20px]">Featured Products</h2>
+          <h2 className="font-semibold text-[18px] md:text-[20px] mb-2">
+            Featured Products
+          </h2>
           <ProductsSlider
             items={6}
             products={featuredProducts}
@@ -233,12 +241,14 @@ const Home = () => {
       </section>
 
       {/* Blog Section */}
-      <section className="py-5 pt-0 bg-white blogSection">
+      <section className="py-4 md:py-5 pt-0 bg-white blogSection">
         <div className="container">
-          <h2 className="font-semibold text-[20px] mb-4">From The Blog</h2>
+          <h2 className="font-semibold text-[18px] md:text-[20px] mb-4">
+            From The Blog
+          </h2>
 
           {blogsLoading ? (
-            <div className="grid grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
               {[...Array(4)].map((_, index) => (
                 <div key={index} className="animate-pulse">
                   <div className="w-full h-48 bg-gray-200 rounded-md mb-4"></div>
@@ -249,12 +259,21 @@ const Home = () => {
               ))}
             </div>
           ) : hasBlogs ? (
-            <div className="relative">
+            <div className="relative group">
               <Swiper
                 modules={[Navigation]}
                 navigation={{ prevEl: '.blog-prev', nextEl: '.blog-next' }}
-                spaceBetween={30}
-                slidesPerView={4}
+                spaceBetween={12}
+                slidesPerView={1}
+                grabCursor={true}
+                touchRatio={1}
+                threshold={5}
+                breakpoints={{
+                  480: { slidesPerView: 1.5, spaceBetween: 14 },
+                  640: { slidesPerView: 2, spaceBetween: 16 },
+                  1024: { slidesPerView: 3, spaceBetween: 20 },
+                  1280: { slidesPerView: 4, spaceBetween: 24 },
+                }}
               >
                 {blogs.map((blog) => (
                   <SwiperSlide key={blog._id}>
@@ -264,8 +283,16 @@ const Home = () => {
               </Swiper>
 
               {/* Navigation */}
-              <NavButton direction="prev" className="blog-prev" small />
-              <NavButton direction="next" className="blog-next" small />
+              <NavButton
+                direction="prev"
+                className="blog-prev hidden sm:flex opacity-0 group-hover:opacity-100 transition-opacity"
+                small
+              />
+              <NavButton
+                direction="next"
+                className="blog-next hidden sm:flex opacity-0 group-hover:opacity-100 transition-opacity"
+                small
+              />
             </div>
           ) : (
             <p className="text-center text-gray-500 py-8">No blogs available</p>
@@ -280,18 +307,20 @@ const NavButton = ({ direction, className, small }) => {
   const isPrev = direction === 'prev';
   return (
     <button
+      aria-label={isPrev ? 'Previous slide' : 'Next slide'}
       className={`
         ${className}
         absolute top-1/2 -translate-y-1/2 z-10
-        ${isPrev ? 'left-4' : 'right-4'}  // ← căn vị trí
+        ${isPrev ? 'left-1 sm:left-2 md:left-4' : 'right-1 sm:right-2 md:right-4'}
         flex items-center justify-center
-        rounded-full bg-white text-gray-800 shadow-md
-        transition-all hover:bg-red-500 hover:text-white
-        ${small ? 'h-8 w-8' : 'h-11 w-11'}
+        rounded-full bg-white text-gray-800 shadow-md border border-gray-100
+        transition-all hover:bg-red-500 hover:text-white hover:scale-110 active:scale-95
+        focus:outline-none focus:ring-2 focus:ring-red-400
+        ${small ? 'h-8 w-8 sm:h-9 sm:w-9' : 'h-9 w-9 sm:h-10 sm:w-10 md:h-11 md:w-11'}
       `}
     >
       <svg
-        className={`${small ? 'h-4 w-4' : 'h-5 w-5'}`}
+        className={`${small ? 'h-4 w-4' : 'h-4 w-4 sm:h-5 sm:w-5'}`}
         fill="currentColor"
         viewBox="0 0 20 20"
       >

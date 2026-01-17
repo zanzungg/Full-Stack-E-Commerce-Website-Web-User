@@ -657,6 +657,9 @@ export const useProductSearch = (searchQuery = '', options = {}) => {
 
   const abortControllerRef = useRef(null);
   const lastSearchRef = useRef('');
+  
+  // Stringify params để so sánh
+  const paramsString = JSON.stringify(params);
 
   const searchProducts = useCallback(
     async (query, searchParams = params) => {
@@ -685,7 +688,7 @@ export const useProductSearch = (searchQuery = '', options = {}) => {
       // Skip if same query
       if (
         trimmedQuery === lastSearchRef.current &&
-        searchParams.page === params.page
+        JSON.stringify(searchParams) === paramsString
       ) {
         return searchResults;
       }
@@ -756,7 +759,7 @@ export const useProductSearch = (searchQuery = '', options = {}) => {
         abortControllerRef.current = null;
       }
     },
-    [params, minSearchLength, searchResults]
+    [paramsString, minSearchLength]
   );
 
   useEffect(() => {

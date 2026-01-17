@@ -136,6 +136,22 @@
     gap: 12px !important;
   }
 
+  /* Product Listing Page */
+  .sidebarWrapper {
+    display: none;
+  }
+
+  .rightContent {
+    width: 100% !important;
+  }
+
+  .itemViewActions .MuiButton-root {
+    min-width: 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 6px !important;
+  }
+
   /* Cart Drawer */
   .cartDrawer .MuiDrawer-paper {
     width: 100% !important;

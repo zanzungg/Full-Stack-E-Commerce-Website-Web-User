@@ -84,7 +84,7 @@ const CartItems = ({ item }) => {
   return (
     <div className="cartItem w-full p-3 flex items-center gap-4 pb-5 border-b border-[rgba(0,0,0,0.1)] relative">
       <div className="img w-[15%] rounded-md overflow-hidden">
-        <Link to={`/product/${product._id}`} className="group">
+        <Link to={`/product-details/${product._id}`} className="group">
           <img
             src={mainImage}
             alt={product.name}
@@ -113,7 +113,7 @@ const CartItems = ({ item }) => {
           {product.brand || 'No Brand'}
         </span>
         <h3 className="text-[15px] font-semibold">
-          <Link to={`/product/${product._id}`} className="link">
+          <Link to={`/product-details/${product._id}`} className="link">
             {product.name}
           </Link>
         </h3>

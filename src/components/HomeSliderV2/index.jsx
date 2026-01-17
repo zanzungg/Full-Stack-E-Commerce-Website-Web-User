@@ -59,7 +59,7 @@ const HomeBannerV2 = () => {
   }
 
   return (
-    <div className="relative w-full overflow-hidden">
+    <div className="relative w-full overflow-hidden group">
       <Swiper
         spaceBetween={30}
         effect="fade"
@@ -93,36 +93,42 @@ const HomeBannerV2 = () => {
                   e.target.src = '/fallback-banner.jpg';
                 }}
                 className="w-full h-auto object-cover select-none"
-                style={{ maxHeight: '80vh' }}
+                style={{ maxHeight: '60vh', minHeight: '280px' }}
               />
 
-              {/* Overlay Content */}
-              <div className="absolute inset-0 bg-linear-to-r from-black/60 via-transparent to-transparent z-10"></div>
+              {/* Overlay Content - Stronger gradient for better text readability */}
+              <div className="absolute inset-0 bg-linear-to-l from-black/80 via-black/50 to-black/20 z-10"></div>
 
-              <div className="info absolute top-0 left-0 md:left-auto md:right-0 w-full md:w-[50%] h-full z-20 p-6 md:p-8 flex flex-col justify-center text-black">
+              {/* Info section - Always positioned on the right side with proper spacing */}
+              <div className="info absolute top-0 right-0 w-[50%] sm:w-[50%] md:w-[50%] h-full z-20 p-2 sm:p-3 md:p-6 lg:p-8 flex flex-col justify-center text-white">
                 {slide.badge && (
-                  <span className="inline-block bg-red-600 text-white text-xs md:text-sm font-bold px-3 py-1 rounded-full mb-2 w-fit">
+                  <span className="inline-block bg-red-600 text-white text-[8px] sm:text-[9px] md:text-xs lg:text-sm font-bold px-1.5 sm:px-2 md:px-3 py-0.5 sm:py-0.5 md:py-1 rounded-full mb-1 sm:mb-1.5 md:mb-2 w-fit shadow-md">
                     {slide.badge}
                   </span>
                 )}
-                <h4 className="text-sm md:text-lg font-medium mb-2 opacity-90">
+
+                <h4 className="text-[9px] sm:text-[10px] md:text-sm lg:text-lg font-medium mb-0.5 sm:mb-1 md:mb-2 opacity-95 drop-shadow-sm line-clamp-2">
                   {slide.title}
                 </h4>
+
                 {slide.subtitle && (
-                  <h2 className="text-2xl md:text-4xl font-bold leading-tight mb-3">
+                  <h2 className="text-xs sm:text-sm md:text-2xl lg:text-4xl font-bold leading-tight mb-1 sm:mb-1.5 md:mb-3 drop-shadow-md line-clamp-2">
                     {slide.subtitle}
                   </h2>
                 )}
-                <h3 className="text-lg md:text-2xl font-medium mb-4">
-                  <span className="text-red-500 text-2xl md:text-3xl font-bold">
+
+                <h3 className="text-[10px] sm:text-xs md:text-lg lg:text-2xl font-medium mb-1.5 sm:mb-2 md:mb-4">
+                  <span className="text-red-400 md:text-red-500 text-sm sm:text-base md:text-2xl lg:text-3xl font-bold drop-shadow-md">
                     {slide.priceDisplay}
                   </span>
                 </h3>
 
                 <Button
                   variant="contained"
-                  className="btn-org bg-red-600! hover:bg-red-700! text-white! font-semibold! py-3! px-6! rounded-md! shadow-lg! transition-all! duration-300! hover:scale-105!"
-                  onClick={() => navigate(`/product/${slide.productId}`)}
+                  className="btn-org bg-red-600! hover:bg-red-700! text-white! font-semibold! py-1! sm:py-1.5! md:py-3! px-10! sm:px-14! md:px-20! text-[9px]! sm:text-[10px]! md:text-sm! rounded-md! shadow-lg! transition-all! duration-300! hover:scale-105! active:scale-95! w-fit!"
+                  onClick={() =>
+                    navigate(`/product-details/${slide.productId}`)
+                  }
                 >
                   {slide.buttonText}
                 </Button>
@@ -133,10 +139,13 @@ const HomeBannerV2 = () => {
       </Swiper>
 
       {/* Navigation Buttons */}
-      <NavButton direction="prev" className="banner-v2-prev left-4 md:left-8" />
+      <NavButton
+        direction="prev"
+        className="banner-v2-prev left-1 sm:left-2 md:left-4 lg:left-8 hidden sm:flex opacity-0 group-hover:opacity-100 transition-opacity"
+      />
       <NavButton
         direction="next"
-        className="banner-v2-next right-4 md:right-8"
+        className="banner-v2-next right-1 sm:right-2 md:right-4 lg:right-8 hidden sm:flex opacity-0 group-hover:opacity-100 transition-opacity"
       />
     </div>
   );
@@ -148,9 +157,13 @@ const NavButton = ({ direction, className }) => {
   return (
     <button
       aria-label={isPrev ? 'Previous slide' : 'Next slide'}
-      className={`${className} absolute top-1/2 z-30 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm text-gray-800 shadow-xl transition-all duration-300 hover:bg-red-600 hover:text-white hover:scale-110 focus:outline-none focus:ring-4 focus:ring-red-400`}
+      className={`${className} absolute top-1/2 z-30 -translate-y-1/2 flex h-8 w-8 sm:h-9 sm:w-9 md:h-11 lg:h-12 md:w-11 lg:w-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm text-gray-800 shadow-xl transition-all duration-300 hover:bg-red-600 hover:text-white hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400`}
     >
-      <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+      <svg
+        className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 lg:h-6 md:w-5 lg:w-6"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
         <path
           fillRule="evenodd"
           d={

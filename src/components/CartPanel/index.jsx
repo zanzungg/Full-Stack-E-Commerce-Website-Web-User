@@ -90,7 +90,7 @@ const CartPanel = () => {
                 {/* IMAGE */}
                 <div className="w-[25%] h-[90px] overflow-hidden rounded-md">
                   <Link
-                    to={`/product/${product._id}`}
+                    to={`/product-details/${product._id}`}
                     className="block group h-full"
                   >
                     <img
@@ -105,7 +105,7 @@ const CartPanel = () => {
                 <div className="w-[75%] pr-5 relative">
                   <h4 className="text-[14px] font-medium line-clamp-2">
                     <Link
-                      to={`/product/${product._id}`}
+                      to={`/product-details/${product._id}`}
                       className="link transition-all"
                     >
                       {product.name}

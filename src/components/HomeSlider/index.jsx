@@ -88,7 +88,7 @@ const HomeSlider = memo(() => {
             {banners.map((src, i) => (
               <SwiperSlide key={`banner-${i}-${src.slice(-10)}`}>
                 <div className="relative w-full bg-linear-to-br from-gray-100 to-gray-200">
-                  <div className="aspect-16/7 md:aspect-24/7 relative">
+                  <div className="aspect-16/7 md:aspect-24/7 relative overflow-hidden">
                     {!loadedImages.has(i) && (
                       <div className="absolute inset-0 home-slider-skeleton" />
                     )}
@@ -96,11 +96,10 @@ const HomeSlider = memo(() => {
                     <img
                       src={src}
                       alt={`Promotional banner ${i + 1} of ${banners.length}`}
-                      className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${
-                        loadedImages.has(i)
-                          ? 'opacity-100 scale-100'
-                          : 'opacity-0 scale-105'
+                      className={`absolute inset-0 w-full h-full object-cover scale-105 transition-all duration-500 ${
+                        loadedImages.has(i) ? 'opacity-100' : 'opacity-0'
                       }`}
+                      style={{ minWidth: '100%', minHeight: '100%' }}
                       onLoad={() => handleImageLoad(i)}
                       loading={i === 0 ? 'eager' : 'lazy'}
                       fetchPriority={i === 0 ? 'high' : 'low'}

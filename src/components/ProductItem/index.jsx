@@ -144,7 +144,7 @@ const ProductItem = ({ product }) => {
     <>
       <div className="productItem group shadow-lg rounded-md border border-[rgba(0,0,0,0.1)] relative">
         <div className="imgWrapper w-full rounded-md relative">
-          <Link to={`/product/${_id}`}>
+          <Link to={`/product-details/${_id}`}>
             <div className="img h-[220px] overflow-hidden">
               <img
                 src={mainImage}
@@ -175,7 +175,7 @@ const ProductItem = ({ product }) => {
                  pointer-events-none group-hover:pointer-events-auto"
           >
             <Button
-              className="w-[35px]! h-[35px]! min-[35px]! rounded-full! bg-white!
+              className="w-[35px]! h-[35px]! rounded-full! bg-white!
                    text-black hover:bg-primary! hover:text-white group"
               onClick={() => context.setOpenProductDetailsModal(product)}
             >
@@ -183,7 +183,7 @@ const ProductItem = ({ product }) => {
             </Button>
 
             <Button
-              className="w-[35px]! h-[35px]! min-[35px]! rounded-full! bg-white!
+              className="w-[35px]! h-[35px]! rounded-full! bg-white!
                    text-black hover:bg-primary! hover:text-white group"
             >
               <IoGitCompareOutline className="text-[18px] text-black! group-hover:text-white hover:text-white!" />
@@ -194,13 +194,13 @@ const ProductItem = ({ product }) => {
                 !isAuthenticated
                   ? 'Login to add to wishlist'
                   : isInWishlist
-                  ? 'Remove from wishlist'
-                  : 'Add to wishlist'
+                    ? 'Remove from wishlist'
+                    : 'Add to wishlist'
               }
               arrow
             >
               <Button
-                className={`w-[35px]! h-[35px]! min-[35px]! rounded-full! ${
+                className={`w-[35px]! h-[35px]! rounded-full! ${
                   isInWishlist
                     ? 'bg-red-500! text-white!'
                     : 'bg-white! text-black hover:bg-primary! hover:text-white'
@@ -222,12 +222,18 @@ const ProductItem = ({ product }) => {
 
         <div className="info p-3 py-5">
           <h6 className="text-[13px]">
-            <Link to={`/product/${_id}`} className="link transition-all">
+            <Link
+              to={`/product-listing?search=${brand}`}
+              className="link transition-all"
+            >
               {brand || 'No Brand'}
             </Link>
           </h6>
           <h3 className="text-[13px] title mt-1 font-medium mb-1 text-black line-clamp-1">
-            <Link to={`/product/${_id}`} className="link transition-all">
+            <Link
+              to={`/product-details/${_id}`}
+              className="link transition-all"
+            >
               {name.length > 50 ? `${name.substring(0, 50)}...` : name}
             </Link>
           </h3>
@@ -261,10 +267,10 @@ const ProductItem = ({ product }) => {
                 !isAuthenticated
                   ? 'Login to add to cart'
                   : isAdding
-                  ? 'Adding to cart...'
-                  : hasVariants
-                  ? 'Select variant'
-                  : 'Add to cart'
+                    ? 'Adding to cart...'
+                    : hasVariants
+                      ? 'Select variant'
+                      : 'Add to cart'
               }
               arrow
             >

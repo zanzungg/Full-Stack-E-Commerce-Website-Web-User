@@ -146,7 +146,7 @@ const ProductItemListView = ({ product }) => {
     <>
       <div className="productItem shadow-lg rounded-md border border-[rgba(0,0,0,0.1)] flex items-center relative">
         <div className="group imgWrapper w-[25%] rounded-md relative">
-          <Link to={`/product/${_id}`}>
+          <Link to={`/product-details/${_id}`}>
             <div className="img aspect-4/5 overflow-hidden relative">
               <img
                 src={mainImage}
@@ -177,7 +177,7 @@ const ProductItemListView = ({ product }) => {
                  pointer-events-none group-hover:pointer-events-auto"
           >
             <Button
-              className="w-[35px]! h-[35px]! min-[35px]! rounded-full! bg-white!
+              className="w-[35px]! h-[35px]! rounded-full! bg-white!
                    text-black hover:bg-primary! hover:text-white group"
               onClick={() => context.setOpenProductDetailsModal(product)}
             >
@@ -185,7 +185,7 @@ const ProductItemListView = ({ product }) => {
             </Button>
 
             <Button
-              className="w-[35px]! h-[35px]! min-[35px]! rounded-full! bg-white!
+              className="w-[35px]! h-[35px]! rounded-full! bg-white!
                    text-black hover:bg-primary! hover:text-white group"
             >
               <IoGitCompareOutline className="text-[18px] text-black! group-hover:text-white hover:text-white!" />
@@ -196,13 +196,13 @@ const ProductItemListView = ({ product }) => {
                 !isAuthenticated
                   ? 'Login to add to wishlist'
                   : isInWishlist
-                  ? 'Remove from wishlist'
-                  : 'Add to wishlist'
+                    ? 'Remove from wishlist'
+                    : 'Add to wishlist'
               }
               arrow
             >
               <Button
-                className={`w-[35px]! h-[35px]! min-[35px]! rounded-full! ${
+                className={`w-[35px]! h-[35px]! rounded-full! ${
                   isInWishlist
                     ? 'bg-red-500! text-white!'
                     : 'bg-white! text-black hover:bg-primary! hover:text-white'
@@ -226,7 +226,7 @@ const ProductItemListView = ({ product }) => {
           {brand && (
             <h6 className="text-[15px]">
               <Link
-                to={`/products?search=${brand}`}
+                to={`/product-listing?search=${brand}`}
                 className="link transition-all"
               >
                 {brand}
@@ -234,7 +234,10 @@ const ProductItemListView = ({ product }) => {
             </h6>
           )}
           <h3 className="text-[18px] title mt-5 font-medium mb-3 text-black">
-            <Link to={`/product/${_id}`} className="link transition-all">
+            <Link
+              to={`/product-details/${_id}`}
+              className="link transition-all"
+            >
               {name}
             </Link>
           </h3>
@@ -266,10 +269,10 @@ const ProductItemListView = ({ product }) => {
                 !isAuthenticated
                   ? 'Login to add to cart'
                   : isAdding
-                  ? 'Adding to cart...'
-                  : hasVariants
-                  ? 'Select variant'
-                  : 'Add to cart'
+                    ? 'Adding to cart...'
+                    : hasVariants
+                      ? 'Select variant'
+                      : 'Add to cart'
               }
               arrow
             >

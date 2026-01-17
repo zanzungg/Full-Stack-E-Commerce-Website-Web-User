@@ -558,7 +558,7 @@ const Checkout = () => {
                         >
                           <div className="part1 flex items-center gap-3 flex-1 min-w-0">
                             <Link
-                              to={`/product/${product._id}`}
+                              to={`/product-details/${product._id}`}
                               className="img w-[50px] h-[50px] object-cover overflow-hidden rounded-md group shrink-0"
                             >
                               <img
@@ -569,7 +569,7 @@ const Checkout = () => {
                             </Link>
                             <div className="info flex-1 min-w-0">
                               <Link
-                                to={`/product/${product._id}`}
+                                to={`/product-details/${product._id}`}
                                 className="text-[14px] font-medium link line-clamp-2"
                               >
                                 {product.name}
