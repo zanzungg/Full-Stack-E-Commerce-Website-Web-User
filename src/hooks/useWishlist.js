@@ -3,6 +3,7 @@ import { toast } from 'react-hot-toast';
 import { createElement } from 'react';
 import wishlistService from '../api/services/wishlistService';
 import { useAuthContext } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export const useWishlist = () => {
   const navigate = useNavigate();
@@ -47,7 +48,8 @@ export const useWishlist = () => {
               'button',
               {
                 type: 'button',
-                className: 'text-sm text-primary hover:underline font-medium text-left',
+                className:
+                  'text-sm text-primary hover:underline font-medium text-left',
                 onClick: () => {
                   toast.dismiss(t.id);
                   navigate('/my-wishlist');
