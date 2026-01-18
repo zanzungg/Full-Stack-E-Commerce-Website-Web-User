@@ -86,8 +86,7 @@ const NavButton = ({ direction, className }) => {
         ${isPrev ? 'left-1 md:left-4' : 'right-1 md:right-4'}
         z-10 flex h-8 w-8 md:h-11 md:w-11 items-center justify-center 
         rounded-full bg-white text-gray-800 shadow-lg 
-        transition-all hover:bg-red-500 hover:text-white
-        hidden sm:flex
+        transition-all hover:bg-red-500 hover:text-white sm:flex
       `}
     >
       <svg

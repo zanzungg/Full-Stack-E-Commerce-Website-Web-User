@@ -12,7 +12,7 @@ const Reviews = () => {
         <div className="reviewScroll w-full max-h-[250px] md:max-h-[300px] overflow-y-scroll overflow-x-hidden mt-4 md:mt-5 pr-2 md:pr-5">
           <div className="review pt-3 md:pt-5 pb-3 md:pb-5 border-b border-[rgba(0,0,0,0.1)] w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             <div className="info w-full md:w-[60%] flex items-center gap-2 md:gap-3">
-              <div className="img w-12 h-12 md:w-20 md:h-20 overflow-hidden rounded-full flex-shrink-0">
+              <div className="img w-12 h-12 md:w-20 md:h-20 overflow-hidden rounded-full shrink-0">
                 <img
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHOyweUERP_PkAHflHnp-jMxGTx_D-DD638A&s"
                   className="w-full h-full object-cover"

@@ -5,6 +5,8 @@ import wishlistService from '../api/services/wishlistService';
 import { useAuthContext } from '../contexts/AuthContext';
 
 export const useWishlist = () => {
+  const navigate = useNavigate();
+
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuthContext();
 
@@ -42,11 +44,14 @@ export const useWishlist = () => {
               response.data.message || 'Product added to wishlist!'
             ),
             createElement(
-              'a',
+              'button',
               {
-                href: '/my-wishlist',
-                className: 'text-sm text-primary hover:underline font-medium',
-                onClick: () => toast.dismiss(t.id),
+                type: 'button',
+                className: 'text-sm text-primary hover:underline font-medium text-left',
+                onClick: () => {
+                  toast.dismiss(t.id);
+                  navigate('/my-wishlist');
+                },
               },
               'View Wishlist →'
             )

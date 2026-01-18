@@ -3,8 +3,11 @@ import { toast } from 'react-hot-toast';
 import { createElement } from 'react';
 import cartService from '../api/services/cartService';
 import { useAuthContext } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export const useCart = () => {
+  const navigate = useNavigate();
+
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuthContext();
 
@@ -41,11 +44,14 @@ export const useCart = () => {
               response?.data?.message || 'Product added to cart!'
             ),
             createElement(
-              'a',
+              'button',
               {
-                href: '/cart',
-                className: 'text-sm text-primary hover:underline font-medium',
-                onClick: () => toast.dismiss(t.id),
+                type: 'button',
+                className: 'text-sm text-primary hover:underline font-medium text-left',
+                onClick: () => {
+                  toast.dismiss(t.id);
+                  navigate('/cart');
+                },
               },
               'View Cart →'
             )
