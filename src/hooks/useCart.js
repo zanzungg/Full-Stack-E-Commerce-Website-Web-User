@@ -47,7 +47,8 @@ export const useCart = () => {
               'button',
               {
                 type: 'button',
-                className: 'text-sm text-primary hover:underline font-medium text-left',
+                className:
+                  'text-sm text-primary hover:underline font-medium text-left cursor-pointer',
                 onClick: () => {
                   toast.dismiss(t.id);
                   navigate('/cart');

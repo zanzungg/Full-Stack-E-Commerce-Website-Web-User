@@ -49,7 +49,7 @@ export const useWishlist = () => {
               {
                 type: 'button',
                 className:
-                  'text-sm text-primary hover:underline font-medium text-left',
+                  'text-sm text-primary hover:underline font-medium text-left cursor-pointer',
                 onClick: () => {
                   toast.dismiss(t.id);
                   navigate('/my-wishlist');
