@@ -174,87 +174,97 @@ const PaymentFailed = () => {
 
   if (isVerifying) {
     return (
-      <section className="py-20 bg-gray-50 min-h-screen flex items-center justify-center">
+      <section className="py-10 md:py-20 bg-gray-50 min-h-screen flex items-center justify-center px-3">
         <div className="text-center">
-          <CircularProgress size={60} className="text-red-600 mb-4" />
-          <h2 className="text-xl font-semibold text-gray-700">
+          <CircularProgress size={50} className="text-red-600 mb-4" />
+          <h2 className="text-lg md:text-xl font-semibold text-gray-700">
             Verifying transaction...
           </h2>
-          <p className="text-gray-500 mt-2">Please wait a moment</p>
+          <p className="text-gray-500 mt-2 text-sm md:text-base">
+            Please wait a moment
+          </p>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="py-10 bg-gray-50 min-h-screen">
-      <div className="container max-w-3xl">
+    <section className="payment-result-page py-5 md:py-10 bg-gray-50 min-h-screen">
+      <div className="container max-w-3xl px-3 md:px-4">
         {/* Failure Card */}
-        <div className="bg-white rounded-lg shadow-lg p-8 md:p-12">
+        <div className="bg-white rounded-lg shadow-lg p-5 md:p-8 lg:p-12">
           {/* Error Icon */}
-          <div className="text-center mb-8">
-            <div className="mx-auto w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-4">
-              <MdError className="text-red-600 text-5xl" />
+          <div className="text-center mb-6 md:mb-8">
+            <div className="mx-auto w-16 h-16 md:w-20 md:h-20 bg-red-100 rounded-full flex items-center justify-center mb-3 md:mb-4">
+              <MdError className="text-red-600 text-4xl md:text-5xl" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
               Payment Failed
             </h1>
-            <p className="text-gray-600">
+            <p className="text-sm md:text-base text-gray-600">
               Unfortunately, your transaction could not be completed.
             </p>
           </div>
 
           {/* Failure Details */}
           {failureInfo && (
-            <div className="space-y-4 mb-8">
+            <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
               {/* Error Message */}
-              <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                <div className="flex items-start gap-3">
-                  <MdWarning className="text-red-600 text-2xl mt-0.5" />
-                  <div>
-                    <h3 className="font-semibold text-red-800 mb-1">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 md:p-6">
+                <div className="flex items-start gap-2 md:gap-3">
+                  <MdWarning className="text-red-600 text-xl md:text-2xl mt-0.5 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-sm md:text-base text-red-800 mb-1">
                       Failure Reason
                     </h3>
-                    <p className="text-red-700">{failureInfo.message}</p>
+                    <p className="text-xs md:text-sm text-red-700 wrap-break-word">
+                      {failureInfo.message}
+                    </p>
                   </div>
                 </div>
               </div>
 
               {/* Transaction Details */}
-              <div className="bg-gray-50 rounded-lg p-6 space-y-3">
+              <div className="bg-gray-50 rounded-lg p-4 md:p-6 space-y-2 md:space-y-3">
                 {failureInfo.orderId && (
-                  <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-                    <span className="text-sm text-gray-500">Order ID</span>
-                    <span className="font-semibold text-gray-800">
+                  <div className="flex justify-between items-center pb-2 md:pb-3 border-b border-gray-200 gap-2">
+                    <span className="text-xs md:text-sm text-gray-500">
+                      Order ID
+                    </span>
+                    <span className="font-semibold text-xs md:text-base text-gray-800 break-all text-right">
                       #{failureInfo.orderId?.slice(-8)?.toUpperCase() || 'N/A'}
                     </span>
                   </div>
                 )}
 
                 {failureInfo.transactionNo && (
-                  <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-                    <span className="text-sm text-gray-500">
+                  <div className="flex justify-between items-center pb-2 md:pb-3 border-b border-gray-200 gap-2">
+                    <span className="text-xs md:text-sm text-gray-500 shrink-0">
                       Transaction ID
                     </span>
-                    <span className="font-semibold text-gray-800">
+                    <span className="font-semibold text-xs md:text-base text-gray-800 break-all text-right">
                       {failureInfo.transactionNo}
                     </span>
                   </div>
                 )}
 
                 {failureInfo.responseCode && (
-                  <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-                    <span className="text-sm text-gray-500">Error Code</span>
-                    <span className="font-semibold text-gray-800">
+                  <div className="flex justify-between items-center pb-2 md:pb-3 border-b border-gray-200 gap-2">
+                    <span className="text-xs md:text-sm text-gray-500">
+                      Error Code
+                    </span>
+                    <span className="font-semibold text-xs md:text-base text-gray-800">
                       {failureInfo.responseCode}
                     </span>
                   </div>
                 )}
 
                 {failureInfo.bankCode && (
-                  <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-                    <span className="text-sm text-gray-500">Bank</span>
-                    <span className="font-semibold text-gray-800">
+                  <div className="flex justify-between items-center pb-2 md:pb-3 border-b border-gray-200 gap-2">
+                    <span className="text-xs md:text-sm text-gray-500">
+                      Bank
+                    </span>
+                    <span className="font-semibold text-xs md:text-base text-gray-800">
                       {failureInfo.bankCode}
                     </span>
                   </div>
@@ -263,9 +273,11 @@ const PaymentFailed = () => {
                 {/* Amount - prefer orderDetails over failureInfo */}
                 {(orderDetails?.totalAmount !== undefined ||
                   failureInfo.amount > 0) && (
-                  <div className="flex justify-between items-center pt-2">
-                    <span className="text-sm text-gray-500">Amount</span>
-                    <span className="text-xl font-bold text-gray-800">
+                  <div className="flex justify-between items-center pt-2 gap-2">
+                    <span className="text-xs md:text-sm text-gray-500">
+                      Amount
+                    </span>
+                    <span className="text-lg md:text-xl font-bold text-gray-800">
                       $
                       {orderDetails?.totalAmount?.toFixed(2) ||
                         (failureInfo.amount / USD_TO_VND)?.toFixed(2)}
@@ -275,47 +287,49 @@ const PaymentFailed = () => {
 
                 {/* Order Status */}
                 {orderDetails && (
-                  <div className="flex justify-between items-center pt-2 border-t border-gray-200">
-                    <span className="text-sm text-gray-500">Order Status</span>
+                  <div className="flex justify-between items-center pt-2 border-t border-gray-200 gap-2">
+                    <span className="text-xs md:text-sm text-gray-500">
+                      Order Status
+                    </span>
                     <span
-                      className={`px-3 py-1 text-sm font-medium rounded-full ${
+                      className={`px-2 md:px-3 py-1 text-xs md:text-sm font-medium rounded-full ${
                         orderDetails.orderStatus === 'cancelled'
                           ? 'bg-red-100 text-red-700'
                           : orderDetails.orderStatus === 'pending'
-                          ? 'bg-yellow-100 text-yellow-700'
-                          : 'bg-blue-100 text-blue-700'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-blue-100 text-blue-700'
                       }`}
                     >
                       {orderDetails.orderStatus === 'pending'
                         ? 'Pending Payment'
                         : orderDetails.orderStatus === 'cancelled'
-                        ? 'Cancelled'
-                        : orderDetails.orderStatus.charAt(0).toUpperCase() +
-                          orderDetails.orderStatus.slice(1)}
+                          ? 'Cancelled'
+                          : orderDetails.orderStatus.charAt(0).toUpperCase() +
+                            orderDetails.orderStatus.slice(1)}
                     </span>
                   </div>
                 )}
 
                 {/* Payment Status */}
                 {orderDetails && (
-                  <div className="flex justify-between items-center pt-2">
-                    <span className="text-sm text-gray-500">
+                  <div className="flex justify-between items-center pt-2 gap-2">
+                    <span className="text-xs md:text-sm text-gray-500">
                       Payment Status
                     </span>
                     <span
-                      className={`px-3 py-1 text-sm font-medium rounded-full ${
+                      className={`px-2 md:px-3 py-1 text-xs md:text-sm font-medium rounded-full ${
                         orderDetails.paymentStatus === 'paid'
                           ? 'bg-green-100 text-green-700'
                           : orderDetails.paymentStatus === 'failed'
-                          ? 'bg-red-100 text-red-700'
-                          : 'bg-orange-100 text-orange-700'
+                            ? 'bg-red-100 text-red-700'
+                            : 'bg-orange-100 text-orange-700'
                       }`}
                     >
                       {orderDetails.paymentStatus === 'paid'
                         ? 'Paid'
                         : orderDetails.paymentStatus === 'failed'
-                        ? 'Failed'
-                        : 'Unpaid'}
+                          ? 'Failed'
+                          : 'Unpaid'}
                     </span>
                   </div>
                 )}
@@ -323,8 +337,8 @@ const PaymentFailed = () => {
 
               {/* Warning if order is cancelled */}
               {orderDetails?.orderStatus === 'cancelled' && (
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                  <p className="text-orange-800 text-sm">
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 md:p-4">
+                  <p className="text-orange-800 text-xs md:text-sm">
                     <strong>⚠️ Note:</strong> This order has been cancelled.
                     Please create a new order to continue shopping.
                   </p>
@@ -333,8 +347,8 @@ const PaymentFailed = () => {
 
               {/* Info if order is already paid */}
               {orderDetails?.paymentStatus === 'paid' && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <p className="text-green-800 text-sm">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 md:p-4">
+                  <p className="text-green-800 text-xs md:text-sm">
                     <strong>✅ Note:</strong> This order has already been paid.
                     You can view it in your orders list.
                   </p>
@@ -345,11 +359,11 @@ const PaymentFailed = () => {
               {(!orderDetails ||
                 (orderDetails.orderStatus !== 'cancelled' &&
                   orderDetails.paymentStatus !== 'paid')) && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-blue-800 mb-2">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 md:p-4">
+                  <h4 className="font-semibold text-sm md:text-base text-blue-800 mb-2">
                     💡 Helpful tips:
                   </h4>
-                  <ul className="text-sm text-blue-700 space-y-1 list-disc list-inside">
+                  <ul className="text-xs md:text-sm text-blue-700 space-y-1 list-disc list-inside">
                     <li>Check your account balance</li>
                     <li>
                       Ensure your card/account is enabled for online payments
@@ -363,25 +377,27 @@ const PaymentFailed = () => {
           )}
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4 md:pt-6 border-t border-gray-200">
             {/* Only show Retry if order can be retried */}
             {(!orderDetails ||
               (orderDetails.orderStatus !== 'cancelled' &&
                 orderDetails.paymentStatus !== 'paid')) && (
               <Button
-                className="btn-org flex-1 flex items-center justify-center gap-2"
+                className="btn-org flex-1 flex items-center justify-center gap-2 text-sm md:text-base py-2 md:py-3"
                 onClick={handleRetry}
                 disabled={isRetrying}
               >
                 {isRetrying ? (
                   <>
-                    <CircularProgress size={20} className="text-white" />
-                    Processing...
+                    <CircularProgress size={18} className="text-white" />
+                    <span className="text-xs md:text-sm">Processing...</span>
                   </>
                 ) : (
                   <>
-                    <MdRefresh className="text-xl" />
-                    {failureInfo?.orderId ? 'Retry Payment' : 'Try Again'}
+                    <MdRefresh className="text-lg md:text-xl" />
+                    <span>
+                      {failureInfo?.orderId ? 'Retry Payment' : 'Try Again'}
+                    </span>
                   </>
                 )}
               </Button>
@@ -399,39 +415,41 @@ const PaymentFailed = () => {
             >
               <Button
                 variant="outlined"
-                className="w-full flex items-center justify-center gap-2 border-gray-300! text-gray-700! hover:bg-gray-50!"
+                className="w-full flex items-center justify-center gap-2 border-gray-300! text-gray-700! hover:bg-gray-50! text-sm md:text-base py-2 md:py-3"
               >
-                <MdOutlineShoppingBag className="text-xl" />
+                <MdOutlineShoppingBag className="text-lg md:text-xl" />
                 View My Orders
               </Button>
             </Link>
           </div>
 
-          <div className="mt-4">
+          <div className="mt-3 md:mt-4">
             <Link to="/" className="block">
               <Button
                 variant="text"
-                className="w-full flex items-center justify-center gap-2 text-gray-600! hover:bg-gray-50!"
+                className="w-full flex items-center justify-center gap-2 text-gray-600! hover:bg-gray-50! text-sm md:text-base py-2"
               >
-                <MdHome className="text-xl" />
+                <MdHome className="text-lg md:text-xl" />
                 Back to Home
               </Button>
             </Link>
           </div>
 
           {/* Support Info */}
-          <div className="mt-8 pt-6 border-t border-gray-200 text-center">
-            <p className="text-sm text-gray-600 mb-2">Need help? Contact us:</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center text-sm">
+          <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200 text-center">
+            <p className="text-xs md:text-sm text-gray-600 mb-2">
+              Need help? Contact us:
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center text-xs md:text-sm">
               <a
                 href="tel:1900xxxx"
-                className="text-blue-600 hover:text-blue-700 font-medium"
+                className="text-blue-600 hover:text-blue-700 font-medium break-all"
               >
                 📞 Hotline: 1900 xxxx
               </a>
               <a
                 href="mailto:support@example.com"
-                className="text-blue-600 hover:text-blue-700 font-medium"
+                className="text-blue-600 hover:text-blue-700 font-medium break-all"
               >
                 📧 support@example.com
               </a>

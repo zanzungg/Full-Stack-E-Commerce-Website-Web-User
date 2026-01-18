@@ -82,8 +82,24 @@ const CartItems = ({ item }) => {
   const isLowStock = product.countInStock < item.quantity;
 
   return (
-    <div className="cartItem w-full p-3 flex items-center gap-4 pb-5 border-b border-[rgba(0,0,0,0.1)] relative">
-      <div className="img w-[15%] rounded-md overflow-hidden">
+    <div className="cartItem w-full p-3 md:p-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4 pb-4 md:pb-5 border-b border-[rgba(0,0,0,0.1)] relative">
+      {/* Remove button - always at top-right */}
+      <Tooltip title="Remove item">
+        <IconButton
+          className="absolute! top-3 right-3 md:top-4 md:right-4 z-10 bg-white! shadow-sm! hover:bg-red-50!"
+          onClick={handleRemove}
+          disabled={removingItemId === cartItemId}
+          size="small"
+        >
+          {removingItemId === cartItemId ? (
+            <CircularProgress size={16} />
+          ) : (
+            <IoCloseSharp className="text-[20px] md:text-[22px] text-red-500 hover:text-red-700 transition-all" />
+          )}
+        </IconButton>
+      </Tooltip>
+
+      <div className="img w-full sm:w-[30%] md:w-[20%] lg:w-[15%] rounded-md overflow-hidden">
         <Link to={`/product-details/${product._id}`} className="group">
           <img
             src={mainImage}
@@ -93,26 +109,11 @@ const CartItems = ({ item }) => {
         </Link>
       </div>
 
-      <div className="info w-[85%] relative">
-        <Tooltip title="Remove item">
-          <IconButton
-            className="absolute! top-0 right-0"
-            onClick={handleRemove}
-            disabled={removingItemId === cartItemId}
-            size="small"
-          >
-            {removingItemId === cartItemId ? (
-              <CircularProgress size={16} />
-            ) : (
-              <IoCloseSharp className="text-[22px] link transition-all" />
-            )}
-          </IconButton>
-        </Tooltip>
-
-        <span className="text-[13px] text-gray-600">
+      <div className="info w-full sm:w-[70%] md:w-[80%] lg:w-[85%] relative pr-10 sm:pr-0">
+        <span className="text-[12px] md:text-[13px] text-gray-600">
           {product.brand || 'No Brand'}
         </span>
-        <h3 className="text-[15px] font-semibold">
+        <h3 className="text-[14px] md:text-[15px] lg:text-[16px] font-semibold">
           <Link to={`/product-details/${product._id}`} className="link">
             {product.name}
           </Link>
@@ -134,11 +135,11 @@ const CartItems = ({ item }) => {
         {hasVariant && (
           <div className="mt-2">
             {!showVariantSelector ? (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs md:text-sm text-gray-600">
                   {variantType?.toUpperCase()}:
                 </span>
-                <div className="flex items-center gap-2 bg-primary/10 px-3 py-1 rounded-md">
+                <div className="flex items-center gap-2 bg-primary/10 px-2 md:px-3 py-1 rounded-md">
                   <span className="font-semibold text-primary">
                     {currentVariantValue}
                   </span>
@@ -215,22 +216,22 @@ const CartItems = ({ item }) => {
         )}
 
         {/* Quantity controls */}
-        <div className="flex items-center gap-4 mt-3">
-          <div className="flex items-center gap-2 bg-[#f1f1f1] rounded-md p-1">
+        <div className="flex flex-wrap items-center gap-3 md:gap-4 mt-3">
+          <div className="flex items-center gap-1 md:gap-2 bg-[#f1f1f1] rounded-md p-1">
             <Tooltip title="Decrease quantity">
               <span>
                 <IconButton
                   size="small"
                   onClick={() => decrement(cartItemId)}
                   disabled={item.quantity <= 1 || isDecrementing}
-                  className="w-[30px]! h-[30px]!"
+                  className="w-7! h-7! md:w-8! md:h-8!"
                 >
-                  <FiMinus className="text-[14px]" />
+                  <FiMinus className="text-[12px] md:text-[14px]" />
                 </IconButton>
               </span>
             </Tooltip>
 
-            <span className="px-3 font-semibold min-w-10 text-center">
+            <span className="px-2 md:px-3 font-semibold min-w-8 md:min-w-10 text-center text-sm md:text-base">
               {item.quantity}
             </span>
 
@@ -245,9 +246,9 @@ const CartItems = ({ item }) => {
                     item.quantity >= 100 ||
                     isIncrementing
                   }
-                  className="w-[30px]! h-[30px]!"
+                  className="w-7! h-7! md:w-8! md:h-8!"
                 >
-                  <FiPlus className="text-[14px]" />
+                  <FiPlus className="text-[12px] md:text-[14px]" />
                 </IconButton>
               </span>
             </Tooltip>
@@ -261,17 +262,17 @@ const CartItems = ({ item }) => {
         </div>
 
         {/* Price info */}
-        <div className="flex items-center gap-4 mt-3">
-          <span className="price text-black font-semibold text-[15px]">
+        <div className="flex flex-wrap items-center gap-2 md:gap-4 mt-3">
+          <span className="price text-black font-semibold text-[14px] md:text-[15px] lg:text-[16px]">
             ${currentPrice.toFixed(2)}
           </span>
           {oldPrice > currentPrice && (
             <>
-              <span className="oldPrice line-through text-gray-500 text-[14px] font-medium">
+              <span className="oldPrice line-through text-gray-500 text-[12px] md:text-[14px] font-medium">
                 ${oldPrice.toFixed(2)}
               </span>
               {discount > 0 && (
-                <span className="text-green-600 font-semibold text-[13px]">
+                <span className="text-green-600 font-semibold text-[11px] md:text-[13px]">
                   {discount}% OFF
                 </span>
               )}
@@ -281,8 +282,10 @@ const CartItems = ({ item }) => {
 
         {/* Total price for this item */}
         <div className="mt-2">
-          <span className="text-[13px] text-gray-600">Subtotal: </span>
-          <span className="text-primary font-bold text-[16px]">
+          <span className="text-[12px] md:text-[13px] text-gray-600">
+            Subtotal:{' '}
+          </span>
+          <span className="text-primary font-bold text-[15px] md:text-[16px] lg:text-[18px]">
             ${totalPrice.toFixed(2)}
           </span>
         </div>

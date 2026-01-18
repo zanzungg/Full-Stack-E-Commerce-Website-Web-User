@@ -296,8 +296,8 @@ const ProductListing = () => {
             keepMounted={true}
             PaperProps={{
               sx: {
-                width: '85%',
-                maxWidth: '320px',
+                width: '60%',
+                maxWidth: '250px',
               },
             }}
             ModalProps={{

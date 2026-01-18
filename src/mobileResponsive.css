@@ -237,12 +237,6 @@
     padding: 6px !important;
   }
 
-  /* Cart Drawer */
-  .cartDrawer .MuiDrawer-paper {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
   /* Product Details Modal */
   .productDetailsModal .MuiDialog-paper {
     margin: 8px !important;
@@ -364,6 +358,101 @@
     width: 100% !important;
   }
 
+  /* Checkout Page - Mobile Responsive */
+  .checkoutPage .leftCol,
+  .checkoutPage .rightCol {
+    width: 100% !important;
+  }
+
+  .checkoutPage .card {
+    padding: 16px !important;
+  }
+
+  .checkoutPage .rightCol .card {
+    position: static !important;
+  }
+
+  /* Address cards in checkout */
+  .checkoutPage .scroll {
+    max-height: 300px !important;
+  }
+
+  /* Payment Success & Failed Pages - Mobile */
+  .payment-result-page .container {
+    padding: 10px !important;
+  }
+
+  .payment-result-page .bg-white {
+    padding: 20px !important;
+  }
+
+  .payment-result-page h1 {
+    font-size: 24px !important;
+  }
+
+  .payment-result-page .text-3xl {
+    font-size: 24px !important;
+  }
+
+  .payment-result-page .text-2xl {
+    font-size: 20px !important;
+  }
+
+  .payment-result-page .text-xl {
+    font-size: 18px !important;
+  }
+
+  /* Payment result action buttons */
+  .payment-result-page .flex-col {
+    flex-direction: column !important;
+  }
+
+  .payment-result-page .sm\\:flex-row {
+    flex-direction: column !important;
+  }
+
+  /* VNPay Return Page */
+  .vnpay-return-page .max-w-md {
+    max-width: 90% !important;
+    padding: 20px !important;
+  }
+
+  /* Delivery Timeline Mobile */
+  .payment-result-page .space-y-6 {
+    gap: 16px !important;
+  }
+
+  /* Break long text on mobile */
+  .payment-result-page .break-all,
+  .payment-result-page .break-words {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* Adjust chip sizes on mobile */
+  .checkoutPage .MuiChip-root {
+    font-size: 11px !important;
+    height: 22px !important;
+  }
+
+  /* Radio button sizing */
+  .checkoutPage .MuiRadio-root {
+    padding: 6px !important;
+  }
+
+  /* Better spacing for small screens */
+  .checkoutPage .space-y-5 > * + * {
+    margin-top: 16px !important;
+  }
+
+  .checkoutPage .space-y-4 > * + * {
+    margin-top: 12px !important;
+  }
+
+  .checkoutPage .space-y-3 > * + * {
+    margin-top: 8px !important;
+  }
+
   /* My Account */
   .myAccountPage .container {
     flex-direction: column;
@@ -438,6 +527,77 @@
   /* Typography */
   h1 {
     font-size: 24px !important;
+  }
+
+  /* Checkout Page - Extra Compact */
+  .checkoutPage .leftCol,
+  .checkoutPage .rightCol {
+    width: 100% !important;
+  }
+
+  .checkoutPage .card {
+    padding: 12px !important;
+  }
+
+  .checkoutPage h1,
+  .checkoutPage h2 {
+    font-size: 13px !important;
+  }
+
+  /* Payment Result Pages - Extra Compact */
+  .payment-result-page .bg-white {
+    padding: 16px !important;
+  }
+
+  .payment-result-page h1 {
+    font-size: 20px !important;
+  }
+
+  .payment-result-page .text-3xl {
+    font-size: 20px !important;
+  }
+
+  .payment-result-page .text-2xl {
+    font-size: 18px !important;
+  }
+
+  .payment-result-page .text-xl {
+    font-size: 16px !important;
+  }
+
+  .payment-result-page .text-lg {
+    font-size: 15px !important;
+  }
+
+  /* Reduce icon sizes */
+  .payment-result-page .w-20,
+  .payment-result-page .h-20 {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .payment-result-page .text-5xl {
+    font-size: 2.5rem !important;
+  }
+
+  /* Compact buttons */
+  .payment-result-page .MuiButton-root {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+  }
+
+  /* Delivery timeline compact */
+  .payment-result-page .w-8,
+  .payment-result-page .h-8 {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  /* VNPay Return compact */
+  .vnpay-return-page .w-16,
+  .vnpay-return-page .h-16 {
+    width: 56px !important;
+    height: 56px !important;
   }
 
   h2 {
@@ -686,8 +846,8 @@ img {
     border-radius: 16px 16px 0 0 !important;
   }
 
-  .MuiDrawer-paper {
-    max-width: 100% !important;
+  .cartDrawer .MuiBackdrop-root {
+    background-color: rgba(0, 0, 0, 0.5) !important;
   }
 }
 
@@ -864,8 +1024,61 @@ img {
 
 /* Cart Page Responsive */
 @media (max-width: 768px) {
+  /* Cart page container */
   .cartPage .container {
-    padding: 12px;
+    flex-direction: column !important;
+    padding: 12px !important;
+  }
+
+  /* Cart left and right parts */
+  .cartPage .leftPart,
+  .cartPage .rightPart {
+    width: 100% !important;
+  }
+
+  /* Cart summary - not sticky on mobile */
+  .cartPage .rightPart > div {
+    position: relative !important;
+    margin-top: 20px;
+  }
+
+  /* Cart item spacing */
+  .cartItem {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 12px !important;
+    gap: 12px !important;
+  }
+
+  .cartItem .img {
+    width: 100% !important;
+    max-width: 150px;
+  }
+
+  .cartItem .info {
+    width: 100% !important;
+    padding-right: 0 !important;
+  }
+
+  /* Cart totals */
+  .cartTotals h3 {
+    font-size: 16px !important;
+  }
+
+  .cartTotals p {
+    font-size: 13px !important;
+  }
+
+  /* Cart buttons */
+  .cartPage .btn-lg {
+    font-size: 16px !important;
+    padding: 12px 20px !important;
+  }
+
+  /* Stock alerts */
+  .cartPage .bg-yellow-50 {
+    padding: 12px !important;
+    margin: 12px !important;
   }
 
   .cartTable {
@@ -888,6 +1101,41 @@ img {
 @media (min-width: 769px) {
   .cartMobileView {
     display: none;
+  }
+}
+
+/* Cart Panel Mobile - Width controlled by App.jsx inline sx */
+@media (max-width: 768px) {
+  .cartPanel h4 {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+}
+
+/* Extra small mobile adjustments */
+@media (max-width: 480px) {
+  .cartPanel h4 {
+    font-size: 12px !important;
+  }
+}
+
+/* Quantity Box Responsive */
+@media (max-width: 768px) {
+  .qtyBox,
+  .flex.items-center.gap-2.bg-\[#f1f1f1\] {
+    padding: 4px !important;
+  }
+
+  .qtyBox button,
+  .qtyBox .MuiIconButton-root {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+  }
+
+  .qtyBox span {
+    padding: 0 8px !important;
+    font-size: 14px !important;
   }
 }
 

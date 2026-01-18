@@ -68,23 +68,28 @@ const VNPayReturn = () => {
   }, [searchParams, navigate, parseVNPayReturn, checkPaymentSuccess]);
 
   return (
-    <section className="py-20 bg-gray-50 min-h-screen flex items-center justify-center">
-      <div className="text-center max-w-md">
+    <section className="vnpay-return-page py-10 md:py-20 bg-gray-50 min-h-screen flex items-center justify-center px-3 md:px-4">
+      <div className="text-center max-w-md w-full">
         {verificationStatus === 'processing' && (
           <>
-            <CircularProgress size={60} className="text-blue-600 mb-4" />
-            <h2 className="text-xl font-semibold text-gray-700 mb-2">
+            <CircularProgress
+              size={50}
+              className="text-blue-600 mb-4 md:mb-6"
+            />
+            <h2 className="text-lg md:text-xl font-semibold text-gray-700 mb-2">
               Processing payment result...
             </h2>
-            <p className="text-gray-500">Please do not close this window</p>
+            <p className="text-sm md:text-base text-gray-500">
+              Please do not close this window
+            </p>
           </>
         )}
 
         {verificationStatus === 'success' && (
           <>
-            <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <div className="mx-auto w-14 h-14 md:w-16 md:h-16 bg-green-100 rounded-full flex items-center justify-center mb-3 md:mb-4">
               <svg
-                className="w-8 h-8 text-green-600"
+                className="w-7 h-7 md:w-8 md:h-8 text-green-600"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -95,18 +100,18 @@ const VNPayReturn = () => {
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-green-700 mb-2">
+            <h2 className="text-lg md:text-xl font-semibold text-green-700 mb-2">
               Payment successful!
             </h2>
-            <p className="text-gray-500">Redirecting...</p>
+            <p className="text-sm md:text-base text-gray-500">Redirecting...</p>
           </>
         )}
 
         {verificationStatus === 'failed' && (
           <>
-            <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+            <div className="mx-auto w-14 h-14 md:w-16 md:h-16 bg-red-100 rounded-full flex items-center justify-center mb-3 md:mb-4">
               <svg
-                className="w-8 h-8 text-red-600"
+                className="w-7 h-7 md:w-8 md:h-8 text-red-600"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -117,10 +122,12 @@ const VNPayReturn = () => {
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-red-700 mb-2">
+            <h2 className="text-lg md:text-xl font-semibold text-red-700 mb-2">
               Payment failed
             </h2>
-            <p className="text-sm text-gray-500 mt-2">Redirecting...</p>
+            <p className="text-xs md:text-sm text-gray-500 mt-2">
+              Redirecting...
+            </p>
           </>
         )}
       </div>

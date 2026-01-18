@@ -215,13 +215,7 @@ const Checkout = () => {
         queryClient.invalidateQueries({ queryKey: ['cart'] });
 
         // Redirect to success page
-        setTimeout(
-          () =>
-            navigate(`/payment/success?orderId=${createdOrder._id}`, {
-              replace: true,
-            }),
-          1000
-        );
+        navigate(`/payment/success?orderId=${createdOrder._id}`);
 
         setIsCheckingOut(false);
         return;
@@ -247,7 +241,7 @@ const Checkout = () => {
           // Redirect to My Orders with highlight on this order
           setTimeout(() => {
             navigate(`/my-orders?highlight=${createdOrder._id}`);
-          }, 2000);
+          }, 1500);
         }
       } else if (selectedPaymentMethod === 'MOMO') {
         context.openAlertBox(
@@ -298,14 +292,14 @@ const Checkout = () => {
     validationErrors.length === 0;
 
   return (
-    <section className="py-10 bg-gray-50 min-h-screen">
-      <div className="container">
+    <section className="checkoutPage py-5 md:py-10 bg-gray-50 min-h-screen">
+      <div className="container px-3 md:px-4">
         {/* Validation Errors Alert */}
         {validationErrors.length > 0 && (
           <Alert
             severity="warning"
             icon={<MdWarning />}
-            className="mb-5"
+            className="mb-4 md:mb-5 text-sm"
             onClose={() => setValidationErrors([])}
           >
             <div className="font-medium mb-1">
@@ -313,7 +307,7 @@ const Checkout = () => {
             </div>
             <ul className="list-disc list-inside space-y-1">
               {validationErrors.map((error, index) => (
-                <li key={index} className="text-sm">
+                <li key={index} className="text-xs md:text-sm">
                   {error}
                 </li>
               ))}
@@ -321,17 +315,19 @@ const Checkout = () => {
           </Alert>
         )}
 
-        <div className="flex flex-col lg:flex-row gap-5">
+        <div className="flex flex-col lg:flex-row gap-4 md:gap-5">
           {/* Left Column - Address & Payment */}
-          <div className="leftCol w-full lg:w-[70%] space-y-5">
+          <div className="leftCol w-full lg:w-[70%] space-y-4 md:space-y-5">
             {/* Delivery Address Section */}
-            <div className="card bg-white shadow-md p-5 rounded-md w-full">
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-blue-600 font-bold">1</span>
+            <div className="card bg-white shadow-md p-4 md:p-5 rounded-md w-full">
+              <div className="flex items-center justify-between mb-4 md:mb-5 flex-wrap gap-2">
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                    <span className="text-blue-600 font-bold text-sm md:text-base">
+                      1
+                    </span>
                   </div>
-                  <h1 className="text-[16px] font-semibold uppercase">
+                  <h1 className="text-sm md:text-[16px] font-semibold uppercase truncate">
                     Select Delivery Address
                   </h1>
                   {selectedAddress && (
@@ -340,17 +336,18 @@ const Checkout = () => {
                       label="Selected"
                       size="small"
                       color="success"
-                      className="ml-2"
+                      className="ml-2 hidden sm:inline-flex"
                     />
                   )}
                 </div>
                 <Button
-                  className="btn-org flex items-center gap-2"
+                  className="btn-org flex items-center gap-1 md:gap-2 text-xs md:text-sm"
                   onClick={handleOpenAddDialog}
                   size="small"
                 >
-                  <MdAdd className="text-[18px]" />
-                  Add New
+                  <MdAdd className="text-[16px] md:text-[18px]" />
+                  <span className="hidden sm:inline">Add New</span>
+                  <span className="sm:hidden">Add</span>
                 </Button>
               </div>
 
@@ -359,61 +356,65 @@ const Checkout = () => {
                   <CircularProgress size={40} />
                 </div>
               ) : activeAddresses.length === 0 ? (
-                <div className="text-center py-10">
-                  <MdLocationOn className="text-[60px] text-gray-300 mx-auto mb-3" />
-                  <h3 className="text-[16px] font-semibold text-gray-600 mb-2">
+                <div className="text-center py-8 md:py-10">
+                  <MdLocationOn className="text-[50px] md:text-[60px] text-gray-300 mx-auto mb-3" />
+                  <h3 className="text-sm md:text-[16px] font-semibold text-gray-600 mb-2">
                     No Delivery Address Found
                   </h3>
-                  <p className="text-gray-500 mb-4">
+                  <p className="text-xs md:text-sm text-gray-500 mb-4">
                     Please add a delivery address to continue
                   </p>
-                  <Button className="btn-org" onClick={handleOpenAddDialog}>
+                  <Button
+                    className="btn-org text-sm"
+                    onClick={handleOpenAddDialog}
+                  >
                     Add Your First Address
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+                <div className="space-y-2 md:space-y-3 max-h-[300px] md:max-h-[400px] overflow-y-auto pr-1 md:pr-2">
                   {activeAddresses.map((address) => (
                     <div
                       key={address._id}
-                      className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                      className={`border-2 rounded-lg p-3 md:p-4 cursor-pointer transition-all ${
                         selectedAddress?._id === address._id
                           ? 'border-blue-500 bg-blue-50 shadow-md'
                           : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
                       }`}
                       onClick={() => handleSelectAddress(address._id)}
                     >
-                      <div className="flex items-start gap-3">
+                      <div className="flex items-start gap-2 md:gap-3">
                         <Radio
                           checked={selectedAddress?._id === address._id}
                           onChange={() => handleSelectAddress(address._id)}
-                          className="mt-1"
+                          className="mt-0 md:mt-1"
                           color="primary"
+                          size="small"
                         />
 
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
                               {address.addressType && (
-                                <span className="inline-block bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded mb-2 font-medium">
+                                <span className="inline-block bg-gray-200 text-gray-700 text-[10px] md:text-xs px-2 py-1 rounded mb-2 font-medium">
                                   {address.addressType.toUpperCase()}
                                 </span>
                               )}
-                              <p className="font-semibold text-gray-800 mb-1">
+                              <p className="font-semibold text-sm md:text-base text-gray-800 mb-1">
                                 {address.address_line}
                               </p>
                               {address.landmark && (
-                                <p className="text-sm text-gray-500 italic mb-1">
+                                <p className="text-xs md:text-sm text-gray-500 italic mb-1">
                                   Landmark: {address.landmark}
                                 </p>
                               )}
-                              <p className="text-sm text-gray-600">
+                              <p className="text-xs md:text-sm text-gray-600">
                                 {address.city}, {address.state}
                               </p>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-xs md:text-sm text-gray-600">
                                 {address.country} - {address.pincode}
                               </p>
-                              <p className="text-sm text-gray-600 mt-2">
+                              <p className="text-xs md:text-sm text-gray-600 mt-1 md:mt-2">
                                 <span className="font-medium">Phone:</span>{' '}
                                 {address.mobile}
                               </p>
@@ -421,13 +422,14 @@ const Checkout = () => {
 
                             <Button
                               size="small"
-                              className="text-xs! text-blue-600! hover:bg-blue-100!"
+                              className="text-[10px] md:text-xs! text-blue-600! hover:bg-blue-100! shrink-0"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleOpenEditDialog(address);
                               }}
                             >
-                              <MdEdit className="mr-1" /> Edit
+                              <MdEdit className="mr-0 md:mr-1 text-sm md:text-base" />
+                              <span className="hidden sm:inline">Edit</span>
                             </Button>
                           </div>
                         </div>
@@ -439,12 +441,14 @@ const Checkout = () => {
             </div>
 
             {/* Payment Method Section */}
-            <div className="card bg-white shadow-md p-5 rounded-md w-full">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                  <span className="text-blue-600 font-bold">2</span>
+            <div className="card bg-white shadow-md p-4 md:p-5 rounded-md w-full">
+              <div className="flex items-center gap-2 mb-4 flex-wrap">
+                <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                  <span className="text-blue-600 font-bold text-sm md:text-base">
+                    2
+                  </span>
                 </div>
-                <h2 className="text-[16px] font-semibold uppercase">
+                <h2 className="text-sm md:text-[16px] font-semibold uppercase">
                   Payment Method
                 </h2>
                 {selectedPaymentMethod && (
@@ -453,7 +457,7 @@ const Checkout = () => {
                     label="Selected"
                     size="small"
                     color="success"
-                    className="ml-2"
+                    className="ml-2 hidden sm:inline-flex"
                   />
                 )}
               </div>
@@ -465,7 +469,7 @@ const Checkout = () => {
                 {paymentMethods.map((method) => (
                   <div
                     key={method.code}
-                    className={`border-2 rounded-lg p-4 mb-3 cursor-pointer transition-all ${
+                    className={`border-2 rounded-lg p-3 md:p-4 mb-2 md:mb-3 cursor-pointer transition-all ${
                       selectedPaymentMethod === method.code
                         ? 'border-blue-500 bg-blue-50 shadow-md'
                         : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
@@ -473,25 +477,27 @@ const Checkout = () => {
                   >
                     <FormControlLabel
                       value={method.code}
-                      control={<Radio color="primary" />}
+                      control={<Radio color="primary" size="small" />}
                       label={
-                        <div className="flex items-center gap-3 ml-2">
-                          <span className="text-2xl">{method.icon}</span>
-                          <div>
-                            <h4 className="text-[15px] font-semibold">
+                        <div className="flex items-center gap-2 md:gap-3 ml-1 md:ml-2">
+                          <span className="text-xl md:text-2xl shrink-0">
+                            {method.icon}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm md:text-[15px] font-semibold">
                               {method.name}
                             </h4>
-                            <p className="text-[13px] text-gray-600">
+                            <p className="text-xs md:text-[13px] text-gray-600">
                               {method.description}
                             </p>
                             {method.code === 'VNPAY' && (
-                              <p className="text-[11px] text-blue-600 mt-1">
+                              <p className="text-[10px] md:text-[11px] text-blue-600 mt-1">
                                 Secure payment via VNPay gateway
                               </p>
                             )}
                             {(method.code === 'MOMO' ||
                               method.code === 'STRIPE') && (
-                              <p className="text-[11px] text-orange-600 mt-1">
+                              <p className="text-[10px] md:text-[11px] text-orange-600 mt-1">
                                 Coming soon
                               </p>
                             )}
@@ -508,12 +514,14 @@ const Checkout = () => {
 
           {/* Right Column - Order Summary */}
           <div className="rightCol w-full lg:w-[30%]">
-            <div className="card bg-white shadow-md p-5 rounded-md sticky top-5">
+            <div className="card bg-white shadow-md p-4 md:p-5 rounded-md lg:sticky lg:top-5">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                  <span className="text-blue-600 font-bold">3</span>
+                <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                  <span className="text-blue-600 font-bold text-sm md:text-base">
+                    3
+                  </span>
                 </div>
-                <h2 className="text-[16px] font-semibold uppercase">
+                <h2 className="text-sm md:text-[16px] font-semibold uppercase">
                   Order Summary
                 </h2>
               </div>
@@ -523,26 +531,32 @@ const Checkout = () => {
                   <CircularProgress size={30} />
                 </div>
               ) : !cartItems || cartItems.length === 0 ? (
-                <div className="text-center py-10">
-                  <MdOutlineShoppingCart className="text-[60px] text-gray-300 mx-auto mb-3" />
-                  <h3 className="text-[16px] font-semibold text-gray-600 mb-2">
+                <div className="text-center py-8 md:py-10">
+                  <MdOutlineShoppingCart className="text-[50px] md:text-[60px] text-gray-300 mx-auto mb-3" />
+                  <h3 className="text-sm md:text-[16px] font-semibold text-gray-600 mb-2">
                     Your cart is empty
                   </h3>
-                  <p className="text-gray-500 text-sm mb-4">
+                  <p className="text-gray-500 text-xs md:text-sm mb-4">
                     Add some products to checkout
                   </p>
                   <Link to="/">
-                    <Button className="btn-org">Continue Shopping</Button>
+                    <Button className="btn-org text-sm">
+                      Continue Shopping
+                    </Button>
                   </Link>
                 </div>
               ) : (
                 <>
-                  <div className="flex items-center justify-between py-3 border-t border-b border-[rgba(0,0,0,0.1)]">
-                    <span className="text-[14px] font-semibold">Product</span>
-                    <span className="text-[14px] font-semibold">Subtotal</span>
+                  <div className="flex items-center justify-between py-2 md:py-3 border-t border-b border-[rgba(0,0,0,0.1)]">
+                    <span className="text-xs md:text-[14px] font-semibold">
+                      Product
+                    </span>
+                    <span className="text-xs md:text-[14px] font-semibold">
+                      Subtotal
+                    </span>
                   </div>
 
-                  <div className="scroll max-h-[250px] overflow-y-auto overflow-x-hidden my-4 pr-2">
+                  <div className="scroll max-h-[200px] md:max-h-[250px] overflow-y-auto overflow-x-hidden my-3 md:my-4 pr-1 md:pr-2">
                     {cartItems.map((item) => {
                       const product = item.productId;
                       if (!product) return null;
@@ -554,12 +568,12 @@ const Checkout = () => {
                       return (
                         <div
                           key={item._id}
-                          className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
+                          className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0 gap-2"
                         >
-                          <div className="part1 flex items-center gap-3 flex-1 min-w-0">
+                          <div className="part1 flex items-center gap-2 md:gap-3 flex-1 min-w-0">
                             <Link
                               to={`/product-details/${product._id}`}
-                              className="img w-[50px] h-[50px] object-cover overflow-hidden rounded-md group shrink-0"
+                              className="img w-10 h-10 md:w-[50px] md:h-[50px] object-cover overflow-hidden rounded-md group shrink-0"
                             >
                               <img
                                 src={mainImage}
@@ -570,23 +584,23 @@ const Checkout = () => {
                             <div className="info flex-1 min-w-0">
                               <Link
                                 to={`/product-details/${product._id}`}
-                                className="text-[14px] font-medium link line-clamp-2"
+                                className="text-xs md:text-[14px] font-medium link line-clamp-2"
                               >
                                 {product.name}
                               </Link>
-                              <div className="flex items-center gap-2 mt-1">
-                                <span className="text-[13px] text-gray-600">
+                              <div className="flex items-center gap-1 md:gap-2 mt-1">
+                                <span className="text-[11px] md:text-[13px] text-gray-600">
                                   Qty: {item.quantity}
                                 </span>
                                 {item.selectedVariant?.value && (
-                                  <span className="text-[11px] bg-gray-100 px-2 py-0.5 rounded">
+                                  <span className="text-[10px] md:text-[11px] bg-gray-100 px-1.5 md:px-2 py-0.5 rounded">
                                     {item.selectedVariant.value}
                                   </span>
                                 )}
                               </div>
                             </div>
                           </div>
-                          <span className="text-[14px] font-medium text-primary shrink-0 ml-2">
+                          <span className="text-xs md:text-[14px] font-medium text-primary shrink-0">
                             ${itemTotal.toFixed(2)}
                           </span>
                         </div>
@@ -594,75 +608,81 @@ const Checkout = () => {
                     })}
                   </div>
 
-                  <div className="border-t border-[rgba(0,0,0,0.1)] pt-4 space-y-3">
+                  <div className="border-t border-[rgba(0,0,0,0.1)] pt-3 md:pt-4 space-y-2 md:space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-[14px] font-medium">Subtotal</span>
-                      <span className="text-[15px] font-semibold">
+                      <span className="text-xs md:text-[14px] font-medium">
+                        Subtotal
+                      </span>
+                      <span className="text-sm md:text-[15px] font-semibold">
                         ${cartSummary?.subtotal?.toFixed(2) || '0.00'}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-[14px] font-medium">Shipping</span>
-                      <span className="text-[15px] font-semibold text-green-600">
+                      <span className="text-xs md:text-[14px] font-medium">
+                        Shipping
+                      </span>
+                      <span className="text-sm md:text-[15px] font-semibold text-green-600">
                         Free
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-[14px] font-medium">
+                      <span className="text-xs md:text-[14px] font-medium">
                         Total Items
                       </span>
-                      <span className="text-[15px] font-semibold">
+                      <span className="text-sm md:text-[15px] font-semibold">
                         {cartSummary?.totalQuantity || 0}
                       </span>
                     </div>
 
                     {selectedAddress && (
                       <div className="flex items-center justify-between">
-                        <span className="text-[14px] font-medium">
+                        <span className="text-xs md:text-[14px] font-medium">
                           Est. Delivery
                         </span>
-                        <span className="text-[13px] text-blue-600 font-medium">
+                        <span className="text-[11px] md:text-[13px] text-blue-600 font-medium">
                           {estimatedDelivery()}
                         </span>
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between pt-3 mb-4 border-t border-[rgba(0,0,0,0.1)]">
-                      <span className="text-[16px] font-bold">Total</span>
-                      <span className="text-[18px] font-bold text-primary">
+                    <div className="flex items-center justify-between pt-2 md:pt-3 mb-3 md:mb-4 border-t border-[rgba(0,0,0,0.1)]">
+                      <span className="text-sm md:text-[16px] font-bold">
+                        Total
+                      </span>
+                      <span className="text-base md:text-[18px] font-bold text-primary">
                         ${cartSummary?.subtotal?.toFixed(2) || '0.00'}
                       </span>
                     </div>
                   </div>
 
                   <Button
-                    className="btn-org btn-lg w-full flex gap-2 items-center justify-center"
+                    className="btn-org btn-lg w-full flex gap-2 items-center justify-center text-sm md:text-base"
                     onClick={handleCheckout}
                     disabled={!canCheckout}
                   >
                     {isCheckingOut || isCreating || isProcessing ? (
                       <>
-                        <CircularProgress size={20} className="text-white" />
-                        <span>
+                        <CircularProgress size={18} className="text-white" />
+                        <span className="text-xs md:text-sm">
                           {isCreating
                             ? 'Creating Order...'
                             : isProcessing
-                            ? 'Processing...'
-                            : 'Please Wait...'}
+                              ? 'Processing...'
+                              : 'Please Wait...'}
                         </span>
                       </>
                     ) : (
                       <>
-                        <BsFillBagCheckFill className="text-[20px]" />
-                        Place Order
+                        <BsFillBagCheckFill className="text-base md:text-[20px]" />
+                        <span>Place Order</span>
                       </>
                     )}
                   </Button>
 
                   {!canCheckout && (
-                    <p className="text-xs text-center text-gray-500 mt-3">
+                    <p className="text-[10px] md:text-xs text-center text-gray-500 mt-2 md:mt-3">
                       Complete all steps above to place your order
                     </p>
                   )}

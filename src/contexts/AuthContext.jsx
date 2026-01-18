@@ -4,6 +4,7 @@ import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
 import { authService } from '../api/services/authService';
 import { userService } from '../api/services/userService';
+import { useQueryClient } from '@tanstack/react-query';
 
 const AuthContext = createContext(null);
 
@@ -12,6 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [authLoading, setAuthLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   // Khôi phục trạng thái khi load trang
   useEffect(() => {
@@ -298,6 +300,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.USER_INFO);
       localStorage.removeItem(STORAGE_KEYS.RESET_TOKEN);
+
+      // Clear React Query cache
+      queryClient.clear();
 
       // Reset state
       setUser(null);

@@ -289,23 +289,27 @@ function App() {
                   className="cartDrawer"
                   PaperProps={{
                     sx: {
-                      width: '400px',
-                      padding: 0,
+                      width: {
+                        xs: '85vw !important',
+                        sm: '400px !important',
+                        md: '400px !important',
+                      },
+                      maxWidth: {
+                        xs: '85vw !important',
+                        sm: '400px !important',
+                        md: '400px !important',
+                      },
+                      minWidth: {
+                        sm: '400px !important',
+                        md: '400px !important',
+                      },
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
                     },
                   }}
                 >
-                  <div className="relative h-full">
-                    <div className="flex items-center justify-between p-4 border-b border-[rgba(0,0,0,0.1)]">
-                      <h3 className="text-[18px] font-bold">Shopping Cart</h3>
-                      <Button
-                        className="w-8! h-8! min-w-8! rounded-full! bg-[#f1f1f1]!"
-                        onClick={toggleCartPanel(false)}
-                      >
-                        <IoCloseSharp className="text-[18px]" />
-                      </Button>
-                    </div>
-                    <CartPanel />
-                  </div>
+                  <CartPanel onClose={toggleCartPanel(false)} />
                 </Drawer>
               </MyContext.Provider>
             </CategoryProvider>

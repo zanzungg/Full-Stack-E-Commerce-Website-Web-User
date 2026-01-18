@@ -64,8 +64,8 @@ const CartPage = () => {
 
   return (
     <section className="section py-10 pb-10">
-      <div className="container w-[80%] max-w-[80%] flex gap-5">
-        <div className="leftPart w-[70%]">
+      <div className="container w-full md:w-[90%] lg:w-[80%] max-w-[1400px] mx-auto px-4 md:px-6 flex flex-col lg:flex-row gap-5">
+        <div className="leftPart w-full lg:w-[70%]">
           <div className="shadow-md rounded-md bg-white">
             <div className="py-2 px-3 border-b border-[rgba(0,0,0,0.1)]">
               <h2 className="font-semibold">Your Cart</h2>
@@ -113,8 +113,8 @@ const CartPage = () => {
           </div>
         </div>
 
-        <div className="rightPart w-[30%]">
-          <div className="shadow-md rounded-md bg-white p-5 sticky top-5">
+        <div className="rightPart w-full lg:w-[30%]">
+          <div className="shadow-md rounded-md bg-white p-4 md:p-5 lg:sticky lg:top-5">
             <h3 className="pb-3">Cart Totals</h3>
             <hr className="border-[rgba(0,0,0,0.1)]" />
 
@@ -149,16 +149,16 @@ const CartPage = () => {
             <br />
 
             <div className="flex flex-col gap-2">
-              <Link to="/checkout">
-                <Button className="btn-org btn-lg w-full flex gap-2 text-[20px]">
+              <Link to="/checkout" className="w-full">
+                <Button className="btn-org btn-lg w-full flex gap-2 text-[16px] md:text-[18px] lg:text-[20px]">
                   <BsFillBagCheckFill /> Checkout
                 </Button>
               </Link>
 
-              <Link to="/">
+              <Link to="/" className="w-full">
                 <Button
                   variant="outlined"
-                  className="w-full border-primary! text-primary! hover:bg-primary! hover:text-white!"
+                  className="w-full border-primary! text-primary! hover:bg-primary! hover:text-white! text-[14px] md:text-[16px]"
                 >
                   Continue Shopping
                 </Button>
