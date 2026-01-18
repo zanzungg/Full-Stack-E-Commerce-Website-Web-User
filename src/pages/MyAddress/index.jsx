@@ -107,53 +107,73 @@ const MyAddress = () => {
   const filteredDeletedAddresses = getFilteredAddresses(deletedAddresses);
 
   return (
-    <section className="py-10 w-full">
-      <div className="container">
-        <div className="flex flex-col lg:flex-row gap-5">
+    <section className="py-5 sm:py-8 lg:py-10 w-full">
+      <div className="container px-3 sm:px-4">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-5">
           <div className="w-full lg:w-[25%]">
             <AccountSidebar />
           </div>
 
           <div className="w-full lg:w-[75%]">
-            <div className="card bg-white shadow-md rounded-md p-6">
+            <div className="card bg-white shadow-md rounded-md p-4 sm:p-5 lg:p-6">
               {/* Header */}
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-5 lg:mb-6">
                 <div>
-                  <h2 className="text-[22px] font-bold">My Addresses</h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {statistics.total} total addresses ({statistics.active}{' '}
-                    active, {statistics.deleted} deleted)
+                  <h2 className="text-[18px] sm:text-[20px] lg:text-[22px] font-bold">
+                    My Addresses
+                  </h2>
+                  <p className="text-[12px] sm:text-sm text-gray-500 mt-1">
+                    {statistics.total} total ({statistics.active} active,{' '}
+                    {statistics.deleted} deleted)
                   </p>
                 </div>
                 <Button
-                  className="btn-org flex items-center gap-2"
+                  className="btn-org flex items-center gap-1 sm:gap-2 text-[13px] sm:text-[14px] px-3 sm:px-4 py-2 w-full sm:w-auto"
                   onClick={handleOpenAddDialog}
                 >
-                  <MdAdd className="text-[20px]" />
-                  Add New Address
+                  <MdAdd className="text-[18px] sm:text-[20px]" />
+                  <span className="sm:inline">Add New Address</span>
                 </Button>
               </div>
 
               {/* Tabs */}
-              <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-                <Tabs value={tabValue} onChange={handleTabChange}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2.5 }}>
+                <Tabs
+                  value={tabValue}
+                  onChange={handleTabChange}
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  allowScrollButtonsMobile
+                >
                   <Tab
-                    label={`Active Addresses (${statistics.active})`}
-                    sx={{ textTransform: 'none', fontWeight: 600 }}
+                    label={`Active (${statistics.active})`}
+                    sx={{
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      fontSize: { xs: '13px', sm: '14px' },
+                      minWidth: { xs: 'auto', sm: 160 },
+                      px: { xs: 2, sm: 3 },
+                    }}
                   />
                   <Tab
-                    label={`Deleted Addresses (${statistics.deleted})`}
-                    sx={{ textTransform: 'none', fontWeight: 600 }}
+                    label={`Deleted (${statistics.deleted})`}
+                    sx={{
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      fontSize: { xs: '13px', sm: '14px' },
+                      minWidth: { xs: 'auto', sm: 160 },
+                      px: { xs: 2, sm: 3 },
+                    }}
                   />
                 </Tabs>
               </Box>
 
               {/* Filters */}
-              <div className="mb-4 flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-medium text-gray-700">
+              <div className="mb-3 sm:mb-4 flex flex-col sm:flex-row sm:items-center gap-2 flex-wrap">
+                <span className="text-[12px] sm:text-sm font-medium text-gray-700">
                   Filter by type:
                 </span>
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-1.5 sm:gap-2 flex-wrap">
                   {['All', 'Home', 'Office', 'Other'].map((type) => {
                     const count =
                       type === 'All'
@@ -161,8 +181,8 @@ const MyAddress = () => {
                           ? statistics.active
                           : statistics.deleted
                         : tabValue === 0
-                        ? statistics.byType.active[type] || 0
-                        : statistics.byType.deleted[type] || 0;
+                          ? statistics.byType.active[type] || 0
+                          : statistics.byType.deleted[type] || 0;
 
                     return (
                       <Chip
@@ -173,6 +193,10 @@ const MyAddress = () => {
                         variant={filterType === type ? 'filled' : 'outlined'}
                         size="small"
                         className="cursor-pointer"
+                        sx={{
+                          fontSize: { xs: '11px', sm: '13px' },
+                          height: { xs: '26px', sm: '32px' },
+                        }}
                       />
                     );
                   })}

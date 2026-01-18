@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { IoCloseSharp } from 'react-icons/io5';
 import Rating from '@mui/material/Rating';
 import { Button, CircularProgress } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { toast } from 'react-hot-toast';
 
 const MyListItems = ({ item, onRemove, onAddToCart, isRemoving, isAdding }) => {
@@ -105,9 +106,25 @@ const MyListItems = ({ item, onRemove, onAddToCart, isRemoving, isAdding }) => {
 
   return (
     <>
-      <div className="cartItem w-full p-3 flex items-center gap-4 pb-5 border-b border-[rgba(0,0,0,0.1)] last:border-b-0">
+      <div className="cartItem w-full p-2.5 sm:p-3 md:p-4 flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-3 md:gap-4 pb-3 sm:pb-4 md:pb-5 border-b border-[rgba(0,0,0,0.1)] last:border-b-0 relative">
+        {/* Remove Button - góc phải trên cùng */}
+        <Tooltip title="Remove from wishlist">
+          <IconButton
+            className="absolute! top-2.5 right-2.5 sm:top-3 sm:right-3 md:top-4 md:right-4 z-10 bg-white! shadow-sm! hover:bg-red-50!"
+            onClick={onRemove}
+            disabled={isRemoving}
+            size="small"
+          >
+            {isRemoving ? (
+              <CircularProgress size={16} />
+            ) : (
+              <IoCloseSharp className="text-[18px] sm:text-[20px] md:text-[22px] text-red-500 hover:text-red-700 transition-all" />
+            )}
+          </IconButton>
+        </Tooltip>
+
         {/* Product Image */}
-        <div className="img w-[15%] rounded-md overflow-hidden">
+        <div className="img w-full sm:w-[30%] md:w-[20%] lg:w-[15%] rounded-md overflow-hidden shrink-0">
           <Link to={`/product-details/${productId}`} className="group">
             <img
               src={productImage}
@@ -121,23 +138,14 @@ const MyListItems = ({ item, onRemove, onAddToCart, isRemoving, isAdding }) => {
         </div>
 
         {/* Product Info */}
-        <div className="info w-[85%] relative">
-          {/* Remove Button */}
-          <IoCloseSharp
-            className={`cursor-pointer absolute top-0 right-0 text-[22px] link transition-all hover:text-red-500 ${
-              isRemoving ? 'opacity-50 pointer-events-none' : ''
-            }`}
-            onClick={onRemove}
-            title="Remove from wishlist"
-          />
-
+        <div className="info w-full sm:w-[70%] md:w-[80%] lg:w-[85%] relative pr-8 sm:pr-0">
           {/* Brand */}
-          <span className="text-[13px] text-gray-600 block mb-1">
+          <span className="text-[11px] sm:text-[12px] md:text-[13px] text-gray-600 block mb-0.5 sm:mb-1">
             {productBrand}
           </span>
 
           {/* Product Name */}
-          <h3 className="text-[15px] font-semibold mb-2 pr-8">
+          <h3 className="text-[13px] sm:text-[14px] md:text-[15px] lg:text-[16px] font-semibold mb-1.5 sm:mb-2">
             <Link
               to={`/product-details/${productId}`}
               className="link hover:text-primary transition-colors line-clamp-2"
@@ -153,23 +161,27 @@ const MyListItems = ({ item, onRemove, onAddToCart, isRemoving, isAdding }) => {
               value={productRating}
               size="small"
               readOnly
+              precision={0.5}
+              sx={{ fontSize: { xs: '14px', sm: '16px' } }}
             />
           ) : (
-            <span className="text-xs text-gray-400">No reviews</span>
+            <span className="text-[10px] sm:text-xs text-gray-400">
+              No reviews
+            </span>
           )}
 
           {/* Price Section */}
-          <div className="flex items-center gap-4 mt-4 mb-4">
-            <span className="price text-black font-semibold text-[18px]">
+          <div className="flex items-center flex-wrap gap-2 sm:gap-3 md:gap-4 mt-2 sm:mt-3 mb-2 sm:mb-3 md:mb-4">
+            <span className="price text-black font-semibold text-[14px] sm:text-[15px] md:text-[16px] lg:text-[18px]">
               ${productPrice.toFixed(2)}
             </span>
 
             {productOldPrice > productPrice && (
               <>
-                <span className="oldPrice line-through text-gray-500 text-[14px] font-medium">
+                <span className="oldPrice line-through text-gray-500 text-[11px] sm:text-[12px] md:text-[14px] font-medium">
                   ${productOldPrice.toFixed(2)}
                 </span>
-                <span className="discount text-primary font-semibold text-[14px] bg-red-50 px-2 py-1 rounded">
+                <span className="discount text-primary font-semibold text-[10px] sm:text-[11px] md:text-[13px] bg-red-50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
                   {discountPercentage}% OFF
                 </span>
               </>
@@ -178,7 +190,7 @@ const MyListItems = ({ item, onRemove, onAddToCart, isRemoving, isAdding }) => {
 
           {/* Add to Cart Button */}
           <Button
-            className="btn-org btn-sm"
+            className="btn-org btn-sm text-[11px] sm:text-[12px] md:text-[13px] px-2.5 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2"
             onClick={handleAddToCartClick}
             disabled={isAdding || isRemoving}
             variant="contained"
@@ -186,7 +198,11 @@ const MyListItems = ({ item, onRemove, onAddToCart, isRemoving, isAdding }) => {
           >
             {isAdding ? (
               <>
-                <CircularProgress size={16} className="mr-2" color="inherit" />
+                <CircularProgress
+                  size={14}
+                  className="mr-1.5 sm:mr-2"
+                  color="inherit"
+                />
                 Adding...
               </>
             ) : (
@@ -203,22 +219,22 @@ const MyListItems = ({ item, onRemove, onAddToCart, isRemoving, isAdding }) => {
           onClick={handleCloseVariantSelector}
         >
           <div
-            className="bg-white rounded-lg p-6 max-w-md w-[90%] relative shadow-2xl"
+            className="bg-white rounded-lg p-4 sm:p-6 max-w-md w-[90%] sm:w-[95%] relative shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <Button
-              className="absolute! top-2 right-2 w-8! h-8! min-w-8! rounded-full! bg-gray-100! hover:bg-gray-200!"
+              className="absolute! top-1.5 sm:top-2 right-1.5 sm:right-2 w-7! h-7! sm:w-8! sm:h-8! min-w-7! sm:min-w-8! rounded-full! bg-gray-100! hover:bg-gray-200!"
               onClick={handleCloseVariantSelector}
             >
-              <IoCloseSharp className="text-[18px]" />
+              <IoCloseSharp className="text-[16px] sm:text-[18px]" />
             </Button>
 
-            <h2 className="text-lg font-semibold mb-4 capitalize">
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 capitalize pr-8">
               Select {variantInfo?.type}
             </h2>
 
-            <div className="mb-6 mt-2">
-              <div className="flex flex-wrap gap-2">
+            <div className="mb-4 sm:mb-6 mt-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {variantInfo?.options.map((option, index) => (
                   <Button
                     key={index}
@@ -226,7 +242,7 @@ const MyListItems = ({ item, onRemove, onAddToCart, isRemoving, isAdding }) => {
                       selectedVariant.value === option
                         ? 'bg-primary! text-white!'
                         : 'bg-gray-100! text-black!'
-                    } hover:bg-primary! hover:text-white! transition-all`}
+                    } hover:bg-primary! hover:text-white! transition-all text-[12px]! sm:text-[13px]! px-2.5! sm:px-3! py-1! sm:py-1.5!`}
                     onClick={() =>
                       setSelectedVariant({
                         type: variantInfo.type,
@@ -240,22 +256,22 @@ const MyListItems = ({ item, onRemove, onAddToCart, isRemoving, isAdding }) => {
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <Button
                 variant="outlined"
-                className="flex-1 border-gray-300! text-gray-700! hover:bg-gray-50!"
+                className="flex-1 border-gray-300! text-gray-700! hover:bg-gray-50! text-[12px]! sm:text-[13px]! py-1.5! sm:py-2!"
                 onClick={handleCloseVariantSelector}
               >
                 Cancel
               </Button>
               <Button
-                className="btn-org flex-1"
+                className="btn-org flex-1 text-[12px]! sm:text-[13px]! py-1.5! sm:py-2!"
                 onClick={handleConfirmAddToCart}
                 disabled={isAdding}
               >
                 {isAdding ? (
                   <>
-                    <CircularProgress size={16} className="text-white" />
+                    <CircularProgress size={14} className="text-white" />
                     <span className="ml-2">Adding...</span>
                   </>
                 ) : (

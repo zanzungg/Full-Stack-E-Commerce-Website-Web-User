@@ -238,7 +238,7 @@ const MobileNav = () => {
 
                   {/* Settings */}
                   <button
-                    onClick={() => handleNavClick('/change-password')}
+                    onClick={() => handleNavClick('/')}
                     className="w-full flex items-center gap-3 p-3 rounded-lg
                              hover:bg-gray-50 transition-all mb-2 text-gray-700"
                   >

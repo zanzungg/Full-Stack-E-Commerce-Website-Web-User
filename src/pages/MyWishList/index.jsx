@@ -46,9 +46,9 @@ const MyWishList = () => {
   };
 
   return (
-    <section className="section py-10 pb-10">
-      <div className="container">
-        <div className="flex flex-col lg:flex-row gap-5">
+    <section className="section py-5 sm:py-8 lg:py-10 pb-5 sm:pb-8 lg:pb-10">
+      <div className="container px-3 sm:px-4">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-5">
           {/* Sidebar */}
           <div className="w-full lg:w-[25%]">
             <AccountSidebar />
@@ -57,9 +57,11 @@ const MyWishList = () => {
           {/* Main Content */}
           <div className="w-full lg:w-[75%]">
             <div className="shadow-md rounded-md bg-white">
-              <div className="py-5 px-5 border-b border-[rgba(0,0,0,0.1)]">
-                <h2 className="text-[22px] font-bold">My Wishlist</h2>
-                <p className="mt-0 text-gray-600">
+              <div className="py-4 sm:py-5 px-4 sm:px-5 border-b border-[rgba(0,0,0,0.1)]">
+                <h2 className="text-[18px] sm:text-[20px] lg:text-[22px] font-bold">
+                  My Wishlist
+                </h2>
+                <p className="mt-0 text-gray-600 text-[13px] sm:text-[14px]">
                   There {wishlistCount === 1 ? 'is' : 'are'}{' '}
                   <span className="font-bold text-primary">
                     {wishlistCount || 0}
@@ -70,7 +72,7 @@ const MyWishList = () => {
               </div>
 
               {isWishlistLoading ? (
-                <div className="p-10 flex justify-center items-center">
+                <div className="p-8 sm:p-10 flex justify-center items-center">
                   <CircularProgress />
                 </div>
               ) : wishlistItems && wishlistItems.length > 0 ? (
@@ -93,17 +95,19 @@ const MyWishList = () => {
                   ))}
                 </div>
               ) : (
-                <div className="p-12 text-center">
-                  <div className="text-8xl mb-6 animate-pulse">❤️</div>
-                  <h3 className="text-xl font-bold text-gray-700 mb-3">
+                <div className="p-8 sm:p-10 lg:p-12 text-center">
+                  <div className="text-6xl sm:text-7xl lg:text-8xl mb-4 sm:mb-5 lg:mb-6 animate-pulse">
+                    ❤️
+                  </div>
+                  <h3 className="text-[17px] sm:text-lg lg:text-xl font-bold text-gray-700 mb-2 sm:mb-3">
                     Your Wishlist is Empty
                   </h3>
-                  <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                  <p className="text-gray-500 text-[13px] sm:text-[14px] lg:text-[15px] mb-4 sm:mb-5 lg:mb-6 max-w-md mx-auto px-4">
                     Looks like you haven't added anything to your wishlist yet.
                     Explore our products and save your favorites here!
                   </p>
                   <Button
-                    className="btn-org"
+                    className="btn-org text-[13px] sm:text-[14px]"
                     onClick={() => (window.location.href = '/')}
                   >
                     Discover Products

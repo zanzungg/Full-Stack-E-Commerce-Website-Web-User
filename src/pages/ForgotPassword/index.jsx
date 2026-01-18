@@ -51,24 +51,29 @@ const ForgotPassword = () => {
   };
 
   return (
-    <section className="section py-10">
-      <div className="container">
-        <div className="card shadow-md w-[400px] m-auto rounded-md bg-white p-5 px-10">
-          <div className="text-center flex items-center justify-center mb-4">
-            <img src="/forgot-password.png" width="70" alt="Forgot Password" />
+    <section className="section py-5 sm:py-8 lg:py-10">
+      <div className="container px-3 sm:px-4">
+        <div className="card shadow-md w-full max-w-[400px] m-auto rounded-md bg-white p-4 sm:p-5 px-6 sm:px-10">
+          <div className="text-center flex items-center justify-center mb-3 sm:mb-4">
+            <img
+              src="/forgot-password.png"
+              width="60"
+              className="sm:w-[70px]"
+              alt="Forgot Password"
+            />
           </div>
 
-          <h3 className="text-center text-[18px] text-black font-semibold mb-2">
+          <h3 className="text-center text-[16px] sm:text-[18px] text-black font-semibold mb-1.5 sm:mb-2">
             Forgot Password?
           </h3>
 
-          <p className="text-center text-sm text-gray-600 mb-5">
+          <p className="text-center text-[12px] sm:text-sm text-gray-600 mb-4 sm:mb-5 px-2">
             Enter your email address and we'll send you an OTP to reset your
             password.
           </p>
 
           <form onSubmit={handleForgotPassword} className="w-full">
-            <div className="form-group w-full mb-4">
+            <div className="form-group w-full mb-3 sm:mb-4">
               <TextField
                 type="email"
                 id="email"
@@ -82,20 +87,26 @@ const ForgotPassword = () => {
                 helperText={errors.email}
                 disabled={authLoading}
                 autoComplete="off"
+                size="small"
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '13px', sm: '14px' },
+                  },
+                }}
               />
             </div>
 
-            <div className="flex items-center w-full mb-4">
+            <div className="flex items-center w-full mb-3 sm:mb-4">
               <Button
                 type="submit"
-                className="btn-org btn-lg w-full"
+                className="btn-org btn-lg w-full text-[13px]! sm:text-[14px]! py-2! sm:py-2.5!"
                 disabled={authLoading}
               >
                 {authLoading ? (
                   <>
                     <CircularProgress
-                      size={20}
-                      className="mr-2"
+                      size={18}
+                      className="mr-1.5 sm:mr-2"
                       color="inherit"
                     />
                     Sending...
@@ -109,7 +120,7 @@ const ForgotPassword = () => {
             <div className="text-center">
               <Link
                 to="/login"
-                className="text-blue-600 hover:underline text-sm"
+                className="text-blue-600 hover:underline text-[12px] sm:text-sm"
               >
                 Back to Login
               </Link>

@@ -50,16 +50,24 @@ const DeleteConfirmDialog = ({
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { borderRadius: '8px', minWidth: '400px' } }}
+      fullWidth
+      maxWidth="xs"
+      PaperProps={{ sx: { borderRadius: '8px', margin: '16px' } }}
     >
-      <DialogTitle className="font-bold">{title}</DialogTitle>
+      <DialogTitle className="font-bold text-[16px] sm:text-[18px]">
+        {title}
+      </DialogTitle>
       <DialogContent>
-        <p className="text-[14px] text-gray-600 mb-2">{message}</p>
+        <p className="text-[13px] sm:text-[14px] text-gray-600 mb-2">
+          {message}
+        </p>
         {subMessage && (
-          <p className="text-[12px] text-gray-500 mb-3">{subMessage}</p>
+          <p className="text-[11px] sm:text-[12px] text-gray-500 mb-3">
+            {subMessage}
+          </p>
         )}
         {address && (
-          <div className="mt-3 p-3 bg-gray-50 rounded">
+          <div className="mt-3 p-2.5 sm:p-3 bg-gray-50 rounded">
             {address.addressType && (
               <Chip
                 icon={getAddressTypeIcon(address.addressType)}
@@ -68,13 +76,21 @@ const DeleteConfirmDialog = ({
                 color={getAddressTypeColor(address.addressType)}
                 variant="outlined"
                 className="mb-2"
+                sx={{
+                  fontSize: { xs: '10px', sm: '12px' },
+                  height: { xs: '22px', sm: '24px' },
+                }}
               />
             )}
-            <p className="text-sm font-semibold">{address.address_line}</p>
+            <p className="text-[13px] sm:text-sm font-semibold">
+              {address.address_line}
+            </p>
             {address.landmark && (
-              <p className="text-xs text-gray-500 italic">{address.landmark}</p>
+              <p className="text-[11px] sm:text-xs text-gray-500 italic">
+                {address.landmark}
+              </p>
             )}
-            <p className="text-xs text-gray-600">
+            <p className="text-[11px] sm:text-xs text-gray-600">
               {address.city}, {address.state} - {address.pincode}
             </p>
           </div>

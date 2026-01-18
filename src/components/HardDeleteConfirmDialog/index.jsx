@@ -47,27 +47,36 @@ const HardDeleteConfirmDialog = ({ open, onClose, onConfirm, address }) => {
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { borderRadius: '8px', minWidth: '450px' } }}
+      fullWidth
+      maxWidth="sm"
+      PaperProps={{ sx: { borderRadius: '8px', margin: '16px' } }}
     >
-      <DialogTitle className="font-bold text-red-600 flex items-center gap-2">
-        <MdDeleteForever className="text-[24px]" />
+      <DialogTitle className="font-bold text-red-600 flex items-center gap-2 text-[16px] sm:text-[18px]">
+        <MdDeleteForever className="text-[20px] sm:text-[24px]" />
         Permanently Delete Address
       </DialogTitle>
       <DialogContent>
-        <Alert severity="error" icon={<MdWarning />} className="mb-4">
-          <AlertTitle className="font-bold">
+        <Alert
+          severity="error"
+          icon={<MdWarning />}
+          className="mb-3 sm:mb-4"
+          sx={{ fontSize: { xs: '12px', sm: '14px' } }}
+        >
+          <AlertTitle className="font-bold text-[13px] sm:text-[14px]">
             Warning: This action cannot be undone!
           </AlertTitle>
-          This will permanently delete the address from the system. You will not
-          be able to restore it.
+          <span className="text-[11px] sm:text-[13px]">
+            This will permanently delete the address from the system. You will
+            not be able to restore it.
+          </span>
         </Alert>
 
-        <p className="text-[14px] text-gray-600 mb-3 font-semibold">
+        <p className="text-[13px] sm:text-[14px] text-gray-600 mb-3 font-semibold">
           Are you absolutely sure you want to permanently delete this address?
         </p>
 
         {address && (
-          <div className="mt-3 p-3 bg-red-50 rounded border-2 border-red-300">
+          <div className="mt-3 p-2.5 sm:p-3 bg-red-50 rounded border-2 border-red-300">
             {address.addressType && (
               <Chip
                 icon={getAddressTypeIcon(address.addressType)}
@@ -76,23 +85,27 @@ const HardDeleteConfirmDialog = ({ open, onClose, onConfirm, address }) => {
                 color={getAddressTypeColor(address.addressType)}
                 variant="outlined"
                 className="mb-2"
+                sx={{
+                  fontSize: { xs: '10px', sm: '12px' },
+                  height: { xs: '22px', sm: '24px' },
+                }}
               />
             )}
-            <p className="text-sm font-semibold text-red-900">
+            <p className="text-[13px] sm:text-sm font-semibold text-red-900">
               {address.address_line}
             </p>
             {address.landmark && (
-              <p className="text-xs text-red-700 italic">
+              <p className="text-[11px] sm:text-xs text-red-700 italic">
                 Landmark: {address.landmark}
               </p>
             )}
-            <p className="text-xs text-red-700">
+            <p className="text-[11px] sm:text-xs text-red-700">
               {address.city}, {address.state}
             </p>
-            <p className="text-xs text-red-700">
+            <p className="text-[11px] sm:text-xs text-red-700">
               {address.country} - {address.pincode}
             </p>
-            <p className="text-xs text-red-600 mt-1">
+            <p className="text-[11px] sm:text-xs text-red-600 mt-1">
               <span className="font-medium">Phone:</span> {address.mobile}
             </p>
           </div>

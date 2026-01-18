@@ -111,9 +111,9 @@ const MyAccount = () => {
   };
 
   return (
-    <section className="py-10 w-full">
-      <div className="container">
-        <div className="flex flex-col lg:flex-row gap-5">
+    <section className="py-5 sm:py-8 lg:py-10 w-full">
+      <div className="container px-3 sm:px-4">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-5">
           {/* Sidebar */}
           <div className="w-full lg:w-[25%]">
             <AccountSidebar />
@@ -121,17 +121,20 @@ const MyAccount = () => {
 
           {/* Main Content */}
           <div className="w-full lg:w-[75%]">
-            <div className="card bg-white shadow-md rounded-md p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-[22px] font-bold">My Profile</h2>
+            <div className="card bg-white shadow-md rounded-md p-4 sm:p-5 lg:p-6">
+              <div className="flex items-center justify-between mb-4 sm:mb-5 lg:mb-6">
+                <h2 className="text-[18px] sm:text-[20px] lg:text-[22px] font-bold">
+                  My Profile
+                </h2>
                 {!isEditMode && (
                   <Button
-                    className="btn-org flex items-center gap-2"
+                    className="btn-org flex items-center gap-1 sm:gap-2 text-[12px] sm:text-[14px] px-3 sm:px-4 py-1.5 sm:py-2"
                     onClick={() => setIsEditMode(true)}
                     disabled={profileLoading}
                   >
-                    <MdEdit className="text-[18px]" />
-                    Edit Profile
+                    <MdEdit className="text-[15px] sm:text-[18px]" />
+                    <span className="hidden sm:inline">Edit Profile</span>
+                    <span className="sm:hidden">Edit</span>
                   </Button>
                 )}
               </div>
@@ -141,8 +144,11 @@ const MyAccount = () => {
                   <CircularProgress size={40} />
                 </div>
               ) : isEditMode ? (
-                <form onSubmit={handleSaveProfile} className="space-y-5">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <form
+                  onSubmit={handleSaveProfile}
+                  className="space-y-4 sm:space-y-5"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-5 sm:gap-y-6">
                     <TextField
                       label="Full Name"
                       variant="outlined"
@@ -188,10 +194,10 @@ const MyAccount = () => {
                     />
                   </div>
 
-                  <div className="flex gap-3 justify-end">
+                  <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 justify-end">
                     <Button
                       type="button"
-                      className="btn-outline"
+                      className="btn-outline w-full sm:w-auto"
                       onClick={handleCancelEdit}
                       disabled={loading}
                     >
@@ -199,7 +205,7 @@ const MyAccount = () => {
                     </Button>
                     <Button
                       type="submit"
-                      className="btn-org"
+                      className="btn-org w-full sm:w-auto"
                       disabled={loading}
                     >
                       {loading ? (
@@ -218,44 +224,46 @@ const MyAccount = () => {
                   </div>
                 </form>
               ) : (
-                <div className="space-y-4">
-                  <div className="flex border-b pb-4">
-                    <div className="w-[30%] font-semibold text-gray-600">
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex flex-col sm:flex-row border-b pb-3 sm:pb-4">
+                    <div className="w-full sm:w-[30%] font-semibold text-gray-600 text-[13px] sm:text-[14px] mb-1 sm:mb-0">
                       Full Name:
                     </div>
-                    <div className="w-[70%]">{user?.name || 'N/A'}</div>
+                    <div className="w-full sm:w-[70%] text-[14px] sm:text-[15px]">
+                      {user?.name || 'N/A'}
+                    </div>
                   </div>
 
-                  <div className="flex border-b pb-4">
-                    <div className="w-[30%] font-semibold text-gray-600">
+                  <div className="flex flex-col sm:flex-row border-b pb-3 sm:pb-4">
+                    <div className="w-full sm:w-[30%] font-semibold text-gray-600 text-[13px] sm:text-[14px] mb-1 sm:mb-0">
                       Email:
                     </div>
-                    <div className="w-[70%] flex items-center gap-2">
-                      {user?.email || 'N/A'}
+                    <div className="w-full sm:w-[70%] flex flex-col sm:flex-row sm:items-center gap-2 text-[14px] sm:text-[15px]">
+                      <span className="break-all">{user?.email || 'N/A'}</span>
                       {user?.verify_email && (
-                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                        <span className="text-[10px] sm:text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full w-fit">
                           Verified
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex border-b pb-4">
-                    <div className="w-[30%] font-semibold text-gray-600">
+                  <div className="flex flex-col sm:flex-row border-b pb-3 sm:pb-4">
+                    <div className="w-full sm:w-[30%] font-semibold text-gray-600 text-[13px] sm:text-[14px] mb-1 sm:mb-0">
                       Phone:
                     </div>
-                    <div className="w-[70%]">
+                    <div className="w-full sm:w-[70%] text-[14px] sm:text-[15px]">
                       {user?.mobile || 'Not provided'}
                     </div>
                   </div>
 
-                  <div className="flex border-b pb-4">
-                    <div className="w-[30%] font-semibold text-gray-600">
+                  <div className="flex flex-col sm:flex-row border-b pb-3 sm:pb-4">
+                    <div className="w-full sm:w-[30%] font-semibold text-gray-600 text-[13px] sm:text-[14px] mb-1 sm:mb-0">
                       Account Status:
                     </div>
-                    <div className="w-[70%]">
+                    <div className="w-full sm:w-[70%]">
                       <span
-                        className={`px-3 py-1 rounded-full text-sm ${
+                        className={`px-2 sm:px-3 py-1 rounded-full text-[11px] sm:text-sm w-fit inline-block ${
                           user?.status === 'Active'
                             ? 'bg-green-100 text-green-700'
                             : 'bg-red-100 text-red-700'
@@ -266,11 +274,11 @@ const MyAccount = () => {
                     </div>
                   </div>
 
-                  <div className="flex border-b pb-4">
-                    <div className="w-[30%] font-semibold text-gray-600">
+                  <div className="flex flex-col sm:flex-row border-b pb-3 sm:pb-4">
+                    <div className="w-full sm:w-[30%] font-semibold text-gray-600 text-[13px] sm:text-[14px] mb-1 sm:mb-0">
                       Member Since:
                     </div>
-                    <div className="w-[70%]">
+                    <div className="w-full sm:w-[70%] text-[14px] sm:text-[15px]">
                       {user?.createdAt
                         ? new Date(user.createdAt).toLocaleDateString('en-US', {
                             year: 'numeric',
@@ -281,11 +289,11 @@ const MyAccount = () => {
                     </div>
                   </div>
 
-                  <div className="flex pb-4">
-                    <div className="w-[30%] font-semibold text-gray-600">
+                  <div className="flex flex-col sm:flex-row pb-3 sm:pb-4">
+                    <div className="w-full sm:w-[30%] font-semibold text-gray-600 text-[13px] sm:text-[14px] mb-1 sm:mb-0">
                       Last Login:
                     </div>
-                    <div className="w-[70%]">
+                    <div className="w-full sm:w-[70%] text-[14px] sm:text-[15px]">
                       {user?.last_login_date
                         ? new Date(user.last_login_date).toLocaleString(
                             'en-US',

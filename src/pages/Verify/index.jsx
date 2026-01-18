@@ -88,17 +88,22 @@ const Verify = () => {
   };
 
   return (
-    <section className="section py-10">
-      <div className="container">
-        <div className="card shadow-md w-[400px] m-auto rounded-md bg-white p-5 px-10">
+    <section className="section py-5 sm:py-8 lg:py-10">
+      <div className="container px-3 sm:px-4">
+        <div className="card shadow-md w-full max-w-[400px] m-auto rounded-md bg-white p-4 sm:p-5 px-6 sm:px-10">
           <div className="text-center flex items-center justify-center">
-            <img src="/verify.png" width="70" alt="Verify" />
+            <img
+              src="/verify.png"
+              width="60"
+              className="sm:w-[70px]"
+              alt="Verify"
+            />
           </div>
-          <h3 className="text-center text-[18px] text-black font-semibold mt-4 mb-1">
+          <h3 className="text-center text-[16px] sm:text-[18px] text-black font-semibold mt-3 sm:mt-4 mb-1">
             Verify OTP
           </h3>
 
-          <p className="text-center mt-0 text-sm text-gray-600">
+          <p className="text-center mt-0 text-[12px] sm:text-sm text-gray-600">
             {type === 'register'
               ? 'Please verify your email to complete registration'
               : 'Please verify OTP to reset your password'}
@@ -107,8 +112,8 @@ const Verify = () => {
           </p>
 
           {otpCountdown > 0 ? (
-            <div className="text-center mb-3">
-              <p className="text-xs text-gray-500">
+            <div className="text-center mb-2 sm:mb-3">
+              <p className="text-[10px] sm:text-xs text-gray-500">
                 OTP expires in:{' '}
                 <span className="font-semibold text-orange-600">
                   {formatTime(otpCountdown)}
@@ -116,8 +121,8 @@ const Verify = () => {
               </p>
             </div>
           ) : (
-            <div className="text-center mb-3">
-              <p className="text-xs text-red-600 font-semibold">
+            <div className="text-center mb-2 sm:mb-3">
+              <p className="text-[10px] sm:text-xs text-red-600 font-semibold">
                 OTP has expired. Please resend a new one.
               </p>
             </div>
@@ -129,8 +134,8 @@ const Verify = () => {
             loading={authLoading}
           />
 
-          <div className="text-center mt-4">
-            <p className="text-sm text-gray-600">
+          <div className="text-center mt-3 sm:mt-4">
+            <p className="text-[12px] sm:text-sm text-gray-600">
               Didn't receive code?{' '}
               <button
                 onClick={handleResendOTP}
@@ -145,8 +150,8 @@ const Verify = () => {
                 {resendLoading
                   ? 'Sending...'
                   : resendCooldown > 0
-                  ? `Resend (${resendCooldown}s)`
-                  : 'Resend'}
+                    ? `Resend (${resendCooldown}s)`
+                    : 'Resend'}
               </button>
             </p>
           </div>

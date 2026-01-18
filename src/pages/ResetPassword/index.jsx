@@ -89,24 +89,29 @@ const ResetPassword = () => {
   };
 
   return (
-    <section className="section py-10">
-      <div className="container">
-        <div className="card shadow-md w-[400px] m-auto rounded-md bg-white p-5 px-10">
-          <div className="text-center flex items-center justify-center mb-4">
-            <img src="/reset-password.png" width="70" alt="Reset Password" />
+    <section className="section py-5 sm:py-8 lg:py-10">
+      <div className="container px-3 sm:px-4">
+        <div className="card shadow-md w-full max-w-[400px] m-auto rounded-md bg-white p-4 sm:p-5 px-6 sm:px-10">
+          <div className="text-center flex items-center justify-center mb-3 sm:mb-4">
+            <img
+              src="/reset-password.png"
+              width="60"
+              className="sm:w-[70px]"
+              alt="Reset Password"
+            />
           </div>
 
-          <h3 className="text-center text-[18px] text-black font-semibold mb-2">
+          <h3 className="text-center text-[16px] sm:text-[18px] text-black font-semibold mb-1.5 sm:mb-2">
             Reset Password
           </h3>
 
-          <p className="text-center text-sm text-gray-600 mb-5">
+          <p className="text-center text-[12px] sm:text-sm text-gray-600 mb-4 sm:mb-5 px-2">
             Enter your new password for{' '}
             <span className="font-bold text-primary">{email}</span>
           </p>
 
           <form onSubmit={handleResetPassword} className="w-full">
-            <div className="form-group w-full mb-4 relative">
+            <div className="form-group w-full mb-3 sm:mb-4 relative">
               <TextField
                 type={showPassword ? 'text' : 'password'}
                 id="password"
@@ -120,23 +125,29 @@ const ResetPassword = () => {
                 helperText={errors.password}
                 disabled={authLoading}
                 autoComplete="off"
+                size="small"
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '13px', sm: '14px' },
+                  },
+                }}
               />
               <Button
                 type="button"
-                className="absolute! top-2.5 right-2.5 z-50 w-[35px]! h-[35px]! 
-                                min-w-[35px]! rounded-full! text-black!"
+                className="absolute! top-1/2 right-2 sm:right-2.5 -translate-y-1/2 z-50 w-8! h-8! sm:w-[35px]! sm:h-[35px]! 
+                                min-w-8! sm:min-w-[35px]! rounded-full! text-black!"
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={authLoading}
               >
                 {showPassword ? (
-                  <IoMdEyeOff className="text-[20px] opacity-75" />
+                  <IoMdEyeOff className="text-[18px] sm:text-[20px] opacity-75" />
                 ) : (
-                  <IoMdEye className="text-[20px] opacity-75" />
+                  <IoMdEye className="text-[18px] sm:text-[20px] opacity-75" />
                 )}
               </Button>
             </div>
 
-            <div className="form-group w-full mb-4 relative">
+            <div className="form-group w-full mb-3 sm:mb-4 relative">
               <TextField
                 type={showConfirmPassword ? 'text' : 'password'}
                 id="confirmPassword"
@@ -150,33 +161,39 @@ const ResetPassword = () => {
                 helperText={errors.confirmPassword}
                 disabled={authLoading}
                 autoComplete="off"
+                size="small"
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '13px', sm: '14px' },
+                  },
+                }}
               />
               <Button
                 type="button"
-                className="absolute! top-2.5 right-2.5 z-50 w-[35px]! h-[35px]! 
-                                min-w-[35px]! rounded-full! text-black!"
+                className="absolute! top-1/2 right-2 sm:right-2.5 -translate-y-1/2 z-50 w-8! h-8! sm:w-[35px]! sm:h-[35px]! 
+                                min-w-8! sm:min-w-[35px]! rounded-full! text-black!"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 disabled={authLoading}
               >
                 {showConfirmPassword ? (
-                  <IoMdEyeOff className="text-[20px] opacity-75" />
+                  <IoMdEyeOff className="text-[18px] sm:text-[20px] opacity-75" />
                 ) : (
-                  <IoMdEye className="text-[20px] opacity-75" />
+                  <IoMdEye className="text-[18px] sm:text-[20px] opacity-75" />
                 )}
               </Button>
             </div>
 
-            <div className="flex items-center w-full mb-4">
+            <div className="flex items-center w-full mb-3 sm:mb-4">
               <Button
                 type="submit"
-                className="btn-org btn-lg w-full"
+                className="btn-org btn-lg w-full text-[13px]! sm:text-[14px]! py-2! sm:py-2.5!"
                 disabled={authLoading}
               >
                 {authLoading ? (
                   <>
                     <CircularProgress
-                      size={20}
-                      className="mr-2"
+                      size={18}
+                      className="mr-1.5 sm:mr-2"
                       color="inherit"
                     />
                     Resetting...

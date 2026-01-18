@@ -39,15 +39,19 @@ const RestoreConfirmDialog = ({ open, onClose, onConfirm, address }) => {
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { borderRadius: '8px', minWidth: '400px' } }}
+      fullWidth
+      maxWidth="xs"
+      PaperProps={{ sx: { borderRadius: '8px', margin: '16px' } }}
     >
-      <DialogTitle className="font-bold">Restore Address</DialogTitle>
+      <DialogTitle className="font-bold text-[16px] sm:text-[18px]">
+        Restore Address
+      </DialogTitle>
       <DialogContent>
-        <p className="text-[14px] text-gray-600 mb-3">
+        <p className="text-[13px] sm:text-[14px] text-gray-600 mb-3">
           Do you want to restore this address?
         </p>
         {address && (
-          <div className="mt-3 p-3 bg-green-50 rounded border border-green-200">
+          <div className="mt-3 p-2.5 sm:p-3 bg-green-50 rounded border border-green-200">
             {address.addressType && (
               <Chip
                 icon={getAddressTypeIcon(address.addressType)}
@@ -56,17 +60,21 @@ const RestoreConfirmDialog = ({ open, onClose, onConfirm, address }) => {
                 color={getAddressTypeColor(address.addressType)}
                 variant="outlined"
                 className="mb-2"
+                sx={{
+                  fontSize: { xs: '10px', sm: '12px' },
+                  height: { xs: '22px', sm: '24px' },
+                }}
               />
             )}
-            <p className="text-sm font-semibold text-green-900">
+            <p className="text-[13px] sm:text-sm font-semibold text-green-900">
               {address.address_line}
             </p>
             {address.landmark && (
-              <p className="text-xs text-green-700 italic">
+              <p className="text-[11px] sm:text-xs text-green-700 italic">
                 {address.landmark}
               </p>
             )}
-            <p className="text-xs text-green-700">
+            <p className="text-[11px] sm:text-xs text-green-700">
               {address.city}, {address.state} - {address.pincode}
             </p>
           </div>

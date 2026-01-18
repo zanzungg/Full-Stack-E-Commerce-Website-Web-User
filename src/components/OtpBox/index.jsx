@@ -83,8 +83,8 @@ const OtpBox = ({
   };
 
   return (
-    <div className="mt-6">
-      <div className="flex gap-2 justify-center mb-4">
+    <div className="mt-4 sm:mt-6">
+      <div className="flex gap-1.5 sm:gap-2 justify-center mb-3 sm:mb-4">
         {otp.map((digit, index) => (
           <input
             key={index}
@@ -96,7 +96,7 @@ const OtpBox = ({
             onPaste={handlePaste}
             ref={(ref) => (inputRefs.current[index] = ref)}
             disabled={disabled || loading}
-            className={`w-12 h-12 text-center text-xl font-semibold border-2 border-gray-300 rounded-lg 
+            className={`w-10 h-10 sm:w-12 sm:h-12 text-center text-lg sm:text-xl font-semibold border-2 border-gray-300 rounded-lg 
                         focus:border-blue-500 focus:outline-none transition-colors
                         ${
                           disabled || loading
@@ -108,7 +108,7 @@ const OtpBox = ({
       </div>
 
       <button
-        className={`w-full font-semibold py-2 px-4 rounded-lg transition-colors mt-4
+        className={`w-full font-semibold py-2 sm:py-2.5 px-4 rounded-lg transition-colors mt-3 sm:mt-4 text-[13px] sm:text-[14px]
                 ${
                   disabled || loading || !otp.every((digit) => digit !== '')
                     ? 'bg-gray-400 cursor-not-allowed'
@@ -120,9 +120,9 @@ const OtpBox = ({
         {loading ? 'Verifying...' : 'Verify OTP'}
       </button>
 
-      <div className="text-center mt-4">
+      <div className="text-center mt-3 sm:mt-4">
         <button
-          className={`text-sm text-[16px] ${
+          className={`text-sm sm:text-[16px] ${
             disabled || loading
               ? 'text-gray-400 cursor-not-allowed'
               : 'text-blue-600 hover:underline'

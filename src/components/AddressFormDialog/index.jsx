@@ -130,14 +130,16 @@ const AddressFormDialog = ({ open, onClose, onSave, editingAddress }) => {
       onClose={onClose}
       maxWidth="sm"
       fullWidth
-      PaperProps={{ sx: { borderRadius: '8px' } }}
+      PaperProps={{
+        sx: { borderRadius: '8px', margin: { xs: '16px', sm: '32px' } },
+      }}
     >
-      <DialogTitle className="font-bold">
+      <DialogTitle className="font-bold text-[16px] sm:text-[18px] px-4 sm:px-6">
         {editingAddress ? 'Edit Address' : 'Add New Address'}
       </DialogTitle>
       <form onSubmit={handleSubmit}>
-        <DialogContent>
-          <div className="space-y-4">
+        <DialogContent className="px-4 sm:px-6">
+          <div className="space-y-3 sm:space-y-4">
             <TextField
               label="Address Line"
               variant="outlined"
@@ -170,7 +172,7 @@ const AddressFormDialog = ({ open, onClose, onSave, editingAddress }) => {
               sx={{ mt: 1.5 }}
             />
 
-            <div className="grid grid-cols-2 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 sm:gap-y-4 gap-x-5 sm:gap-x-6 mt-2">
               <TextField
                 label="City"
                 variant="outlined"
@@ -198,7 +200,7 @@ const AddressFormDialog = ({ open, onClose, onSave, editingAddress }) => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 sm:gap-y-4 gap-x-5 sm:gap-x-6">
               <TextField
                 label="Pincode/Zipcode"
                 variant="outlined"
@@ -241,8 +243,8 @@ const AddressFormDialog = ({ open, onClose, onSave, editingAddress }) => {
               placeholder="0123456789"
             />
 
-            <div className="mt-4">
-              <h6 className="mb-2 text-sm font-medium text-gray-700">
+            <div className="mt-3 sm:mt-4">
+              <h6 className="mb-2 text-[13px] sm:text-sm font-medium text-gray-700">
                 Address Type (Optional)
               </h6>
               <RadioGroup
@@ -250,49 +252,60 @@ const AddressFormDialog = ({ open, onClose, onSave, editingAddress }) => {
                 name="addressType"
                 value={formFields.addressType}
                 onChange={onChangeField}
+                sx={{
+                  flexWrap: { xs: 'wrap', sm: 'nowrap' },
+                  gap: { xs: 0.5, sm: 1 },
+                }}
               >
                 <FormControlLabel
                   value="Home"
-                  control={<Radio />}
+                  control={<Radio size="small" />}
                   label={
-                    <span className="flex items-center gap-1">
-                      <MdHome /> Home
+                    <span className="flex items-center gap-1 text-[13px] sm:text-[14px]">
+                      <MdHome className="text-[16px]" /> Home
                     </span>
                   }
                   disabled={loading}
+                  sx={{ mr: { xs: 1, sm: 2 } }}
                 />
                 <FormControlLabel
                   value="Office"
-                  control={<Radio />}
+                  control={<Radio size="small" />}
                   label={
-                    <span className="flex items-center gap-1">
-                      <MdBusiness /> Office
+                    <span className="flex items-center gap-1 text-[13px] sm:text-[14px]">
+                      <MdBusiness className="text-[16px]" /> Office
                     </span>
                   }
                   disabled={loading}
+                  sx={{ mr: { xs: 1, sm: 2 } }}
                 />
                 <FormControlLabel
                   value="Other"
-                  control={<Radio />}
+                  control={<Radio size="small" />}
                   label={
-                    <span className="flex items-center gap-1">
-                      <MdLocationOn /> Other
+                    <span className="flex items-center gap-1 text-[13px] sm:text-[14px]">
+                      <MdLocationOn className="text-[16px]" /> Other
                     </span>
                   }
                   disabled={loading}
+                  sx={{ mr: { xs: 1, sm: 2 } }}
                 />
               </RadioGroup>
             </div>
           </div>
         </DialogContent>
-        <DialogActions className="px-6 pb-4">
-          <Button onClick={onClose} className="capitalize!" disabled={loading}>
+        <DialogActions className="px-4 sm:px-6 pb-3 sm:pb-4 flex-col-reverse sm:flex-row gap-2 sm:gap-0">
+          <Button
+            onClick={onClose}
+            className="capitalize! w-full sm:w-auto text-[13px] sm:text-[14px]"
+            disabled={loading}
+          >
             Cancel
           </Button>
           <Button
             type="submit"
             variant="contained"
-            className="capitalize! bg-blue-600! hover:bg-blue-700!"
+            className="capitalize! bg-blue-600! hover:bg-blue-700! w-full sm:w-auto text-[13px] sm:text-[14px]"
             disabled={loading}
           >
             {loading ? (

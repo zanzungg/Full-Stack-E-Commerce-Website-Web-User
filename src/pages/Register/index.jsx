@@ -108,14 +108,14 @@ const Register = () => {
   };
 
   return (
-    <section className="section py-10">
-      <div className="container">
-        <div className="card shadow-md w-[400px] m-auto rounded-md bg-white p-5 px-10">
-          <h3 className="text-center text-[18px] text-black font-semibold">
+    <section className="section py-5 sm:py-8 lg:py-10">
+      <div className="container px-3 sm:px-4">
+        <div className="card shadow-md w-full max-w-[400px] m-auto rounded-md bg-white p-4 sm:p-5 px-6 sm:px-10">
+          <h3 className="text-center text-[16px] sm:text-[18px] text-black font-semibold">
             Register with a new account
           </h3>
-          <form onSubmit={handleRegister} className="w-full mt-5">
-            <div className="form-group w-full mb-5">
+          <form onSubmit={handleRegister} className="w-full mt-4 sm:mt-5">
+            <div className="form-group w-full mb-4 sm:mb-5">
               <TextField
                 type="text"
                 id="name"
@@ -129,10 +129,16 @@ const Register = () => {
                 helperText={errors.name}
                 disabled={authLoading}
                 autoComplete="off"
+                size="small"
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '13px', sm: '14px' },
+                  },
+                }}
               />
             </div>
 
-            <div className="form-group w-full mb-5">
+            <div className="form-group w-full mb-4 sm:mb-5">
               <TextField
                 type="email"
                 id="email"
@@ -146,10 +152,16 @@ const Register = () => {
                 helperText={errors.email}
                 disabled={authLoading}
                 autoComplete="off"
+                size="small"
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '13px', sm: '14px' },
+                  },
+                }}
               />
             </div>
 
-            <div className="form-group w-full mb-5 relative">
+            <div className="form-group w-full mb-4 sm:mb-5 relative">
               <TextField
                 type={isShowPassword ? 'text' : 'password'}
                 id="password"
@@ -163,12 +175,18 @@ const Register = () => {
                 helperText={errors.password}
                 disabled={authLoading}
                 autoComplete="off"
+                size="small"
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '13px', sm: '14px' },
+                  },
+                }}
               />
 
               <Button
                 type="button"
-                className="absolute! top-2.5 right-2.5 z-50 w-[35px]! h-[35px]! 
-                                min-w-[35px]! rounded-full! text-black!"
+                className="absolute! top-1/2 right-2 sm:right-2.5 -translate-y-1/2 z-50 w-8! h-8! sm:w-[35px]! sm:h-[35px]! 
+                                min-w-8! sm:min-w-[35px]! rounded-full! text-black!"
                 onClick={(e) => {
                   e.preventDefault();
                   setIsShowPassword(!isShowPassword);
@@ -176,14 +194,14 @@ const Register = () => {
                 disabled={authLoading}
               >
                 {isShowPassword ? (
-                  <IoMdEyeOff className="text-[20px] opacity-75" />
+                  <IoMdEyeOff className="text-[18px] sm:text-[20px] opacity-75" />
                 ) : (
-                  <IoMdEye className="text-[20px] opacity-75" />
+                  <IoMdEye className="text-[18px] sm:text-[20px] opacity-75" />
                 )}
               </Button>
             </div>
 
-            <div className="form-group w-full mb-5 relative">
+            <div className="form-group w-full mb-4 sm:mb-5 relative">
               <TextField
                 type={isShowConfirmPassword ? 'text' : 'password'}
                 id="confirmPassword"
@@ -197,12 +215,18 @@ const Register = () => {
                 helperText={errors.confirmPassword}
                 disabled={authLoading}
                 autoComplete="off"
+                size="small"
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '13px', sm: '14px' },
+                  },
+                }}
               />
 
               <Button
                 type="button"
-                className="absolute! top-2.5 right-2.5 z-50 w-[35px]! h-[35px]! 
-                                min-w-[35px]! rounded-full! text-black!"
+                className="absolute! top-1/2 right-2 sm:right-2.5 -translate-y-1/2 z-50 w-8! h-8! sm:w-[35px]! sm:h-[35px]! 
+                                min-w-8! sm:min-w-[35px]! rounded-full! text-black!"
                 onClick={(e) => {
                   e.preventDefault();
                   setIsShowConfirmPassword(!isShowConfirmPassword);
@@ -210,27 +234,27 @@ const Register = () => {
                 disabled={authLoading}
               >
                 {isShowConfirmPassword ? (
-                  <IoMdEyeOff className="text-[20px] opacity-75" />
+                  <IoMdEyeOff className="text-[18px] sm:text-[20px] opacity-75" />
                 ) : (
-                  <IoMdEye className="text-[20px] opacity-75" />
+                  <IoMdEye className="text-[18px] sm:text-[20px] opacity-75" />
                 )}
               </Button>
             </div>
 
-            <div className="flex items-center w-full mt-3 mb-3">
+            <div className="flex items-center w-full mt-2.5 sm:mt-3 mb-2.5 sm:mb-3">
               <Button
                 type="submit"
-                className="btn-org btn-lg w-full"
+                className="btn-org btn-lg w-full text-[13px]! sm:text-[14px]! py-2! sm:py-2.5!"
                 disabled={authLoading}
               >
                 {authLoading ? 'Registering...' : 'Register'}
               </Button>
             </div>
 
-            <p className="text-center">
+            <p className="text-center text-[13px] sm:text-[14px]">
               Already have an account?
               <Link
-                className="link text-[13px] font-semibold text-primary"
+                className="link text-[12px] sm:text-[13px] font-semibold text-primary"
                 to="/login"
               >
                 {' '}
@@ -238,17 +262,17 @@ const Register = () => {
               </Link>
             </p>
 
-            <p className="text-center font-medium">
+            <p className="text-center font-medium text-[13px] sm:text-[14px]">
               Or continue with social account
             </p>
 
             <Button
               type="button"
-              className="flex gap-3 w-full bg-[#f1f1f1]! btn-lg text-black! font-medium!"
+              className="flex gap-2 sm:gap-3 w-full bg-[#f1f1f1]! btn-lg text-black! font-medium! text-[13px]! sm:text-[14px]! py-2! sm:py-2.5!"
               onClick={handleGoogleLogin}
               disabled={authLoading}
             >
-              <FcGoogle className="text-[20px]" />
+              <FcGoogle className="text-[18px] sm:text-[20px]" />
               {authLoading ? 'Signing in...' : 'Register with Google'}
             </Button>
           </form>

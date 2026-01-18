@@ -85,9 +85,9 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
 
   return (
     <>
-      <div className="card bg-white shadow-md rounded-md overflow-hidden sticky top-5">
-        <div className="w-full p-5 flex items-center justify-center flex-col">
-          <div className="w-[110px] h-[110px] rounded-full overflow-hidden mb-4 relative group shadow-lg">
+      <div className="card bg-white shadow-md rounded-md overflow-hidden lg:sticky lg:top-5">
+        <div className="w-full p-4 sm:p-5 flex items-center justify-center flex-col">
+          <div className="w-[90px] h-[90px] sm:w-[110px] sm:h-[110px] rounded-full overflow-hidden mb-3 sm:mb-4 relative group shadow-lg">
             <img
               src={user?.avatar || '/avatar_default.png'}
               alt="User Avatar"
@@ -134,12 +134,16 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
             )}
           </div>
 
-          <h3 className="font-bold text-lg text-center">{user?.name}</h3>
-          <h6 className="text-[13px] font-medium text-gray-600 text-center break-all px-2">
+          <h3 className="font-bold text-base sm:text-lg text-center">
+            {user?.name}
+          </h3>
+          <h6 className="text-[12px] sm:text-[13px] font-medium text-gray-600 text-center break-all px-2">
             {user?.email}
           </h6>
           {user?.mobile && (
-            <p className="text-[12px] text-gray-500 mt-1">{user.mobile}</p>
+            <p className="text-[11px] sm:text-[12px] text-gray-500 mt-1">
+              {user.mobile}
+            </p>
           )}
 
           {/* Upload Status */}
@@ -152,92 +156,106 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
           )}
         </div>
 
-        <ul className="list-none pb-5 bg-[#f1f1f1]">
+        <ul className="list-none pb-3 sm:pb-5 bg-[#f1f1f1]">
           <li className="w-full">
             <Button
-              className={`w-full text-left! justify-start! py-3! px-5! capitalize! rounded-none! flex items-center gap-3 transition-all duration-200 ${
+              className={`w-full text-left! justify-start! py-2! sm:py-3! px-4! sm:px-5! capitalize! rounded-none! flex items-center gap-2 sm:gap-3 transition-all duration-200 ${
                 activeTab === 'profile'
                   ? 'bg-primary! text-white! shadow-md!'
                   : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]! hover:translate-x-1!'
               }`}
               onClick={() => navigate('/my-account')}
             >
-              <FaRegUser className="text-[17px]" />
-              <span className="font-semibold">My Profile</span>
+              <FaRegUser className="text-[15px] sm:text-[17px]" />
+              <span className="font-semibold text-[13px] sm:text-[14px]">
+                My Profile
+              </span>
             </Button>
           </li>
 
           <li className="w-full">
             <Button
-              className={`w-full text-left! justify-start! py-3! px-5! capitalize! rounded-none! flex items-center gap-3 transition-all duration-200 ${
+              className={`w-full text-left! justify-start! py-2! sm:py-3! px-4! sm:px-5! capitalize! rounded-none! flex items-center gap-2 sm:gap-3 transition-all duration-200 ${
                 activeTab === 'address'
                   ? 'bg-primary! text-white! shadow-md!'
                   : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]! hover:translate-x-1!'
               }`}
               onClick={() => navigate('/my-address')}
             >
-              <LuMapPin className="text-[20px]" />
-              <span className="font-semibold">My Address</span>
+              <LuMapPin className="text-[17px] sm:text-[20px]" />
+              <span className="font-semibold text-[13px] sm:text-[14px]">
+                My Address
+              </span>
             </Button>
           </li>
 
           <li className="w-full">
             <Button
-              className={`w-full text-left! justify-start! py-3! px-5! capitalize! rounded-none! flex items-center gap-3 transition-all duration-200 ${
+              className={`w-full text-left! justify-start! py-2! sm:py-3! px-4! sm:px-5! capitalize! rounded-none! flex items-center gap-2 sm:gap-3 transition-all duration-200 ${
                 activeTab === 'wishlist'
                   ? 'bg-primary! text-white! shadow-md!'
                   : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]! hover:translate-x-1!'
               }`}
               onClick={() => navigate('/my-wishlist')}
             >
-              <FaRegHeart className="text-[19px]" />
-              <span className="font-semibold">My Wishlist</span>
+              <FaRegHeart className="text-[16px] sm:text-[19px]" />
+              <span className="font-semibold text-[13px] sm:text-[14px]">
+                My Wishlist
+              </span>
             </Button>
           </li>
 
           <li className="w-full">
             <Button
-              className={`w-full text-left! justify-start! py-3! px-5! capitalize! rounded-none! flex items-center gap-3 transition-all duration-200 ${
+              className={`w-full text-left! justify-start! py-2! sm:py-3! px-4! sm:px-5! capitalize! rounded-none! flex items-center gap-2 sm:gap-3 transition-all duration-200 ${
                 activeTab === 'orders'
                   ? 'bg-primary! text-white! shadow-md!'
                   : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]! hover:translate-x-1!'
               }`}
               onClick={() => navigate('/my-orders')}
             >
-              <IoBagCheckOutline className="text-[20px]" />
-              <span className="font-semibold">My Orders</span>
+              <IoBagCheckOutline className="text-[17px] sm:text-[20px]" />
+              <span className="font-semibold text-[13px] sm:text-[14px]">
+                My Orders
+              </span>
             </Button>
           </li>
 
           <li className="w-full">
             <Button
-              className={`w-full text-left! justify-start! py-3! px-5! capitalize! rounded-none! flex items-center gap-3 transition-all duration-200 ${
+              className={`w-full text-left! justify-start! py-2! sm:py-3! px-4! sm:px-5! capitalize! rounded-none! flex items-center gap-2 sm:gap-3 transition-all duration-200 ${
                 activeTab === 'password'
                   ? 'bg-primary! text-white! shadow-md!'
                   : 'text-[rgba(0,0,0,0.7)]! hover:bg-[rgba(0,0,0,0.05)]! hover:translate-x-1!'
               }`}
               onClick={() => navigate('/change-password')}
             >
-              <RiLockPasswordLine className="text-[20px]" />
-              <span className="font-semibold">Change Password</span>
+              <RiLockPasswordLine className="text-[17px] sm:text-[20px]" />
+              <span className="font-semibold text-[13px] sm:text-[14px]">
+                Change Password
+              </span>
             </Button>
           </li>
 
           <li className="w-full mt-2 border-t border-gray-200 pt-2">
             <Button
-              className="w-full text-left! justify-start! py-3! px-5! capitalize! text-red-600! rounded-none! flex items-center gap-3 hover:bg-red-50! transition-all duration-200 hover:translate-x-1!"
+              className="w-full text-left! justify-start! py-2! sm:py-3! px-4! sm:px-5! capitalize! text-red-600! rounded-none! flex items-center gap-2 sm:gap-3 hover:bg-red-50! transition-all duration-200 hover:translate-x-1!"
               onClick={handleOpenLogoutDialog}
               disabled={authLoading || uploadingAvatar}
             >
               {authLoading ? (
                 <>
                   <CircularProgress size={17} className="text-red-600!" />
-                  <span className="font-semibold">Logging out...</span>
+                  <span className="font-semibold text-[13px] sm:text-[14px]">
+                    Logging out...
+                  </span>
                 </>
               ) : (
                 <>
-                  <IoLogOutOutline className="text-[20px]" />
-                  <span className="font-semibold">Logout</span>
+                  <IoLogOutOutline className="text-[17px] sm:text-[20px]" />
+                  <span className="font-semibold text-[13px] sm:text-[14px]">
+                    Logout
+                  </span>
                 </>
               )}
             </Button>
@@ -250,10 +268,12 @@ const AccountSidebar = ({ onAvatarUpdate }) => {
         open={openLogoutDialog}
         onClose={handleCloseLogoutDialog}
         aria-labelledby="logout-dialog-title"
+        fullWidth
+        maxWidth="xs"
         PaperProps={{
           sx: {
             borderRadius: '8px',
-            minWidth: '400px',
+            margin: '16px',
           },
         }}
       >
