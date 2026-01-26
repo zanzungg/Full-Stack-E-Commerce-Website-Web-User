@@ -42,14 +42,93 @@
 
 ### ✨ Điểm Nổi Bật
 
-- 🔐 Xác thực người dùng (Email/Password & Google OAuth)
-- 🛍️ Quản lý giỏ hàng và danh sách yêu thích
-- 📦 Đặt hàng và theo dõi đơn hàng
-- 💳 Thanh toán trực tuyến (VNPay)
-- 📍 Quản lý địa chỉ giao hàng
-- 🏷️ Danh mục sản phẩm đa cấp
-- 📱 Thiết kế responsive, tương thích mọi thiết bị
-- 🎨 Giao diện hiện đại với Material-UI và TailwindCSS
+- 🔐 **Xác thực đa phương thức** - Email/Password & Google OAuth
+- 🛍️ **Giỏ hàng thông minh** - Quản lý giỏ hàng & danh sách yêu thích
+- 💳 **Thanh toán an toàn** - Tích hợp VNPay Gateway
+- 📦 **Quản lý đơn hàng** - Theo dõi và quản lý đơn hàng dễ dàng
+- 🎨 **UI/UX hiện đại** - Material Design + TailwindCSS
+- 📱 **Responsive Design** - Tương thích hoàn hảo mọi thiết bị
+- ⚡ **Performance tối ưu** - React Query caching & lazy loading
+- 🔒 **Bảo mật cao** - JWT authentication với auto-refresh token
+
+---
+
+## 🎬 Demo & Screenshots
+
+> 🚧 **Demo:** [Link demo sẽ được cập nhật sau]
+
+<details>
+<summary>📸 Xem Screenshots</summary>
+
+### Trang Chủ
+
+> Screenshot sẽ được thêm vào
+
+### Trang Sản Phẩm
+
+> Screenshot sẽ được thêm vào
+
+### Giỏ Hàng & Checkout
+
+> Screenshot sẽ được thêm vào
+
+</details>
+
+---
+
+## 🌟 Tính Năng Nổi Bật
+
+<table>
+<tr>
+<td width="50%">
+
+### 🔐 Authentication & Authorization
+
+- ✅ Đăng ký/Đăng nhập Email & Password
+- ✅ Đăng nhập Google (Firebase OAuth)
+- ✅ Xác thực email qua OTP
+- ✅ Quên mật khẩu & reset password
+- ✅ Đổi mật khẩu trong tài khoản
+- ✅ Protected routes với auth guard
+- ✅ JWT token auto-refresh
+
+### 🛒 Shopping Experience
+
+- ✅ Duyệt sản phẩm theo danh mục đa cấp
+- ✅ Tìm kiếm & lọc sản phẩm nâng cao
+- ✅ Xem chi tiết sản phẩm với zoom
+- ✅ Quản lý giỏ hàng real-time
+- ✅ Danh sách yêu thích (Wishlist)
+- ✅ Sản phẩm mới nhất & nổi bật
+
+</td>
+<td width="50%">
+
+### 📦 Order Management
+
+- ✅ Quy trình checkout hoàn chỉnh
+- ✅ Quản lý địa chỉ giao hàng (CRUD)
+- ✅ Chọn địa chỉ giao hàng mặc định
+- ✅ Xem lịch sử đơn hàng
+- ✅ Chi tiết từng đơn hàng
+- ✅ Hủy đơn hàng
+
+### 💳 Payment Integration
+
+- ✅ Tích hợp VNPay Gateway
+- ✅ Xử lý callback an toàn
+- ✅ Hiển thị trạng thái thanh toán
+
+### 👤 User Profile
+
+- ✅ Quản lý thông tin cá nhân
+- ✅ Cập nhật avatar
+- ✅ Đổi mật khẩu
+- ✅ Quản lý địa chỉ
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -211,59 +290,40 @@ my-project/
 #### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/your-username/ecommerce-frontend.git
-cd ecommerce-frontend
-```
-
-<details>
-<summary><b>📝 Chi tiết các biến môi trường</b></summary>
-
-| Biến                                | Mô Tả                        | Ví Dụ                       |
-| ----------------------------------- | ---------------------------- | --------------------------- |
-| `VITE_API_BASE_URL`                 | URL của Backend API          | `http://localhost:5000/api` |
-| `VITE_FIREBASE_API_KEY`             | Firebase API Key             | `AIzaSy...`                 |
-| `VITE_FIREBASE_AUTH_DOMAIN`         | Firebase Auth Domain         | `project.firebaseapp.com`   |
-| `VITE_FIREBASE_PROJECT_ID`          | Firebase Project ID          | `project-id`                |
-| `VITE_FIREBASE_STORAGE_BUCKET`      | Firebase Storage Bucket      | `project.appspot.com`       |
-| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Firebase Messaging Sender ID | `123456789`                 |
-| `VITE_FIREBASE_APP_ID`              | Firebase App ID              | `1:123:web:abc`             |
-
-</details>
-
-> ⚠️ **Quan trọng:**
->
-> - **KHÔNG** commit file `.env` vào Git
-> - Thêm `.env` vào file `.gitignore`
-> - Sử dụng `.env.example` để tham khảo
-> - Đảm bảo backend API đang chạy trước khi start frontend
-
-### Chạy Dự Án
-
-#### 🔥 Development Mode
-
-Chạy ứng dụng
-
-```bash
-git clone <repository-url>
+git clone https://github.com/zanzungg/Full-Stack-E-Commerce-Website-Web-User.git
 cd my-project
 ```
 
-2. **Cài đặt dependencies**
+#### 2️⃣ Cài Đặt Dependencies
 
 ```bash
+# Sử dụng npm
 npm install
+
+# Hoặc sử dụng yarn
+yarn install
 ```
 
-3. **Cấu hình biến môi trường**
+### Cấu Hình
+
+#### 3️⃣ Thiết Lập Biến Môi Trường
+
+Tạo file `.env` trong thư mục gốc:
+
+````env
+# API Backend URL
+VITE_API_BASE_URL=http://localhost:5000/api
+
+# Firebase Configuration (Google OAuth)
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE với hot-reload:
 
 ```bash
-# Tạo file .env và điền thông tin
-cp .env.example .env
-```
-
-4. **Đảm bảo backend API đang chạy**
-   - Backend API cần chạy trước khi start frontend
-   - Kiểm tra `VITE_API_BASE_URL` trong file `.env` trỏ đúng địa chỉ
+npm run dev
+```ong file `.env` trỏ đúng địa chỉ
 
 ---
 
@@ -275,7 +335,7 @@ Chạy ứng dụng ở chế độ development với hot-reload:
 
 ```bash
 npm run dev
-```
+````
 
 Ứng dụng sẽ chạy tại: **http://localhost:5173**
 
@@ -359,9 +419,13 @@ vercel
 ``` caching & synchronization
 - **React Context** - global state (Auth, Category)
 - **Local component state** - UI state
+bash
+npm run lint
+```
 
-### Custom Hooks
+---
 
+##
 - Tái sử dụng logic nghiệp vụ
 - Separation of concerns
 - Clean component code
@@ -400,63 +464,40 @@ vercel
 
 ### Development Notes
 
-- ESLint configured cho code quality
-- Vite HMR cho development experience tốt
-- Environment variables với `import.meta.env`
-- Font: Montserrat (Google Fonts)
+- E
 
 ---
 
-## Liên hệ & Hỗ trợ
+## 🏗️ Kiến Trúc & Design Patterns
 
-Nếu gặp vấn đề hoặc có câu hỏi, vui lòng tạo issue trên repository.
+### API Layer
 
----
-📝 Ghi Chú Kỹ Thuật
+- **Axios interceptors** cho authentication & error handling
+- **Service pattern** - tách biệt API calls
+- **Auto token refresh** - tự động làm mới token hết hạn
 
-### ⚡ Performance
+### State Management
 
-- ✅ React Query caching (stale time: 5 phút)
-- ✅ Image lazy loading
-- ✅ Code splitting cho production
-- ✅ Vite's lightning-fast HMR
+- **React Query** - server state caching & synchronization
+- **React Context** - global state (Auth, Category)
+- **Local component state** - UI state
 
-### 🔒 Security
+### Custom Hooks
 
-- ✅ JWT token với secure storage
-- ✅ Automatic token refresh
-- ✅ Protected API routes
-- ✅ Input validation & sanitization
-- ✅ XSS protection
+- Tái sử dụng logic nghiệp vụ
+- Separation of concerns
+- Clean component code
 
-### 🌐 Browser Support
+### Routing
 
-- ✅ Chrome (latest)
-- ✅ Firefox (latest)
-- ✅ Safari (latest)
-- ✅ Edge (latest)
-
-### 🎨 Design System
-
-- Font: **Montserrat** (Google Fonts)
-- Design Language: **Material Design 3**
-- Icons: **React Icons**
+- Client-side routing với React Router
+- Protected routes
+- Lazy loading components (nếu có)
+- Scroll to top on route change
 
 ---
 
-## 🤝 Đóng Góp
-
-Mọi đóng góp đều được chào đón! Nếu bạn muốn đóng góp:
-
-1. **Fork** repository này
-2. Tạo **branch** mới (`git checkout -b feature/AmazingFeature`)
-3. **Commit** thay đổi (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** lên branch (`git push origin feature/AmazingFeature`)
-5. Tạo **Pull Request**
-
-### 🐛 Báo Lỗi
-
-Nếu phát hiện bug, vui lòng [tạo issue](../../issues/new) với thông tin chi tiết:
+## Nếu phát hiện bug, vui lòng [tạo issue](../../issues/new) với thông tin chi tiết:
 - Mô tả lỗi
 - Các bước tái hiện
 - Screenshots (nếu có)
