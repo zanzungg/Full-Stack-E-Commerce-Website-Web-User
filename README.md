@@ -29,7 +29,9 @@
   - [Cấu Hình](#cấu-hình)
   - [Chạy Dự Án](#chạy-dự-án)
 - [Scripts](#-scripts)
+- [Deployment](#-deployment)
 - [Kiến Trúc & Design Patterns](#-kiến-trúc--design-patterns)
+- [Ghi Chú](#-ghi-chú)
 - [Đóng Góp](#-đóng-góp)
 - [License](#-license)
 - [Liên Hệ](#-liên-hệ)
@@ -271,7 +273,6 @@ my-project/
 ├── vite.config.js              # Vite configuration
 ├── eslint.config.js            # ESLint configuration
 └── README.md                   # Documentation
-
 ```
 
 ---
@@ -310,7 +311,7 @@ yarn install
 
 Tạo file `.env` trong thư mục gốc:
 
-````env
+```env
 # API Backend URL
 VITE_API_BASE_URL=http://localhost:5000/api
 
@@ -319,41 +320,22 @@ VITE_FIREBASE_API_KEY=your_firebase_api_key
 VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=your_project_id
 VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-VITE_FIREBASE với hot-reload:
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
 
-```bash
-npm run dev
-```ong file `.env` trỏ đúng địa chỉ
+```
 
----
+> ⚠️ **Lưu ý:** Đảm bảo file `.env` trỏ đúng địa chỉ Backend API của bạn
 
-## Chạy dự án
+### Chạy Dự Án
 
-### Development mode
+#### 🔧 Development Mode
 
 Chạy ứng dụng ở chế độ development với hot-reload:
 
 ```bash
 npm run dev
-````
-
-Ứng dụng sẽ chạy tại: **http://localhost:5173**
-
-### Preview production build
-
-Xem trước bản build production:
-
-```bash
-npm run preview
 ```
-
----
-
-## Build
-
-### Build cho production
-
-Tạo bản build tối ưu cho production:
 
 ✅ Ứng dụng sẽ chạy tại: **http://localhost:5173**
 
@@ -371,16 +353,22 @@ Build output sẽ được tạo trong thư mục `dist/`
 
 #### 🧹 Lint Code
 
-````bash
+```bash
 npm run lint
-```📜 Scripts
+```
 
-| Script | Lệnh | Mô Tả |
-|--------|------|-------|
-| **Development** | `npm run dev` | Chạy development server (port 5173) |
-| **Build** | `npm run build` | Build production-ready app |
-| **Preview** | `npm run preview` | Preview production build locally |
-| **Lint** | `npm run lint` | Kiểm tra code quality với ESLint |
+---
+
+## 📜 Scripts
+
+| Script          | Lệnh              | Mô Tả                               |
+| --------------- | ----------------- | ----------------------------------- |
+| **Development** | `npm run dev`     | Chạy development server (port 5173) |
+| **Build**       | `npm run build`   | Build production-ready app          |
+| **Preview**     | `npm run preview` | Preview production build locally    |
+| **Lint**        | `npm run lint`    | Kiểm tra code quality với ESLint    |
+
+---
 
 ## 🚢 Deployment
 
@@ -416,55 +404,17 @@ npm i -g vercel
 
 # Deploy
 vercel
-``` caching & synchronization
-- **React Context** - global state (Auth, Category)
-- **Local component state** - UI state
-bash
-npm run lint
 ```
 
----
+### Deploy lên Netlify
 
-##
-- Tái sử dụng logic nghiệp vụ
-- Separation of concerns
-- Clean component code
+```bash
+# Install Netlify CLI
+npm i -g netlify-cli
 
-### Routing
-
-- Client-side routing với React Router
-- Protected routes
-- Lazy loading components (nếu có)
-- Scroll to top on route change
-
----
-
-## Ghi chú
-
-### Performance Optimization
-
-- React Query caching (stale time: 5 phút)
-- Image optimization với lazy loading
-- Code splitting khả thi cho production
-
-###🏗️ Kiến Tity
-
-- JWT token được lưu trong localStorage
-- Automatic token refresh
-- Protected API routes
-- Input validation
-- XSS protection
-
-### Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-### Development Notes
-
-- E
+# Deploy
+netlify deploy --prod
+```
 
 ---
 
@@ -497,7 +447,51 @@ npm run lint
 
 ---
 
-## Nếu phát hiện bug, vui lòng [tạo issue](../../issues/new) với thông tin chi tiết:
+## 📝 Ghi Chú
+
+### Performance Optimization
+
+- React Query caching (stale time: 5 phút)
+- Image optimization với lazy loading
+- Code splitting khả thi cho production
+
+### Security
+
+- JWT token được lưu trong localStorage
+- Automatic token refresh
+- Protected API routes
+- Input validation
+- XSS protection
+
+### Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+### Development Notes
+
+- ESLint configured với recommended rules
+- Code formatting với Prettier (khuyến nghị)
+- Git hooks với Husky (tùy chọn)
+
+---
+
+## 🤝 Đóng Góp
+
+Mọi đóng góp đều được chào đón! Nếu bạn muốn đóng góp:
+
+1. Fork dự án
+2. Tạo branch mới (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Mở Pull Request
+
+### Báo Lỗi
+
+Nếu phát hiện bug, vui lòng [tạo issue](../../issues/new) với thông tin chi tiết:
+
 - Mô tả lỗi
 - Các bước tái hiện
 - Screenshots (nếu có)
@@ -513,8 +507,8 @@ Dự án này được phân phối dưới **Private License**. Xem file [LICEN
 
 ## 📧 Liên Hệ
 
-- **Email:** your-email@example.com
-- **GitHub:** [@your-username](https://github.com/your-username)
+- **Email:** nvdntp2004@gmail.com
+- **GitHub:** [@zanzungg](https://github.com/zanzungg)
 - **Issues:** [Tạo issue mới](../../issues)
 
 ---
@@ -533,4 +527,3 @@ Dự án này được phân phối dưới **Private License**. Xem file [LICEN
 **[⬆ Back to Top](#-mục-lục)**
 
 </div>
-````
